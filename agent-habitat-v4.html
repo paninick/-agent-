@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>活动空间 - 个人 Agent 操作系统</title>
+<style>
+:root {
+  --bg-deep: #0b1220;
+  --bg-mid: #0f1a2e;
+  --bg-panel: #152238;
+  --bg-card: #1a2a42;
+  --bg-card-hover: #1e3050;
+  --line: #2a3a55;
+  --line-soft: rgba(42, 58, 85, 0.5);
+  --amber: #E4A84B;
+  --blue: #4E72D8;
+  --purple: #8B6CCF;
+  --red: #C75A4A;
+  --jade: #4BA89A;
+  --text-primary: #e8ecf4;
+  --text-secondary: #9aa8c2;
+  --text-muted: #5f6e8a;
+  --font-sans: "Aptos", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "Cascadia Code", "Consolas", monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ===== Top Bar ===== */
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(11, 18, 32, 0.95);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.top-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.logo-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, var(--amber), var(--blue));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+.current-goal {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: var(--bg-panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.current-goal:hover { border-color: var(--blue); }
+
+.current-goal .goal-text { color: var(--text-primary); font-weight: 600; }
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--jade);
+  padding: 3px 10px;
+  border-radius: 12px;
+  background: rgba(75, 168, 154, 0.12);
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--jade);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.top-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.agent-count {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.agent-count span { color: var(--text-secondary); }
+.agent-count strong { color: var(--text-primary); font-weight: 700; }
+
+.motion-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.72rem;
+  cursor: pointer;
+  font-family: var(--font-sans);
+}
+
+.motion-toggle:hover { border-color: var(--text-muted); }
+
+/* ===== Main Layout ===== */
+.main-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  grid-template-rows: 1fr auto;
+  height: calc(100vh - 53px);
+}
+
+/* ===== Activity Space (Canvas) ===== */
+.activity-space {
+  position: relative;
+  overflow: hidden;
+}
+
+#workspace-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Zone labels */
+.zone-label {
+  position: absolute;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.zone-label-resident { top: 16px; left: 20px; }
+.zone-label-pool { bottom: 100px; left: 20px; }
+.zone-label-memory { bottom: 100px; right: 360px; }
+.zone-label-boundary { top: 16px; right: 360px; }
+
+/* Task Core Overlay */
+.task-core-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  pointer-events: none;
+}
+
+.task-core-text {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  max-width: 260px;
+  line-height: 1.5;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.6);
+}
+
+.task-core-sub {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.task-core-expand {
+  pointer-events: auto;
+  margin-top: 10px;
+  padding: 4px 14px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: rgba(15, 26, 46, 0.8);
+  color: var(--text-secondary);
+  font-size: 0.68rem;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  transition: all 0.2s;
+}
+
+.task-core-expand:hover {
+  border-color: var(--blue);
+  color: var(--text-primary);
+}
+
+/* ===== Right Panel ===== */
+.right-panel {
+  border-left: 1px solid var(--line);
+  background: var(--bg-mid);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.panel-section {
+  padding: 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.panel-section:last-child { border-bottom: none; }
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.panel-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.panel-badge {
+  font-size: 0.65rem;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.badge-urgent {
+  background: rgba(199, 90, 74, 0.15);
+  color: var(--red);
+}
+
+/* Decision Card */
+.decision-card {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 12px;
+  transition: border-color 0.2s;
+}
+
+.decision-card:hover { border-color: var(--line-soft); }
+
+.decision-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.decision-card-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.4;
+  flex: 1;
+}
+
+.decision-deadline {
+  font-size: 0.65rem;
+  color: var(--red);
+  font-weight: 600;
+  white-space: nowrap;
+  margin-left: 8px;
+}
+
+.decision-agent {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+
+.decision-agent-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.decision-context {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  background: rgba(11, 18, 32, 0.5);
+  border-radius: 6px;
+  border-left: 2px solid var(--line);
+}
+
+.decision-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.decision-meta-item {
+  font-size: 0.68rem;
+}
+
+.decision-meta-label {
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+
+.decision-meta-value {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.decision-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-approve {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background: var(--jade);
+  color: #0b1220;
+  font-weight: 700;
+  font-size: 0.78rem;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  transition: opacity 0.15s;
+}
+
+.btn-approve:hover { opacity: 0.9; }
+
+.btn-reject {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 0.78rem;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  transition: all 0.15s;
+}
+
+.btn-reject:hover { border-color: var(--text-muted); color: var(--text-primary); }
+
+.btn-autonomy {
+  width: 100%;
+  padding: 8px;
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  margin-top: 8px;
+  transition: all 0.15s;
+}
+
+.btn-autonomy:hover { border-color: var(--text-muted); color: var(--text-secondary); }
+
+/* Goal Track */
+.goal-track-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  font-size: 0.75rem;
+}
+
+.goal-track-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.goal-track-label { color: var(--text-secondary); flex: 1; }
+.goal-track-status { color: var(--text-muted); font-size: 0.68rem; }
+
+/* Memory Item */
+.memory-item {
+  padding: 10px 12px;
+  background: rgba(139, 108, 207, 0.06);
+  border: 1px solid rgba(139, 108, 207, 0.15);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.memory-item strong { color: var(--purple); font-weight: 600; }
+
+/* ===== Bottom Bar ===== */
+.bottom-bar {
+  grid-column: 1 / -1;
+  border-top: 1px solid var(--line);
+  background: var(--bg-mid);
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  overflow-x: auto;
+}
+
+.bottom-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 140px;
+}
+
+.bottom-label {
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.bottom-value {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+}
+
+.bottom-value .muted { color: var(--text-muted); font-weight: 400; }
+
+.cost-bar {
+  width: 100%;
+  height: 4px;
+  background: var(--line);
+  border-radius: 2px;
+  margin-top: 4px;
+  overflow: hidden;
+}
+
+.cost-bar-fill {
+  height: 100%;
+  background: var(--jade);
+  border-radius: 2px;
+  transition: width 0.3s;
+}
+
+/* Timeline */
+.timeline-section {
+  flex: 1;
+  min-width: 300px;
+}
+
+.timeline-track {
+  position: relative;
+  height: 32px;
+  display: flex;
+  align-items: center;
+}
+
+.timeline-line {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--line);
+  transform: translateY(-50%);
+}
+
+.timeline-progress {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--blue), var(--jade));
+  transform: translateY(-50%);
+  transition: width 0.3s;
+}
+
+.timeline-events {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.timeline-event {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid var(--bg-mid);
+  cursor: pointer;
+  transition: transform 0.15s;
+  z-index: 2;
+}
+
+.timeline-event:hover { transform: scale(1.4); }
+
+.timeline-event.important {
+  width: 12px;
+  height: 12px;
+  box-shadow: 0 0 8px currentColor;
+}
+
+.timeline-now {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--text-primary);
+  z-index: 3;
+}
+
+.timeline-now::before {
+  content: "现在";
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.6rem;
+  color: var(--text-primary);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.timeline-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.58rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  margin-top: 2px;
+}
+
+/* ===== Task Decomposition Modal ===== */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(11, 18, 32, 0.85);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-overlay.active { display: flex; }
+
+.modal-content {
+  background: var(--bg-panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 560px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.task-tree {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.task-tree-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 0.78rem;
+}
+
+.task-tree-item.completed { border-color: rgba(75, 168, 154, 0.3); }
+.task-tree-item.running { border-color: rgba(78, 114, 216, 0.4); }
+.task-tree-item.waiting { border-color: rgba(199, 90, 74, 0.3); }
+
+.task-tree-status {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.task-tree-title { flex: 1; color: var(--text-primary); font-weight: 600; }
+.task-tree-agent { color: var(--text-muted); font-size: 0.68rem; }
+.task-tree-progress { color: var(--text-secondary); font-family: var(--font-mono); font-size: 0.72rem; }
+
+.modal-close {
+  margin-top: 16px;
+  padding: 8px 20px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  cursor: pointer;
+  font-family: var(--font-sans);
+}
+
+.modal-close:hover { border-color: var(--text-muted); }
+
+/* ===== Reduced Motion ===== */
+body.reduced-motion * {
+  animation-duration: 0.01s !important;
+  transition-duration: 0.01s !important;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 900px) {
+  .main-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr auto auto;
+  }
+  .right-panel {
+    border-left: none;
+    border-top: 1px solid var(--line);
+    max-height: 40vh;
+  }
+  .bottom-bar {
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- Top Bar -->
+<header class="top-bar">
+  <div class="top-bar-left">
+    <div class="logo">
+      <div class="logo-icon">A</div>
+      <span>活动空间</span>
+    </div>
+    <div class="current-goal" onclick="toggleModal()">
+      <span class="goal-text">规划下周出差，自动处理预订与提醒</span>
+      <span class="status-badge"><span class="status-dot"></span> 进行中</span>
+    </div>
+  </div>
+  <div class="top-bar-right">
+    <div class="agent-count">
+      <span><strong>4</strong> 个常驻 Agent</span>
+      <span><strong>3</strong> 个临时 Agent 工作中</span>
+    </div>
+    <button class="motion-toggle" onclick="toggleMotion()">
+      <span id="motion-icon">专注</span>
+      <span id="motion-label">模式</span>
+    </button>
+  </div>
+</header>
+
+<!-- Main Layout -->
+<div class="main-layout">
+  <!-- Activity Space -->
+  <div class="activity-space">
+    <canvas id="workspace-canvas"></canvas>
+
+    <!-- Zone Labels -->
+    <div class="zone-label zone-label-resident">常驻区</div>
+    <div class="zone-label zone-label-pool">能力池</div>
+    <div class="zone-label zone-label-memory">成果与记忆</div>
+    <div class="zone-label zone-label-boundary">用户互动边界</div>
+
+    <!-- Task Core -->
+    <div class="task-core-overlay" id="task-core">
+      <div class="task-core-text">帮我规划下周的出差，<br>并自动处理预订与提醒</div>
+      <div class="task-core-sub">新需求 09:24</div>
+      <button class="task-core-expand" onclick="toggleModal()">展开工作路径</button>
+    </div>
+  </div>
+
+  <!-- Right Panel -->
+  <aside class="right-panel">
+    <!-- Decision Panel -->
+    <div class="panel-section">
+      <div class="panel-header">
+        <span class="panel-title">需要你决策</span>
+        <span class="panel-badge badge-urgent">02:36 前回复</span>
+      </div>
+
+      <div class="decision-card">
+        <div class="decision-card-header">
+          <div class="decision-card-title">是否预订 ¥1,280 的可退改航班？</div>
+        </div>
+        <div class="decision-agent">
+          <div class="decision-agent-dot" style="background: var(--red)"></div>
+          守门人 Agent 已携带决策来到互动边界
+        </div>
+        <div class="decision-context">
+          我比较了 18 个航班，排除了 6 个不可退改方案。这个航班比最低价贵 ¥120，但能减少 2 小时转机，且符合你"优先直飞"的偏好。
+        </div>
+        <div class="decision-meta">
+          <div class="decision-meta-item">
+            <div class="decision-meta-label">推荐</div>
+            <div class="decision-meta-value" style="color: var(--jade)">建议预订</div>
+          </div>
+          <div class="decision-meta-item">
+            <div class="decision-meta-label">风险</div>
+            <div class="decision-meta-value" style="color: var(--jade)">低</div>
+          </div>
+          <div class="decision-meta-item">
+            <div class="decision-meta-label">截止时间</div>
+            <div class="decision-meta-value">今天 12:00 前</div>
+          </div>
+          <div class="decision-meta-item">
+            <div class="decision-meta-label">证据来源</div>
+            <div class="decision-meta-value">3 个平台 / 6 条对比</div>
+          </div>
+        </div>
+        <div class="decision-actions">
+          <button class="btn-approve">同意预订</button>
+          <button class="btn-reject">再找方案</button>
+        </div>
+        <button class="btn-autonomy">以后类似情况自动处理，预算 ¥1,500 以内</button>
+      </div>
+    </div>
+
+    <!-- Goal Track -->
+    <div class="panel-section">
+      <div class="panel-header">
+        <span class="panel-title">目标轨道</span>
+      </div>
+      <div class="goal-track-item">
+        <div class="goal-track-dot" style="background: var(--jade)"></div>
+        <span class="goal-track-label">出差规划与预订</span>
+        <span class="goal-track-status">当前聚焦</span>
+      </div>
+      <div class="goal-track-item">
+        <div class="goal-track-dot" style="background: var(--blue)"></div>
+        <span class="goal-track-label">Q3 项目进度跟踪</span>
+        <span class="goal-track-status">后台运行</span>
+      </div>
+      <div class="goal-track-item">
+        <div class="goal-track-dot" style="background: var(--purple)"></div>
+        <span class="goal-track-label">每月账单整理</span>
+        <span class="goal-track-status">定时自动化</span>
+      </div>
+      <div class="goal-track-item">
+        <div class="goal-track-dot" style="background: var(--amber)"></div>
+        <span class="goal-track-label">健康数据周报</span>
+        <span class="goal-track-status">等待你确认</span>
+      </div>
+    </div>
+
+    <!-- Memory -->
+    <div class="panel-section">
+      <div class="panel-header">
+        <span class="panel-title">新学到的偏好</span>
+      </div>
+      <div class="memory-item">
+        <strong>已记住：</strong>出差航班优先直飞，价格差低于 ¥200 时不选择转机。
+      </div>
+      <div class="memory-item">
+        <strong>已记住：</strong>酒店预订偏好靠近地铁站，预算 ¥400-600/晚。
+      </div>
+    </div>
+  </aside>
+
+  <!-- Bottom Bar -->
+  <div class="bottom-bar">
+    <div class="bottom-section">
+      <div class="bottom-label">今日活动</div>
+      <div class="bottom-value">7 小时 <span class="muted">/ 23 次工具调用</span></div>
+    </div>
+    <div class="bottom-section">
+      <div class="bottom-label">预计费用</div>
+      <div class="bottom-value">¥4.80 <span class="muted">/ 月预算 ¥50</span></div>
+      <div class="cost-bar"><div class="cost-bar-fill" style="width: 9.6%"></div></div>
+    </div>
+    <div class="bottom-section">
+      <div class="bottom-label">最耗资源</div>
+      <div class="bottom-value" style="font-size: 0.72rem">出差规划 <span class="muted">62%</span></div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="bottom-section timeline-section">
+      <div class="bottom-label">24 小时活动</div>
+      <div class="timeline-track">
+        <div class="timeline-line"></div>
+        <div class="timeline-progress" style="width: 38%"></div>
+        <div class="timeline-events" id="timeline-events">
+          <div class="timeline-now" style="left: 38%"></div>
+        </div>
+        <div class="timeline-labels">
+          <span>00:00</span><span>03:00</span><span>06:00</span><span>09:00</span>
+          <span>12:00</span><span>15:00</span><span>18:00</span><span>21:00</span><span>24:00</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Task Decomposition Modal -->
+<div class="modal-overlay" id="task-modal">
+  <div class="modal-content">
+    <div class="modal-title">工作路径 - 出差规划</div>
+    <div class="task-tree">
+      <div class="task-tree-item completed">
+        <div class="task-tree-status" style="background: var(--jade)"></div>
+        <span class="task-tree-title">理解需求与约束</span>
+        <span class="task-tree-agent">管家</span>
+        <span class="task-tree-progress">100%</span>
+      </div>
+      <div class="task-tree-item completed">
+        <div class="task-tree-status" style="background: var(--jade)"></div>
+        <span class="task-tree-title">行程探索 - 比较可退改航班</span>
+        <span class="task-tree-agent">行程探索</span>
+        <span class="task-tree-progress">78%</span>
+      </div>
+      <div class="task-tree-item running">
+        <div class="task-tree-status" style="background: var(--blue)"></div>
+        <span class="task-tree-title">预算比较 - 多平台比价分析</span>
+        <span class="task-tree-agent">预算比较</span>
+        <span class="task-tree-progress">65%</span>
+      </div>
+      <div class="task-tree-item running">
+        <div class="task-tree-status" style="background: var(--blue)"></div>
+        <span class="task-tree-title">天气与路线 - 趋势分析与影响评估</span>
+        <span class="task-tree-agent">天气与路线</span>
+        <span class="task-tree-progress">40%</span>
+      </div>
+      <div class="task-tree-item waiting">
+        <div class="task-tree-status" style="background: var(--red)"></div>
+        <span class="task-tree-title">预订执行 - 等待安全审批</span>
+        <span class="task-tree-agent">守门人</span>
+        <span class="task-tree-progress">23%</span>
+      </div>
+      <div class="task-tree-item">
+        <div class="task-tree-status" style="background: var(--line)"></div>
+        <span class="task-tree-title">记忆沉淀 - 偏好学习与成果归档</span>
+        <span class="task-tree-agent">记忆者</span>
+        <span class="task-tree-progress">0%</span>
+      </div>
+    </div>
+    <button class="modal-close" onclick="toggleModal()">关闭</button>
+  </div>
+</div>
+
+<script>
+// ===== Canvas Activity Space =====
+const canvas = document.getElementById('workspace-canvas');
+const ctx = canvas.getContext('2d');
+let W, H, dpr;
+let motionMode = 'full'; // full | reduced | none
+let time = 0;
+
+function resize() {
+  dpr = window.devicePixelRatio || 1;
+  const rect = canvas.parentElement.getBoundingClientRect();
+  W = rect.width;
+  H = rect.height;
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  canvas.style.width = W + 'px';
+  canvas.style.height = H + 'px';
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+
+window.addEventListener('resize', resize);
+resize();
+
+// ===== Agent Definitions =====
+const residents = [
+  { id: 'steward', name: '管家', x: 0.18, y: 0.22, color: '#E4A84B', tool: 'compass', state: 'working', stateText: '正在拆解任务', motion: 'breathe' },
+  { id: 'planner', name: '规划者', x: 0.38, y: 0.15, color: '#4E72D8', tool: 'blueprint', state: 'working', stateText: '正在拆解任务', motion: 'breathe' },
+  { id: 'memory', name: '记忆者', x: 0.62, y: 0.15, color: '#8B6CCF', tool: 'archive', state: 'consolidating', stateText: '已收集 12 条记忆', motion: 'breathe' },
+  { id: 'guardian', name: '守门人', x: 0.82, y: 0.22, color: '#C75A4A', tool: 'shield', state: 'approaching_user', stateText: '已携带决策来到边界', motion: 'approach_user_boundary' },
+];
+
+const ephemerals = [
+  { id: 'search', name: '行程探索', x: 0.22, y: 0.62, color: '#4BA89A', state: 'working', stateText: '探索中 78%', parent: 'planner', progress: 0.78 },
+  { id: 'budget', name: '预算比较', x: 0.38, y: 0.72, color: '#4BA89A', state: 'working', stateText: '进行中 65%', parent: 'planner', progress: 0.65 },
+  { id: 'weather', name: '天气与路线', x: 0.55, y: 0.72, color: '#4BA89A', state: 'working', stateText: '进行中 40%', parent: 'planner', progress: 0.40 },
+  { id: 'booking', name: '预订执行', x: 0.72, y: 0.62, color: '#4BA89A', state: 'waiting', stateText: '生成中 23%', parent: 'guardian', progress: 0.23 },
+];
+
+// ===== Drawing Functions =====
+function drawAgentBody(x, y, radius, color, alpha, breathePhase) {
+  const breatheScale = 1 + Math.sin(breathePhase) * 0.04;
+  const r = radius * breatheScale;
+
+  // Outer glow
+  const glow = ctx.createRadialGradient(x, y, r * 0.5, x, y, r * 2.5);
+  glow.addColorStop(0, color + '30');
+  glow.addColorStop(1, 'transparent');
+  ctx.fillStyle = glow;
+  ctx.beginPath();
+  ctx.arc(x, y, r * 2.5, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Body
+  ctx.fillStyle = color + (alpha ? Math.round(alpha * 255).toString(16).padStart(2, '0') : '40');
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Core
+  ctx.fillStyle = color + 'cc';
+  ctx.beginPath();
+  ctx.arc(x, y, r * 0.35, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Highlight
+  ctx.fillStyle = 'rgba(255,255,255,0.15)';
+  ctx.beginPath();
+  ctx.arc(x - r * 0.2, y - r * 0.2, r * 0.25, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+function drawConnection(x1, y1, x2, y2, color, flowPhase, dashed) {
+  ctx.save();
+  ctx.strokeStyle = color + '50';
+  ctx.lineWidth = 1.5;
+  if (dashed) {
+    ctx.setLineDash([6, 4]);
+    ctx.lineDashOffset = -flowPhase * 20;
+  }
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
+  ctx.stroke();
+
+  // Flow particle
+  if (motionMode !== 'none') {
+    const t = ((flowPhase * 0.5) % 1 + 1) % 1;
+    const px = x1 + (x2 - x1) * t;
+    const py = y1 + (y2 - y1) * t;
+    const pGlow = ctx.createRadialGradient(px, py, 0, px, py, 6);
+    pGlow.addColorStop(0, color + 'cc');
+    pGlow.addColorStop(1, 'transparent');
+    ctx.fillStyle = pGlow;
+    ctx.beginPath();
+    ctx.arc(px, py, 6, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
+function drawTaskCore(cx, cy, radius) {
+  // Outer ring
+  ctx.strokeStyle = 'rgba(232, 236, 244, 0.12)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+  ctx.stroke();
+
+  // Inner glow
+  const coreGlow = ctx.createRadialGradient(cx, cy, radius * 0.3, cx, cy, radius);
+  coreGlow.addColorStop(0, 'rgba(78, 114, 216, 0.08)');
+  coreGlow.addColorStop(1, 'transparent');
+  ctx.fillStyle = coreGlow;
+  ctx.beginPath();
+  ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Pulsing ring
+  if (motionMode !== 'none') {
+    const pulseR = radius + Math.sin(time * 0.02) * 4;
+    ctx.strokeStyle = 'rgba(78, 114, 216, 0.15)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(cx, cy, pulseR, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+}
+
+function drawZoneBoundary(x, y, w, h, label) {
+  ctx.strokeStyle = 'rgba(42, 58, 85, 0.3)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([4, 8]);
+  ctx.strokeRect(x, y, w, h);
+  ctx.setLineDash([]);
+}
+
+function drawBackground() {
+  // Base gradient
+  const bg = ctx.createLinearGradient(0, 0, 0, H);
+  bg.addColorStop(0, '#0b1220');
+  bg.addColorStop(0.5, '#0f1a2e');
+  bg.addColorStop(1, '#0b1220');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, H);
+
+  // Subtle grid
+  if (motionMode !== 'none') {
+    ctx.strokeStyle = 'rgba(42, 58, 85, 0.08)';
+    ctx.lineWidth = 0.5;
+    const gridSize = 60;
+    for (let x = 0; x < W; x += gridSize) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, H);
+      ctx.stroke();
+    }
+    for (let y = 0; y < H; y += gridSize) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(W, y);
+      ctx.stroke();
+    }
+  }
+
+  // Floating particles
+  if (motionMode !== 'none') {
+    for (let i = 0; i < 15; i++) {
+      const px = (Math.sin(time * 0.003 + i * 1.7) * 0.5 + 0.5) * W;
+      const py = (Math.cos(time * 0.002 + i * 2.3) * 0.5 + 0.5) * H;
+      const size = 1 + Math.sin(time * 0.01 + i) * 0.5;
+      ctx.fillStyle = 'rgba(154, 168, 194, 0.15)';
+      ctx.beginPath();
+      ctx.arc(px, py, size, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+}
+
+// ===== Main Render Loop =====
+function render() {
+  time++;
+  ctx.clearRect(0, 0, W, H);
+
+  drawBackground();
+
+  const cx = W * 0.5;
+  const cy = H * 0.48;
+  const coreRadius = Math.min(W, H) * 0.12;
+
+  // Draw zone boundaries
+  drawZoneBoundary(W * 0.02, H * 0.05, W * 0.45, H * 0.35);
+  drawZoneBoundary(W * 0.53, H * 0.05, W * 0.45, H * 0.35);
+  drawZoneBoundary(W * 0.02, H * 0.55, W * 0.45, H * 0.35);
+  drawZoneBoundary(W * 0.53, H * 0.55, W * 0.45, H * 0.35);
+
+  // Draw task core
+  drawTaskCore(cx, cy, coreRadius);
+
+  // Draw connections: residents to task core
+  residents.forEach((r, i) => {
+    const rx = W * r.x;
+    const ry = H * r.y;
+    const isActive = r.state !== 'idle';
+    drawConnection(rx, ry, cx, cy, r.color, time * 0.005 + i, !isActive);
+  });
+
+  // Draw connections: ephemerals to parent residents
+  ephemerals.forEach((e, i) => {
+    const ex = W * e.x;
+    const ey = H * e.y;
+    const parent = residents.find(r => r.id === e.parent);
+    if (parent) {
+      const px = W * parent.x;
+      const py = H * parent.y;
+      drawConnection(px, py, ex, ey, e.color, time * 0.004 + i + 3, false);
+    }
+    // Connection to task core
+    drawConnection(ex, ey, cx, cy, e.color + '60', time * 0.003 + i + 5, true);
+  });
+
+  // Draw resident agents
+  residents.forEach((r, i) => {
+    const rx = W * r.x;
+    const ry = H * r.y;
+    const breathePhase = time * 0.03 + i * 1.5;
+    const radius = 22;
+    drawAgentBody(rx, ry, radius, r.color, 1, breathePhase);
+
+    // Label
+    ctx.fillStyle = r.color;
+    ctx.font = '600 11px "Aptos", "Segoe UI", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(r.name, rx, ry + radius + 16);
+
+    // State text
+    ctx.fillStyle = '#9aa8c2';
+    ctx.font = '400 9px "Aptos", "Segoe UI", sans-serif';
+    ctx.fillText(r.stateText, rx, ry + radius + 30);
+  });
+
+  // Draw ephemeral agents
+  ephemerals.forEach((e, i) => {
+    const ex = W * e.x;
+    const ey = H * e.y;
+    const breathePhase = time * 0.025 + i * 2.1;
+    const radius = 16;
+    drawAgentBody(ex, ey, radius, e.color, 0.7, breathePhase);
+
+    // Label
+    ctx.fillStyle = e.color + 'cc';
+    ctx.font = '600 10px "Aptos", "Segoe UI", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(e.name, ex, ey + radius + 14);
+
+    // Progress
+    ctx.fillStyle = '#9aa8c2';
+    ctx.font = '400 9px "Aptos", "Segoe UI", sans-serif';
+    ctx.fillText(e.stateText, ex, ey + radius + 28);
+
+    // Progress bar
+    const barW = 40;
+    const barH = 3;
+    const barX = ex - barW / 2;
+    const barY = ey + radius + 34;
+    ctx.fillStyle = 'rgba(42, 58, 85, 0.5)';
+    ctx.fillRect(barX, barY, barW, barH);
+    ctx.fillStyle = e.color + 'aa';
+    ctx.fillRect(barX, barY, barW * e.progress, barH);
+  });
+
+  // Draw guardian approaching user boundary (right side)
+  if (motionMode !== 'none') {
+    const g = residents[3]; // guardian
+    const gx = W * g.x;
+    const gy = H * g.y;
+    // Draw a subtle arrow/path toward right edge
+    ctx.save();
+    ctx.strokeStyle = g.color + '30';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 6]);
+    ctx.lineDashOffset = -time * 0.5;
+    ctx.beginPath();
+    ctx.moveTo(gx + 30, gy);
+    ctx.lineTo(W - 350, gy);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+  }
+
+  requestAnimationFrame(render);
+}
+
+render();
+
+// ===== Timeline Events =====
+const timelineEvents = [
+  { time: 0.02, color: '#8B6CCF', important: false, label: '记忆整合' },
+  { time: 0.12, color: '#4BA89A', important: false, label: '行程探索 Agent 创建' },
+  { time: 0.22, color: '#4BA89A', important: false, label: '预算比较完成' },
+  { time: 0.38, color: '#E4A84B', important: true, label: '你提出了新需求' },
+  { time: 0.52, color: '#C75A4A', important: true, label: '守门人 Agent 提问' },
+  { time: 0.62, color: '#4BA89A', important: false, label: '预订执行 Agent 创建' },
+  { time: 0.75, color: '#4BA89A', important: false, label: '预订成功' },
+  { time: 0.88, color: '#8B6CCF', important: false, label: '记忆沉淀' },
+];
+
+const timelineContainer = document.getElementById('timeline-events');
+timelineEvents.forEach(ev => {
+  const dot = document.createElement('div');
+  dot.className = 'timeline-event' + (ev.important ? ' important' : '');
+  dot.style.left = (ev.time * 100) + '%';
+  dot.style.background = ev.color;
+  dot.style.color = ev.color;
+  dot.title = ev.label;
+  timelineContainer.appendChild(dot);
+});
+
+// ===== Interactions =====
+function toggleModal() {
+  const modal = document.getElementById('task-modal');
+  modal.classList.toggle('active');
+}
+
+function toggleMotion() {
+  const modes = ['full', 'reduced', 'none'];
+  const labels = { full: '专注模式', reduced: '减少动态', none: '关闭动画' };
+  const icons = { full: '专注', reduced: '减弱', none: '静止' };
+  const idx = modes.indexOf(motionMode);
+  motionMode = modes[(idx + 1) % modes.length];
+
+  document.getElementById('motion-icon').textContent = icons[motionMode];
+  document.getElementById('motion-label').textContent = '模式';
+
+  if (motionMode === 'reduced') {
+    document.body.classList.add('reduced-motion');
+  } else {
+    document.body.classList.remove('reduced-motion');
+  }
+}
+
+// Close modal on overlay click
+document.getElementById('task-modal').addEventListener('click', function(e) {
+  if (e.target === this) toggleModal();
+});
+</script>
+</body>
+</html>

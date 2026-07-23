@@ -1,0 +1,9 @@
+{
+  "currentNode": "N7_RELEASE_SEAL",
+  "status": "SEALED",
+  "nextNode": "P18_PRD_LOCK",
+  "nextModel": "glm-5.2",
+  "checkedAt": "2026-07-06T10:15:00+08:00",
+  "scope": "AI-generated visual brand assets (favicon + OG banner) using free Seedream 5.0 platform quota",
+  "envBlock": "Seedream 5.0 free quota: 31 images remaining. No video tokens consumed."
+}

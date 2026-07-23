@@ -1,0 +1,7 @@
+{
+  "currentNode": "N1_LONG_CONTEXT_ARCH_REVIEW",
+  "status": "PASS",
+  "nextNode": "N2_TECH_REVIEW",
+  "nextModel": "deepseek-v4-pro",
+  "checkedAt": "2026-07-05T05:34:41.105Z"
+}

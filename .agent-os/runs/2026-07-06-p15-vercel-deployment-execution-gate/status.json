@@ -1,0 +1,9 @@
+{
+  "currentNode": "N7_RELEASE_SEAL",
+  "status": "SEALED",
+  "nextNode": "P16_PRD_LOCK",
+  "nextModel": "glm-5.2",
+  "checkedAt": "2026-07-06T01:50:00+08:00",
+  "scope": "documentation-only Vercel deployment execution gate",
+  "envBlock": "Real Vercel deployment requires valid external auth and project linking."
+}

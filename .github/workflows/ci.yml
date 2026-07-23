@@ -1,0 +1,90 @@
+name: v3-verify
+
+on:
+  push:
+    branches: [main, dev, master]
+  pull_request:
+    branches: [main, dev, master]
+  schedule:
+    # 每日凌晨 02:00 UTC（北京时间 10:00）跑全量
+    - cron: "0 2 * * *"
+
+jobs:
+  verify:
+    name: verify:all
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: ./
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: TypeScript typecheck
+        run: npm run typecheck
+        continue-on-error: false
+
+      - name: Secret scan (v3 SECURITY.md §6)
+        run: npm run verify:secrets
+        continue-on-error: false
+
+      - name: ENV check (startup validation)
+        # .env.local 在 CI 不存在（缺则 1 项 fail，可接受）
+        run: npm run verify:env || echo "::warning::env check failed (likely missing .env.local in CI)"
+
+      - name: Intelligence verify (9 adapters)
+        # 需要联网 + 4 个 L1 key 才能 verifiedSourceCount: 9
+        # CI 中只期望 5（无 key）
+        run: npm run verify:intelligence
+        continue-on-error: true
+
+      - name: Skills audit (14 installed)
+        run: npm run verify:skills
+        continue-on-error: true
+
+      - name: Vitest tests
+        run: npm run test
+        continue-on-error: false
+
+      - name: Build (Launch Desk)
+        run: npm run build
+        continue-on-error: false
+
+      - name: Upload verification artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v3-verification-${{ github.run_id }}
+          path: |
+            outputs/intelligence/verification-latest.json
+            outputs/skill-audit-report.json
+          if-no-files-found: ignore
+          retention-days: 14
+
+  # 单独 job: secret scanning（独立跑以免被其他 step 干扰）
+  security-scan:
+    name: secret scan (strict)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: scan-secrets strict mode
+        run: npx tsx scripts/scan-secrets.ts
+        # 不允许任何 CRITICAL/HIGH 泄漏
+        continue-on-error: false

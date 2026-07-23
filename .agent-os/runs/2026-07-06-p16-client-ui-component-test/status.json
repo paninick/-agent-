@@ -1,0 +1,9 @@
+{
+  "currentNode": "N7_RELEASE_SEAL",
+  "status": "SEALED",
+  "nextNode": "P17_PRD_LOCK",
+  "nextModel": "glm-5.2",
+  "checkedAt": "2026-07-06T10:00:00+08:00",
+  "scope": "client-side React component tests using jsdom + React act with zero new dependencies",
+  "envBlock": "Real browser E2E and visual regression remain deferred."
+}

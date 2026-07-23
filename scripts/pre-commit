@@ -1,0 +1,12 @@
+#!/bin/sh
+# pre-commit hook — 在 git commit 前自动跑 secrets scan
+# 安装: cp scripts/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
+
+echo "🔍 scan-secrets: pre-commit hook"
+npx tsx scripts/scan-secrets.ts --staged 2>&1 || {
+  echo ""
+  echo "❌ scan-secrets 发现凭据泄漏候选"
+  echo "请检查输出的 [CRITICAL]/[HIGH] 项"
+  echo "如果是测试 fixture 或事故报告，加到 scripts/scan-secrets.ts 的 ALLOWLIST_FILES"
+  exit 1
+}

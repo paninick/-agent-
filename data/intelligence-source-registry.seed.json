@@ -1,0 +1,853 @@
+{
+  "version": "2026-06-30.seed",
+  "purpose": "Seed registry for weighted, cross-verifiable industry-chain intelligence sources.",
+  "tiers": {
+    "S": {
+      "defaultWeight": 1,
+      "meaning": "Official API, original filing, or primary transaction/statistical source."
+    },
+    "A+": {
+      "defaultWeight": 0.9,
+      "meaning": "Authorized platform data, structured filings, or direct supplier disclosure."
+    },
+    "A": {
+      "defaultWeight": 0.75,
+      "meaning": "Government statistics, reputable association data, compliance databases, or peer-reviewed/official research."
+    },
+    "B": {
+      "defaultWeight": 0.5,
+      "meaning": "Professional media, consulting reports, recruitment pages, web pages, and public market signals."
+    },
+    "C": {
+      "defaultWeight": 0.25,
+      "meaning": "Unverified scrape, repost, social rumor, or second-hand claim. Use as lead only."
+    }
+  },
+  "sources": [
+    {
+      "id": "un-comtrade",
+      "name": "UN Comtrade",
+      "tier": "S",
+      "sourceWeight": 1,
+      "type": "official_api",
+      "coverage": [
+        "global_trade",
+        "hs_code",
+        "country_partner_flow"
+      ],
+      "officialUrl": "https://comtrade.un.org/",
+      "requiresAuth": "varies_by_endpoint_or_volume",
+      "refreshCadence": "monthly_or_annual_by_dataset",
+      "evidenceUse": [
+        "trade_flow_primary",
+        "customs_mirror_validation"
+      ],
+      "crossChecks": [
+        "usitc-dataweb",
+        "eurostat",
+        "estat-japan",
+        "company_financials"
+      ],
+      "knownFailureModes": [
+        "hs_code_mismatch",
+        "reexports",
+        "fob_cif_difference",
+        "reporting_lag"
+      ],
+      "trust_weight": 1,
+      "latency_score": 0.65,
+      "reliability_score": 1,
+      "coverage_domain": "global_trade"
+    },
+    {
+      "id": "world-bank-wits",
+      "name": "World Integrated Trade Solution API",
+      "tier": "S",
+      "sourceWeight": 0.93,
+      "type": "official_api",
+      "coverage": [
+        "global_trade",
+        "tariff",
+        "hs_code",
+        "unctad_trains",
+        "comtrade_mirror"
+      ],
+      "officialUrl": "https://wits.worldbank.org/witsapiintro.aspx?lang=en",
+      "requiresAuth": false,
+      "refreshCadence": "dataset_specific",
+      "evidenceUse": [
+        "tariff_validation",
+        "trade_policy_context",
+        "customs_mirror_validation"
+      ],
+      "crossChecks": [
+        "un-comtrade",
+        "usitc-dataweb",
+        "wto",
+        "national_customs"
+      ],
+      "knownFailureModes": [
+        "slow_endpoint",
+        "parameter_code_mapping",
+        "data_not_found_for_hs6_year",
+        "trains_coverage_gaps"
+      ],
+      "trust_weight": 0.93,
+      "latency_score": 0.85,
+      "reliability_score": 0.93,
+      "coverage_domain": "global_trade"
+    },
+    {
+      "id": "sec-edgar",
+      "name": "SEC EDGAR APIs",
+      "tier": "S",
+      "sourceWeight": 1,
+      "type": "official_api",
+      "coverage": [
+        "us_listed_company_filings",
+        "xbrl",
+        "risk_disclosure"
+      ],
+      "officialUrl": "https://www.sec.gov/search-filings/edgar-application-programming-interfaces",
+      "requiresAuth": false,
+      "refreshCadence": "filing_event_driven",
+      "evidenceUse": [
+        "financial_primary",
+        "risk_disclosure_primary",
+        "segment_inventory_margin"
+      ],
+      "crossChecks": [
+        "company_earnings_call",
+        "supplier_news",
+        "trade_flow"
+      ],
+      "knownFailureModes": [
+        "disclosure_lag",
+        "segment_aggregation",
+        "supplier_names_often_missing"
+      ],
+      "trust_weight": 1,
+      "latency_score": 0.85,
+      "reliability_score": 1,
+      "coverage_domain": "us_listed_company_filings"
+    },
+    {
+      "id": "edinet-japan",
+      "name": "EDINET",
+      "tier": "S",
+      "sourceWeight": 1,
+      "type": "official_api",
+      "coverage": [
+        "japan_listed_company_filings",
+        "xbrl",
+        "annual_reports"
+      ],
+      "officialUrl": "https://disclosure2.edinet-fsa.go.jp/weee0010.aspx",
+      "requiresAuth": "api_key_for_new_api",
+      "refreshCadence": "filing_event_driven",
+      "evidenceUse": [
+        "financial_primary",
+        "japan_brand_disclosure"
+      ],
+      "crossChecks": [
+        "estat-japan",
+        "un-comtrade",
+        "company_ir"
+      ],
+      "knownFailureModes": [
+        "language_normalization",
+        "xbrl_taxonomy_changes",
+        "supplier_names_often_missing"
+      ],
+      "trust_weight": 1,
+      "latency_score": 0.65,
+      "reliability_score": 1,
+      "coverage_domain": "japan_listed_company_filings"
+    },
+    {
+      "id": "estat-japan",
+      "name": "e-Stat Japan",
+      "tier": "S",
+      "sourceWeight": 0.95,
+      "type": "official_api",
+      "coverage": [
+        "japan_statistics",
+        "consumption",
+        "industry",
+        "trade_related_series"
+      ],
+      "officialUrl": "https://www.e-stat.go.jp/api/en",
+      "requiresAuth": "app_id",
+      "refreshCadence": "dataset_specific",
+      "evidenceUse": [
+        "macro_demand_proxy",
+        "japan_market_context"
+      ],
+      "crossChecks": [
+        "edinet-japan",
+        "un-comtrade",
+        "world-bank"
+      ],
+      "knownFailureModes": [
+        "dataset_discovery_complexity",
+        "japanese_metadata",
+        "series_revisions"
+      ],
+      "trust_weight": 0.95,
+      "latency_score": 0.65,
+      "reliability_score": 0.95,
+      "coverage_domain": "japan_statistics"
+    },
+    {
+      "id": "usitc-dataweb",
+      "name": "USITC DataWeb API",
+      "tier": "S",
+      "sourceWeight": 1,
+      "type": "official_api",
+      "coverage": [
+        "us_trade",
+        "hts",
+        "tariff",
+        "import_export"
+      ],
+      "officialUrl": "https://datawebws.usitc.gov/dataweb/swagger-ui/index.html",
+      "requiresAuth": "account_token",
+      "refreshCadence": "monthly",
+      "evidenceUse": [
+        "us_import_primary",
+        "tariff_validation"
+      ],
+      "crossChecks": [
+        "un-comtrade",
+        "sec-edgar",
+        "wto"
+      ],
+      "knownFailureModes": [
+        "hts_hs_mapping",
+        "quantity_unit_changes",
+        "account_access"
+      ],
+      "trust_weight": 1,
+      "latency_score": 0.65,
+      "reliability_score": 1,
+      "coverage_domain": "us_trade"
+    },
+    {
+      "id": "us-census-trade",
+      "name": "U.S. Census International Trade API",
+      "tier": "S",
+      "sourceWeight": 0.98,
+      "type": "official_api",
+      "coverage": [
+        "us_trade",
+        "hs_code",
+        "import_export",
+        "country_partner_flow"
+      ],
+      "officialUrl": "https://www.census.gov/data/developers/data-sets/international-trade.html",
+      "requiresAuth": "api_key",
+      "refreshCadence": "monthly",
+      "evidenceUse": [
+        "us_import_primary",
+        "hs_trade_flow_validation"
+      ],
+      "crossChecks": [
+        "usitc-dataweb",
+        "un-comtrade",
+        "company_financials"
+      ],
+      "knownFailureModes": [
+        "api_key_required",
+        "hts_hs_mapping",
+        "country_code_mapping",
+        "monthly_revision"
+      ],
+      "trust_weight": 0.98,
+      "latency_score": 0.65,
+      "reliability_score": 0.98,
+      "coverage_domain": "us_trade"
+    },
+    {
+      "id": "world-bank",
+      "name": "World Bank Indicators API",
+      "tier": "S",
+      "sourceWeight": 0.95,
+      "type": "official_api",
+      "coverage": [
+        "macro",
+        "labor",
+        "energy",
+        "trade",
+        "country_indicators"
+      ],
+      "officialUrl": "https://datahelpdesk.worldbank.org/knowledgebase/articles/889392-about-the-indicators-api-documentation",
+      "requiresAuth": false,
+      "refreshCadence": "indicator_specific",
+      "evidenceUse": [
+        "country_benchmark",
+        "macro_control"
+      ],
+      "crossChecks": [
+        "fred",
+        "ilo",
+        "oecd",
+        "imf"
+      ],
+      "knownFailureModes": [
+        "annual_lag",
+        "indicator_methodology_changes",
+        "country_aggregation"
+      ],
+      "trust_weight": 0.95,
+      "latency_score": 0.85,
+      "reliability_score": 0.95,
+      "coverage_domain": "macro"
+    },
+    {
+      "id": "oecd-data-explorer",
+      "name": "OECD Data Explorer API",
+      "tier": "S",
+      "sourceWeight": 0.9,
+      "type": "official_api",
+      "coverage": [
+        "macro",
+        "industry",
+        "prices",
+        "labor",
+        "trade",
+        "country_indicators"
+      ],
+      "officialUrl": "https://data-explorer.oecd.org/",
+      "requiresAuth": false,
+      "refreshCadence": "dataset_specific",
+      "evidenceUse": [
+        "country_benchmark",
+        "macro_control",
+        "policy_context"
+      ],
+      "crossChecks": [
+        "world-bank",
+        "eurostat",
+        "national_statistics"
+      ],
+      "knownFailureModes": [
+        "sdmx_dimension_complexity",
+        "dataset_migration",
+        "series_revision",
+        "country_coverage_gaps"
+      ],
+      "trust_weight": 0.9,
+      "latency_score": 0.85,
+      "reliability_score": 0.9,
+      "coverage_domain": "macro"
+    },
+    {
+      "id": "fred",
+      "name": "FRED API",
+      "tier": "S",
+      "sourceWeight": 0.95,
+      "type": "official_api",
+      "coverage": [
+        "rates",
+        "fx",
+        "inflation",
+        "energy",
+        "macro_time_series"
+      ],
+      "officialUrl": "https://fred.stlouisfed.org/docs/api/fred/",
+      "requiresAuth": "api_key",
+      "refreshCadence": "series_specific",
+      "evidenceUse": [
+        "fx_interest_macro",
+        "cost_driver"
+      ],
+      "crossChecks": [
+        "central_bank",
+        "world-bank",
+        "imf"
+      ],
+      "knownFailureModes": [
+        "series_revisions",
+        "metadata_mapping",
+        "non_us_series_lag"
+      ],
+      "trust_weight": 0.95,
+      "latency_score": 0.65,
+      "reliability_score": 0.95,
+      "coverage_domain": "rates"
+    },
+    {
+      "id": "bls-public-api",
+      "name": "U.S. Bureau of Labor Statistics Public Data API",
+      "tier": "S",
+      "sourceWeight": 0.95,
+      "type": "official_api",
+      "coverage": [
+        "prices",
+        "inflation",
+        "labor",
+        "apparel",
+        "macro_time_series"
+      ],
+      "officialUrl": "https://www.bls.gov/developers/",
+      "requiresAuth": false,
+      "refreshCadence": "monthly_or_series_specific",
+      "evidenceUse": [
+        "market_signal",
+        "cost_driver",
+        "price_benchmark"
+      ],
+      "crossChecks": [
+        "fred",
+        "world-bank",
+        "eurostat",
+        "company_financials"
+      ],
+      "knownFailureModes": [
+        "seasonal_adjustment",
+        "series_revision",
+        "category_mapping",
+        "us_market_only"
+      ],
+      "trust_weight": 0.95,
+      "latency_score": 0.85,
+      "reliability_score": 0.95,
+      "coverage_domain": "prices"
+    },
+    {
+      "id": "ecb-eurofxref",
+      "name": "European Central Bank Euro Foreign Exchange Reference Rates",
+      "tier": "S",
+      "sourceWeight": 0.95,
+      "type": "official_api",
+      "coverage": [
+        "fx",
+        "rates",
+        "macro_time_series",
+        "eur_reference_rates"
+      ],
+      "officialUrl": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html",
+      "requiresAuth": false,
+      "refreshCadence": "business_daily",
+      "evidenceUse": [
+        "fx_interest_macro",
+        "cost_driver",
+        "currency_cross_rate"
+      ],
+      "crossChecks": [
+        "fred",
+        "central_bank",
+        "world-bank"
+      ],
+      "knownFailureModes": [
+        "eur_base_only",
+        "holiday_no_update",
+        "cross_rate_requires_calculation"
+      ],
+      "trust_weight": 0.95,
+      "latency_score": 0.85,
+      "reliability_score": 0.95,
+      "coverage_domain": "fx"
+    },
+    {
+      "id": "eurostat",
+      "name": "Eurostat Statistics API",
+      "tier": "S",
+      "sourceWeight": 0.95,
+      "type": "official_api",
+      "coverage": [
+        "eu_trade",
+        "industry",
+        "prices",
+        "consumption",
+        "labor"
+      ],
+      "officialUrl": "https://ec.europa.eu/eurostat/web/user-guides/data-browser/api-data-access/api-getting-started",
+      "requiresAuth": false,
+      "refreshCadence": "dataset_specific",
+      "evidenceUse": [
+        "eu_import_primary",
+        "eu_market_context"
+      ],
+      "crossChecks": [
+        "un-comtrade",
+        "company_filings",
+        "wto"
+      ],
+      "knownFailureModes": [
+        "dataset_versioning",
+        "unit_normalization",
+        "eu_member_aggregation"
+      ],
+      "trust_weight": 0.95,
+      "latency_score": 0.85,
+      "reliability_score": 0.95,
+      "coverage_domain": "eu_trade"
+    },
+    {
+      "id": "open-supply-hub",
+      "name": "Open Supply Hub",
+      "tier": "A",
+      "sourceWeight": 0.78,
+      "type": "open_supply_chain_database",
+      "coverage": [
+        "facility_identity",
+        "factory_location",
+        "contributor_claims",
+        "os_id"
+      ],
+      "officialUrl": "https://info.opensupplyhub.org/api",
+      "requiresAuth": "may_require_key_or_terms_for_api_scale",
+      "refreshCadence": "continuous_contributor_updates",
+      "evidenceUse": [
+        "supplier_identity_resolution",
+        "facility_deduplication"
+      ],
+      "crossChecks": [
+        "brand_supplier_list",
+        "customs_records",
+        "company_registry"
+      ],
+      "knownFailureModes": [
+        "contributor_claim_not_transaction",
+        "stale_facility_status",
+        "name_aliases"
+      ],
+      "trust_weight": 0.78,
+      "latency_score": 0.65,
+      "reliability_score": 0.78,
+      "coverage_domain": "facility_identity"
+    },
+    {
+      "id": "better-work",
+      "name": "Better Work",
+      "tier": "A",
+      "sourceWeight": 0.76,
+      "type": "compliance_research_database",
+      "coverage": [
+        "factory_compliance",
+        "labor_conditions",
+        "country_programs"
+      ],
+      "officialUrl": "https://betterwork.org/data-and-evidence/",
+      "requiresAuth": "public_reports_and_selected_data",
+      "refreshCadence": "report_specific",
+      "evidenceUse": [
+        "supplier_compliance_risk",
+        "labor_benchmark"
+      ],
+      "crossChecks": [
+        "ilo",
+        "factory_audit",
+        "media_investigation"
+      ],
+      "knownFailureModes": [
+        "coverage_not_global",
+        "program_participation_bias",
+        "lagged_reporting"
+      ],
+      "trust_weight": 0.76,
+      "latency_score": 0.65,
+      "reliability_score": 0.76,
+      "coverage_domain": "factory_compliance"
+    },
+    {
+      "id": "ilo",
+      "name": "International Labour Organization",
+      "tier": "A",
+      "sourceWeight": 0.76,
+      "type": "official_research_and_statistics",
+      "coverage": [
+        "labor",
+        "wages",
+        "productivity",
+        "garment_sector"
+      ],
+      "officialUrl": "https://www.ilo.org/publications/employment-wages-and-productivity-asian-garment-sector-taking-stock-recent",
+      "requiresAuth": false,
+      "refreshCadence": "report_or_dataset_specific",
+      "evidenceUse": [
+        "labor_cost_benchmark",
+        "country_risk_context"
+      ],
+      "crossChecks": [
+        "world-bank",
+        "national_statistics",
+        "supplier_cost_sheet"
+      ],
+      "knownFailureModes": [
+        "survey_lag",
+        "country_aggregation",
+        "sector_definition_difference"
+      ],
+      "trust_weight": 0.76,
+      "latency_score": 0.85,
+      "reliability_score": 0.76,
+      "coverage_domain": "labor"
+    },
+    {
+      "id": "ilostat-api",
+      "name": "ILOSTAT API",
+      "tier": "S",
+      "sourceWeight": 0.9,
+      "type": "official_api",
+      "coverage": [
+        "labor",
+        "wages",
+        "employment",
+        "hours_worked",
+        "country_indicators"
+      ],
+      "officialUrl": "https://ilostat.ilo.org/resources/concepts-and-definitions/ilostat-api/",
+      "requiresAuth": false,
+      "refreshCadence": "dataset_specific",
+      "evidenceUse": [
+        "labor_cost_benchmark",
+        "country_risk_context",
+        "wage_pressure_monitor"
+      ],
+      "crossChecks": [
+        "world-bank",
+        "national_statistics",
+        "supplier_cost_sheet"
+      ],
+      "knownFailureModes": [
+        "indicator_dimension_complexity",
+        "survey_lag",
+        "sector_definition_difference",
+        "api_timeout"
+      ],
+      "trust_weight": 0.9,
+      "latency_score": 0.85,
+      "reliability_score": 0.9,
+      "coverage_domain": "labor"
+    },
+    {
+      "id": "wto",
+      "name": "World Trade Organization",
+      "tier": "A",
+      "sourceWeight": 0.74,
+      "type": "official_trade_research",
+      "coverage": [
+        "tariff",
+        "gvc",
+        "trade_policy",
+        "sector_profiles"
+      ],
+      "officialUrl": "https://www.wto.org/",
+      "requiresAuth": false,
+      "refreshCadence": "report_or_dataset_specific",
+      "evidenceUse": [
+        "tariff_policy_context",
+        "gvc_benchmark"
+      ],
+      "crossChecks": [
+        "usitc-dataweb",
+        "un-comtrade",
+        "national_customs"
+      ],
+      "knownFailureModes": [
+        "report_level_not_transaction_level",
+        "policy_change_lag"
+      ],
+      "trust_weight": 0.74,
+      "latency_score": 0.85,
+      "reliability_score": 0.74,
+      "coverage_domain": "tariff"
+    },
+    {
+      "id": "shopee-open-platform",
+      "name": "Shopee Open Platform",
+      "tier": "A+",
+      "sourceWeight": 0.9,
+      "type": "authorized_platform_api",
+      "coverage": [
+        "orders",
+        "products",
+        "inventory",
+        "pricing",
+        "marketing"
+      ],
+      "officialUrl": "https://open.shopee.com/developer-guide/4",
+      "requiresAuth": "seller_authorization",
+      "refreshCadence": "near_real_time_after_authorization",
+      "evidenceUse": [
+        "platform_sales_primary",
+        "price_inventory_feedback"
+      ],
+      "crossChecks": [
+        "financials",
+        "shipping_records",
+        "web_price_monitor"
+      ],
+      "knownFailureModes": [
+        "authorization_scope",
+        "shop_level_bias",
+        "platform_policy_changes"
+      ],
+      "trust_weight": 0.9,
+      "latency_score": 0.65,
+      "reliability_score": 0.9,
+      "coverage_domain": "orders"
+    },
+    {
+      "id": "temu-partner-api",
+      "name": "Temu Partner API",
+      "tier": "A+",
+      "sourceWeight": 0.9,
+      "type": "authorized_platform_api",
+      "coverage": [
+        "orders",
+        "goods",
+        "inventory",
+        "fulfillment",
+        "after_sales"
+      ],
+      "officialUrl": "https://partner.temu.com/documentation?menu_code=38e79b35d2cb463d85619c1c786dd303",
+      "requiresAuth": "seller_authorization",
+      "refreshCadence": "near_real_time_after_authorization",
+      "evidenceUse": [
+        "platform_sales_primary",
+        "white_label_price_pressure"
+      ],
+      "crossChecks": [
+        "factory_shipments",
+        "web_price_monitor",
+        "customs_records"
+      ],
+      "knownFailureModes": [
+        "authorization_scope",
+        "sku_mapping",
+        "returns_and_refunds_timing"
+      ],
+      "trust_weight": 0.9,
+      "latency_score": 0.65,
+      "reliability_score": 0.9,
+      "coverage_domain": "orders"
+    },
+    {
+      "id": "alibaba-open-platform",
+      "name": "Alibaba Open Platform",
+      "tier": "A+",
+      "sourceWeight": 0.88,
+      "type": "authorized_platform_api",
+      "coverage": [
+        "products",
+        "orders",
+        "logistics",
+        "images",
+        "settlement"
+      ],
+      "officialUrl": "https://openapi.alibaba.com/doc/doc.htm",
+      "requiresAuth": "app_and_account_authorization",
+      "refreshCadence": "near_real_time_after_authorization",
+      "evidenceUse": [
+        "factory_direct_price_signal",
+        "supply_side_offer_monitor"
+      ],
+      "crossChecks": [
+        "1688_public_pages",
+        "supplier_registry",
+        "customs_records"
+      ],
+      "knownFailureModes": [
+        "ecosystem_scope",
+        "api_permission_changes",
+        "public_offer_not_actual_order"
+      ],
+      "trust_weight": 0.88,
+      "latency_score": 0.65,
+      "reliability_score": 0.88,
+      "coverage_domain": "products"
+    },
+    {
+      "id": "internal-bom-system",
+      "name": "Internal BOM and Material Ledger",
+      "tier": "A+",
+      "sourceWeight": 0.9,
+      "type": "internal_operational_system",
+      "coverage": [
+        "bom",
+        "material_consumption",
+        "fabric",
+        "yarn",
+        "wastage",
+        "accessories"
+      ],
+      "officialUrl": "https://internal.local/bom-system",
+      "requiresAuth": "first_party_data_access",
+      "refreshCadence": "order_or_style_revision",
+      "evidenceUse": [
+        "material_quantity",
+        "bom_conversion",
+        "physical_volume_reconciliation"
+      ],
+      "crossChecks": [
+        "customs_records",
+        "supplier_shipments",
+        "warehouse_ledger"
+      ],
+      "knownFailureModes": [
+        "style_version_mismatch",
+        "sample_bom_not_bulk_bom",
+        "wastage_assumption_error",
+        "unit_conversion_error"
+      ],
+      "trust_weight": 0.9,
+      "latency_score": 0.65,
+      "reliability_score": 0.9,
+      "coverage_domain": "bom"
+    },
+    {
+      "id": "mckinsey-bof-state-of-fashion",
+      "name": "McKinsey and BoF State of Fashion",
+      "tier": "B",
+      "sourceWeight": 0.55,
+      "type": "consulting_report",
+      "coverage": [
+        "fashion_strategy",
+        "consumer",
+        "supply_chain_pressure",
+        "tariff"
+      ],
+      "officialUrl": "https://www.mckinsey.com/industries/retail/our-insights/state-of-fashion",
+      "requiresAuth": "may_require_registration",
+      "refreshCadence": "annual",
+      "evidenceUse": [
+        "hypothesis_generation",
+        "benchmark_context"
+      ],
+      "crossChecks": [
+        "official_statistics",
+        "company_filings",
+        "platform_data"
+      ],
+      "knownFailureModes": [
+        "consulting_synthesis_not_primary_data",
+        "broad_category_aggregation"
+      ],
+      "trust_weight": 0.55,
+      "latency_score": 0.65,
+      "reliability_score": 0.55,
+      "coverage_domain": "fashion_strategy"
+    }
+  ],
+  "minimumConclusionGate": {
+    "hardConclusion": {
+      "requiresAtLeast": [
+        "one_S_or_A_plus_primary_source",
+        "one_independent_cross_check",
+        "documented_unit_or_currency_conversion",
+        "explicit_counterevidence_scan"
+      ]
+    },
+    "hypothesisOnly": {
+      "when": [
+        "all_sources_are_B_or_C",
+        "chain_math_missing",
+        "customs_and_financials_conflict_without_explanation",
+        "supplier_identity_not_resolved"
+      ]
+    }
+  }
+}

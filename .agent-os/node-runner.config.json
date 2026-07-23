@@ -1,0 +1,215 @@
+{
+  "version": 1,
+  "projectRoot": ".",
+  "currentPhase": "P9 Node Runner Config Sync",
+  "currentRun": ".agent-os/runs/2026-07-05-p9-node-runner-config-sync",
+  "documentedDirtyFiles": [
+    "skills/ECC"
+  ],
+  "sealedPhases": [
+    "P0 Intelligence Verification / Source Classification",
+    "P1 RunStore + Approval Resume",
+    "P2 Model Selection / Model Router",
+    "P3 Tool Permission Governance",
+    "P4.0 MCP Gateway Static Registry + Tool Descriptor",
+    "P4.1 MCP Transport Interface + Fake Transport Harness",
+    "P4.2 Tool Execution Adapter + Audit Bridge",
+    "P5 Skill Progressive Loading + Context Budget",
+    "P6 ModelGateway streaming + Skill Injection",
+    "P7 ModelRouter + Skill Scanner Integration",
+    "P8 Release Governance Console",
+    "GOV governance documentation and consistency patches"
+  ],
+  "nodes": {
+    "N0_PRD_LOCK": {
+      "model": "glm-5.2",
+      "writeAllowed": true,
+      "promptTemplate": ".agent-os/prompts/N0_PRD_LOCK.md",
+      "allowedFiles": [
+        ".agent-os/runs/**"
+      ],
+      "forbiddenFiles": [
+        "src/**",
+        ".mcp.json",
+        ".env"
+      ],
+      "requiredOutputFields": [
+        "STATUS:",
+        "NEXT_NODE:",
+        "NEXT_MODEL:",
+        "BLOCKING_ISSUES:",
+        "NON_BLOCKING_ISSUES:",
+        "REQUIRED_ACTION:",
+        "HANDOFF_PACKET:"
+      ]
+    },
+    "N1_LONG_CONTEXT_ARCH_REVIEW": {
+      "model": "longcat",
+      "writeAllowed": false,
+      "promptTemplate": ".agent-os/prompts/N1_LONG_CONTEXT_ARCH_REVIEW.md",
+      "allowedFiles": [],
+      "forbiddenFiles": [
+        "src/**",
+        ".mcp.json",
+        ".env"
+      ],
+      "requiredOutputFields": [
+        "STATUS:",
+        "NEXT_NODE:",
+        "NEXT_MODEL:",
+        "BLOCKING_ISSUES:",
+        "NON_BLOCKING_ISSUES:",
+        "REQUIRED_ACTION:",
+        "HANDOFF_PACKET:"
+      ]
+    },
+    "N2_TECH_REVIEW": {
+      "model": "deepseek-v4-pro",
+      "writeAllowed": false,
+      "promptTemplate": ".agent-os/prompts/N2_TECH_REVIEW.md",
+      "allowedFiles": [],
+      "forbiddenFiles": [
+        "src/**",
+        ".mcp.json",
+        ".env"
+      ],
+      "requiredOutputFields": [
+        "STATUS:",
+        "NEXT_NODE:",
+        "NEXT_MODEL:",
+        "BLOCKING_ISSUES:",
+        "NON_BLOCKING_ISSUES:",
+        "REQUIRED_ACTION:",
+        "HANDOFF_PACKET:"
+      ]
+    },
+    "N3_IMPLEMENTATION": {
+      "model": "doubao-seed-2.0-code / Codex",
+      "writeAllowed": true,
+      "promptTemplate": ".agent-os/prompts/N3_IMPLEMENTATION.md",
+      "allowedFiles": [
+        ".agent-os/node-runner.config.json",
+        ".agent-os/node-runner.yaml",
+        ".agent-os/runs/2026-07-05-p9-node-runner-config-sync/**",
+        "docs/AGENT_NODE_RUNNER_MVP_CN.md",
+        "CHANGELOG.md",
+        "scripts/agent-node-runner.mjs"
+      ],
+      "forbiddenFiles": [
+        "src/runtime/**",
+        "src/governance/**",
+        "src/models/**",
+        "src/mcp/**",
+        "src/intelligence/**",
+        "package.json",
+        "README.md",
+        "skills/ECC/**",
+        ".mcp.json",
+        ".github/**",
+        ".gitlab-ci.yml",
+        ".env"
+      ],
+      "requiredOutputFields": [
+        "STATUS:",
+        "NEXT_NODE:",
+        "NEXT_MODEL:",
+        "BLOCKING_ISSUES:",
+        "NON_BLOCKING_ISSUES:",
+        "REQUIRED_ACTION:",
+        "HANDOFF_PACKET:"
+      ]
+    },
+    "N4_FILE_STRUCTURE_REVIEW": {
+      "model": "doubao-seed-2.0-code",
+      "writeAllowed": false,
+      "promptTemplate": ".agent-os/prompts/N4_FILE_STRUCTURE_REVIEW.md",
+      "allowedFiles": [],
+      "forbiddenFiles": [
+        "src/**",
+        ".mcp.json",
+        ".env"
+      ],
+      "requiredOutputFields": [
+        "STATUS:",
+        "NEXT_NODE:",
+        "NEXT_MODEL:",
+        "BLOCKING_ISSUES:",
+        "NON_BLOCKING_ISSUES:",
+        "REQUIRED_ACTION:",
+        "HANDOFF_PACKET:"
+      ]
+    },
+    "N5_VALIDATION": {
+      "model": "deepseek-v4-pro",
+      "writeAllowed": false,
+      "promptTemplate": ".agent-os/prompts/N5_VALIDATION.md",
+      "allowedFiles": [],
+      "forbiddenFiles": [
+        "src/**",
+        ".mcp.json",
+        ".env"
+      ],
+      "requiredOutputFields": [
+        "STATUS:",
+        "NEXT_NODE:",
+        "NEXT_MODEL:",
+        "VALIDATION_RESULTS:",
+        "BLOCKING_ISSUES:",
+        "NON_BLOCKING_ISSUES:",
+        "REQUIRED_ACTION:",
+        "HANDOFF_PACKET:"
+      ],
+      "validationCommands": [
+        "npm run lint",
+        "npm run typecheck",
+        "npm test",
+        "npm run build",
+        "npm run verify:release"
+      ]
+    },
+    "N6_DOC_SYNC": {
+      "model": "doubao-seed-2.0-pro",
+      "writeAllowed": true,
+      "promptTemplate": ".agent-os/prompts/N6_DOC_SYNC.md",
+      "allowedFiles": [
+        "README.md",
+        "CHANGELOG.md",
+        "docs/**"
+      ],
+      "forbiddenFiles": [
+        "src/**",
+        ".mcp.json",
+        ".env"
+      ],
+      "requiredOutputFields": [
+        "STATUS:",
+        "NEXT_NODE:",
+        "NEXT_MODEL:",
+        "BLOCKING_ISSUES:",
+        "NON_BLOCKING_ISSUES:",
+        "REQUIRED_ACTION:",
+        "HANDOFF_PACKET:"
+      ]
+    },
+    "N7_RELEASE_SEAL": {
+      "model": "glm-5.2",
+      "writeAllowed": false,
+      "promptTemplate": ".agent-os/prompts/N7_RELEASE_SEAL.md",
+      "allowedFiles": [],
+      "forbiddenFiles": [
+        "src/**",
+        ".mcp.json",
+        ".env"
+      ],
+      "requiredOutputFields": [
+        "STATUS:",
+        "NEXT_NODE:",
+        "NEXT_MODEL:",
+        "BLOCKING_ISSUES:",
+        "NON_BLOCKING_ISSUES:",
+        "REQUIRED_ACTION:",
+        "HANDOFF_PACKET:"
+      ]
+    }
+  }
+}

@@ -1,0 +1,15 @@
+P4.1 validation placeholder.
+
+Baseline from GOV N7 release seal:
+- npm run lint: PASS
+- npm run typecheck: PASS
+- npm test: PASS, 13 test files / 103 tests
+- npm run build: PASS
+- npm run verify:intelligence: PASS, 23 sources / 5 healthy / 18 degraded / 0 failed / containsSecrets false
+
+P4.1 validation must be rerun after implementation:
+- npm run lint
+- npm run typecheck
+- npm test
+- npm run build
+- npm run verify:intelligence

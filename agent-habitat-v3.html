@@ -1,0 +1,1916 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>个人 Agent 栖息地 v3</title>
+<style>
+  :root {
+    --bg-deep: #0b1220;
+    --bg-mid: #0f1a2e;
+    --bg-panel: #152238;
+    --bg-card: #1a2a42;
+    --bg-card-hover: #213352;
+    --line: #2a3a55;
+    --line-soft: #1e2d46;
+
+    --jade: #8ef0bf;
+    --ultramarine: #5b7fff;
+    --amber: #ffc35a;
+    --vermillion: #ff7a6f;
+
+    --text-primary: #e8ecf4;
+    --text-secondary: #9aa8c2;
+    --text-muted: #5f6e8a;
+
+    --jade-dim: rgba(142, 240, 191, 0.15);
+    --ultramarine-dim: rgba(91, 127, 255, 0.15);
+    --amber-dim: rgba(255, 195, 90, 0.15);
+    --vermillion-dim: rgba(255, 122, 111, 0.18);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 100%;
+    height: 100%;
+    font-family: 'Aptos', 'Segoe UI', 'Microsoft YaHei', -apple-system, sans-serif;
+    font-size: 13px;
+    color: var(--text-primary);
+    background: var(--bg-deep);
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  #bgCanvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .app {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-rows: 56px 1fr 112px;
+    grid-template-columns: 1fr 340px;
+    grid-template-areas:
+      "topbar topbar"
+      "main   sidebar"
+      "bottom bottom";
+    width: 100vw;
+    height: 100vh;
+    gap: 0;
+  }
+
+  /* ========== 顶部状态栏 ========== */
+  .topbar {
+    grid-area: topbar;
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    background: rgba(15, 26, 46, 0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line-soft);
+    gap: 28px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.3px;
+    color: var(--text-primary);
+  }
+
+  .brand-mark {
+    width: 22px;
+    height: 22px;
+    position: relative;
+  }
+
+  .brand-mark::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, var(--jade), var(--ultramarine), var(--amber), var(--vermillion), var(--jade));
+    opacity: 0.8;
+  }
+
+  .brand-mark::after {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    border-radius: 50%;
+    background: var(--bg-mid);
+  }
+
+  .topbar-task {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .task-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    flex-shrink: 0;
+  }
+
+  .task-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .task-progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 200px;
+  }
+
+  .task-progress-bar {
+    flex: 1;
+    height: 4px;
+    background: var(--bg-card);
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .task-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--amber), var(--jade));
+    border-radius: 2px;
+    transition: width 1.2s ease;
+  }
+
+  .task-progress-text {
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-secondary);
+    min-width: 36px;
+    text-align: right;
+  }
+
+  .topbar-signals {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+
+  .signal {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--text-secondary);
+  }
+
+  .signal-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--jade);
+    box-shadow: 0 0 6px var(--jade);
+  }
+
+  .signal-dot.ultramarine { background: var(--ultramarine); box-shadow: 0 0 6px var(--ultramarine); }
+  .signal-dot.amber { background: var(--amber); box-shadow: 0 0 6px var(--amber); }
+
+  .topbar-habitat-mini {
+    position: relative;
+    width: 72px;
+    height: 32px;
+    border-radius: 6px;
+    background: var(--bg-panel);
+    border: 1px solid var(--line-soft);
+    overflow: hidden;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+
+  .topbar-habitat-mini:hover {
+    border-color: var(--line);
+  }
+
+  .topbar-habitat-mini canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  /* ========== 主区域（任务轨迹图） ========== */
+  .main-area {
+    grid-area: main;
+    position: relative;
+    padding: 20px 24px 16px;
+    overflow: hidden;
+  }
+
+  .main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .main-title {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .main-title-accent {
+    width: 3px;
+    height: 12px;
+    background: linear-gradient(180deg, var(--ultramarine), var(--jade));
+    border-radius: 2px;
+  }
+
+  .main-meta {
+    display: flex;
+    gap: 20px;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .main-meta b {
+    color: var(--text-secondary);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .trajectory-container {
+    position: relative;
+    width: 100%;
+    height: calc(100% - 40px);
+    background: linear-gradient(180deg, rgba(21, 34, 56, 0.5) 0%, rgba(15, 26, 46, 0.3) 100%);
+    border: 1px solid var(--line-soft);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  #trajectoryCanvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .trajectory-nodes {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+  }
+
+  .node-card {
+    position: absolute;
+    width: 180px;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 12px 14px;
+    cursor: default;
+    transition: all 0.2s ease;
+    transform: translate(-50%, -50%);
+  }
+
+  .node-card:hover {
+    background: var(--bg-card-hover);
+    border-color: #3a4f72;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    z-index: 10;
+  }
+
+  .node-card.completed {
+    border-color: rgba(142, 240, 191, 0.4);
+  }
+
+  .node-card.active {
+    border-color: rgba(91, 127, 255, 0.5);
+    box-shadow: 0 0 0 1px rgba(91, 127, 255, 0.2), 0 4px 20px rgba(91, 127, 255, 0.15);
+  }
+
+  .node-card.pending {
+    opacity: 0.55;
+  }
+
+  .node-card.decision {
+    border-color: rgba(255, 122, 111, 0.5);
+    box-shadow: 0 0 0 1px rgba(255, 122, 111, 0.15);
+  }
+
+  .node-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .node-num {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .node-status {
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .node-status.completed { color: var(--jade); }
+  .node-status.active { color: var(--ultramarine); }
+  .node-status.pending { color: var(--text-muted); }
+  .node-status.decision { color: var(--vermillion); }
+
+  .node-status-icon {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .node-status.completed .node-status-icon {
+    background: var(--jade);
+    box-shadow: 0 0 6px var(--jade);
+  }
+
+  .node-status.active .node-status-icon {
+    background: var(--ultramarine);
+    box-shadow: 0 0 6px var(--ultramarine);
+    animation: pulse-ring 1.8s ease-in-out infinite;
+  }
+
+  .node-status.decision .node-status-icon {
+    background: var(--vermillion);
+    box-shadow: 0 0 6px var(--vermillion);
+    animation: pulse-ring 1.5s ease-in-out infinite;
+  }
+
+  .node-status.pending .node-status-icon {
+    background: var(--text-muted);
+  }
+
+  @keyframes pulse-ring {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.4); opacity: 0.6; }
+  }
+
+  .node-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+    line-height: 1.4;
+  }
+
+  .node-agent {
+    font-size: 11px;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 8px;
+  }
+
+  .node-agent-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .node-agent-dot.jade { background: var(--jade); }
+  .node-agent-dot.ultramarine { background: var(--ultramarine); }
+  .node-agent-dot.amber { background: var(--amber); }
+  .node-agent-dot.vermillion { background: var(--vermillion); }
+
+  .node-progress {
+    height: 3px;
+    background: var(--bg-panel);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .node-progress-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 1s ease;
+  }
+
+  .node-progress-fill.jade { background: var(--jade); }
+  .node-progress-fill.ultramarine { background: var(--ultramarine); }
+  .node-progress-fill.amber { background: var(--amber); }
+
+  .node-detail {
+    display: none;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--line-soft);
+    font-size: 11px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .node-card:hover .node-detail {
+    display: block;
+    animation: fadeIn 0.2s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-2px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .node-detail-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 3px;
+  }
+
+  .node-detail-row span:first-child {
+    color: var(--text-muted);
+  }
+
+  /* Agent 附属标签（临时Agent） */
+  .node-temp-agents {
+    display: flex;
+    gap: 4px;
+    margin-top: 6px;
+  }
+
+  .temp-agent-tag {
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    background: var(--bg-panel);
+    color: var(--text-muted);
+    border: 1px solid var(--line-soft);
+  }
+
+  /* ========== 右侧面板 ========== */
+  .sidebar {
+    grid-area: sidebar;
+    padding: 20px 20px 16px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow: hidden;
+  }
+
+  .panel {
+    background: linear-gradient(180deg, rgba(21, 34, 56, 0.8) 0%, rgba(26, 42, 66, 0.6) 100%);
+    border: 1px solid var(--line-soft);
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .panel-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--line-soft);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .panel-title {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .panel-title-bar {
+    width: 3px;
+    height: 12px;
+    border-radius: 2px;
+    background: var(--vermillion);
+  }
+
+  .panel-badge {
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 10px;
+    background: var(--vermillion-dim);
+    color: var(--vermillion);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .panel-body {
+    padding: 12px 16px;
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .decision-item {
+    padding: 12px;
+    background: var(--bg-panel);
+    border: 1px solid var(--line-soft);
+    border-radius: 6px;
+    margin-bottom: 10px;
+    transition: all 0.2s;
+  }
+
+  .decision-item:hover {
+    border-color: var(--line);
+    background: var(--bg-card);
+  }
+
+  .decision-item:last-child {
+    margin-bottom: 0;
+  }
+
+  .decision-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+    gap: 8px;
+  }
+
+  .decision-title {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-primary);
+    line-height: 1.4;
+    flex: 1;
+  }
+
+  .priority-tag {
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+
+  .priority-high {
+    background: var(--vermillion-dim);
+    color: var(--vermillion);
+  }
+
+  .priority-mid {
+    background: var(--amber-dim);
+    color: var(--amber);
+  }
+
+  .decision-evidence, .decision-impact {
+    font-size: 11px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 8px;
+  }
+
+  .decision-evidence-label, .decision-impact-label {
+    color: var(--text-muted);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 3px;
+  }
+
+  .impact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 10px;
+  }
+
+  .impact-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+  }
+
+  .impact-item span:first-child { color: var(--text-muted); }
+  .impact-item span:last-child {
+    color: var(--text-secondary);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .impact-item.positive span:last-child { color: var(--jade); }
+  .impact-item.negative span:last-child { color: var(--vermillion); }
+  .impact-item.neutral span:last-child { color: var(--amber); }
+
+  .decision-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .btn {
+    flex: 1;
+    padding: 6px 0;
+    font-size: 11px;
+    font-weight: 500;
+    border: 1px solid;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+    letter-spacing: 0.3px;
+  }
+
+  .btn-approve {
+    background: rgba(142, 240, 191, 0.1);
+    border-color: rgba(142, 240, 191, 0.3);
+    color: var(--jade);
+  }
+
+  .btn-approve:hover {
+    background: rgba(142, 240, 191, 0.2);
+    border-color: var(--jade);
+  }
+
+  .btn-reject {
+    background: transparent;
+    border-color: var(--line);
+    color: var(--text-secondary);
+  }
+
+  .btn-reject:hover {
+    background: var(--bg-card);
+    border-color: #3a4f72;
+    color: var(--text-primary);
+  }
+
+  /* 栖息地侧边面板 */
+  .habitat-panel {
+    flex: 1;
+    min-height: 0;
+  }
+
+  .habitat-canvas-wrap {
+    position: relative;
+    height: calc(100% - 44px);
+    min-height: 180px;
+  }
+
+  .habitat-canvas-wrap canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .agent-legend {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    right: 12px;
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .legend-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    color: var(--text-secondary);
+  }
+
+  .legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .legend-dot.jade { background: var(--jade); box-shadow: 0 0 6px var(--jade); }
+  .legend-dot.ultramarine { background: var(--ultramarine); box-shadow: 0 0 6px var(--ultramarine); }
+  .legend-dot.amber { background: var(--amber); box-shadow: 0 0 6px var(--amber); }
+  .legend-dot.vermillion { background: var(--vermillion); box-shadow: 0 0 6px var(--vermillion); }
+
+  /* ========== 底部状态栏 ========== */
+  .bottombar {
+    grid-area: bottom;
+    background: rgba(15, 26, 46, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid var(--line-soft);
+    padding: 12px 24px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .bottom-stats {
+    display: flex;
+    gap: 0;
+  }
+
+  .stat-group {
+    flex: 1;
+    border-right: 1px solid var(--line-soft);
+    padding: 0 18px;
+  }
+
+  .stat-group:first-child {
+    padding-left: 0;
+  }
+
+  .stat-group:last-child {
+    border-right: none;
+  }
+
+  .stat-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 5px;
+  }
+
+  .stat-values {
+    display: flex;
+    gap: 16px;
+    font-size: 12px;
+  }
+
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .stat-item b {
+    color: var(--text-primary);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    font-size: 13px;
+  }
+
+  .stat-item span {
+    color: var(--text-muted);
+    font-size: 10px;
+  }
+
+  .stat-bar-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  .stat-bar {
+    flex: 1;
+    height: 3px;
+    background: var(--bg-card);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .stat-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+  }
+
+  .stat-bar-fill.amber { background: var(--amber); }
+  .stat-bar-fill.ultramarine { background: var(--ultramarine); }
+  .stat-bar-fill.jade { background: var(--jade); }
+
+  .stat-bar-text {
+    font-size: 10px;
+    color: var(--text-secondary);
+    font-variant-numeric: tabular-nums;
+    min-width: 48px;
+    text-align: right;
+  }
+
+  /* 活动时间线 */
+  .timeline {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    height: 22px;
+    position: relative;
+    padding-top: 4px;
+  }
+
+  .timeline-track {
+    flex: 1;
+    height: 2px;
+    background: var(--bg-card);
+    position: relative;
+    border-radius: 1px;
+  }
+
+  .timeline-progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: linear-gradient(90deg, var(--amber), var(--jade), var(--ultramarine));
+    border-radius: 1px;
+  }
+
+  .timeline-dots {
+    position: absolute;
+    inset: 0;
+  }
+
+  .timeline-dot {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+
+  .timeline-dot:hover {
+    transform: translate(-50%, -50%) scale(1.5);
+    z-index: 2;
+  }
+
+  .timeline-dot.jade { background: var(--jade); box-shadow: 0 0 4px var(--jade); }
+  .timeline-dot.ultramarine { background: var(--ultramarine); box-shadow: 0 0 4px var(--ultramarine); }
+  .timeline-dot.amber { background: var(--amber); box-shadow: 0 0 4px var(--amber); }
+  .timeline-dot.vermillion { background: var(--vermillion); box-shadow: 0 0 4px var(--vermillion); }
+
+  .timeline-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2px;
+    font-size: 10px;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .timeline-container {
+    flex: 2;
+  }
+
+  /* 滚动条 */
+  .panel-body::-webkit-scrollbar {
+    width: 4px;
+  }
+  .panel-body::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .panel-body::-webkit-scrollbar-thumb {
+    background: var(--line);
+    border-radius: 2px;
+  }
+  .panel-body::-webkit-scrollbar-thumb:hover {
+    background: #3a4f72;
+  }
+</style>
+</head>
+<body>
+
+<canvas id="bgCanvas"></canvas>
+
+<div class="app">
+  <!-- 顶部状态栏 -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark"></div>
+      <span>Agent Habitat</span>
+    </div>
+
+    <div class="topbar-task">
+      <span class="task-label">当前任务</span>
+      <span class="task-name">调研 X 公司供应链风险</span>
+      <div class="task-progress-wrap">
+        <div class="task-progress-bar">
+          <div class="task-progress-fill" id="globalProgress"></div>
+        </div>
+        <span class="task-progress-text" id="globalProgressText">0%</span>
+      </div>
+    </div>
+
+    <div class="topbar-signals">
+      <div class="signal">
+        <div class="signal-dot"></div>
+        <span>运行正常</span>
+      </div>
+      <div class="signal">
+        <div class="signal-dot ultramarine"></div>
+        <span>4 活跃</span>
+      </div>
+      <div class="signal">
+        <div class="signal-dot amber"></div>
+        <span>2 待决策</span>
+      </div>
+    </div>
+
+    <div class="topbar-habitat-mini" title="栖息地总览">
+      <canvas id="miniHabitat"></canvas>
+    </div>
+  </header>
+
+  <!-- 主区域：任务轨迹图 -->
+  <main class="main-area">
+    <div class="main-header">
+      <div class="main-title">
+        <div class="main-title-accent"></div>
+        <span>任务轨迹 Mission Trajectory</span>
+      </div>
+      <div class="main-meta">
+        <span>共 <b>7</b> 节点</span>
+        <span>已完成 <b>1</b></span>
+        <span>进行中 <b>1</b></span>
+        <span>待决策 <b>2</b></span>
+      </div>
+    </div>
+
+    <div class="trajectory-container">
+      <canvas id="trajectoryCanvas"></canvas>
+      <div class="trajectory-nodes" id="trajectoryNodes"></div>
+    </div>
+  </main>
+
+  <!-- 右侧面板 -->
+  <aside class="sidebar">
+    <!-- 决策面板 -->
+    <section class="panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          <div class="panel-title-bar"></div>
+          <span>待决策事项</span>
+        </div>
+        <span class="panel-badge">2</span>
+      </div>
+      <div class="panel-body">
+        <div class="decision-item">
+          <div class="decision-head">
+            <div class="decision-title">访问付费数据库</div>
+            <span class="priority-tag priority-high">高优先</span>
+          </div>
+          <div class="decision-evidence">
+            <div class="decision-evidence-label">证据</div>
+            3 个免费来源数据冲突，需付费库验证
+          </div>
+          <div class="decision-impact">
+            <div class="decision-impact-label">业务影响</div>
+            <div class="impact-grid">
+              <div class="impact-item positive"><span>置信度</span><span>+18%</span></div>
+              <div class="impact-item negative"><span>成本</span><span>+¥200</span></div>
+              <div class="impact-item neutral"><span>延迟</span><span>+2h</span></div>
+              <div class="impact-item"><span>预算</span><span>¥200</span></div>
+            </div>
+          </div>
+          <div class="decision-actions">
+            <button class="btn btn-approve">批准</button>
+            <button class="btn btn-reject">拒绝</button>
+          </div>
+        </div>
+
+        <div class="decision-item">
+          <div class="decision-head">
+            <div class="decision-title">扩大采集范围至竞品公司</div>
+            <span class="priority-tag priority-mid">中优先</span>
+          </div>
+          <div class="decision-evidence">
+            <div class="decision-evidence-label">证据</div>
+            X 公司供应链与 A/B/C 竞品高度相关
+          </div>
+          <div class="decision-impact">
+            <div class="decision-impact-label">业务影响</div>
+            <div class="impact-grid">
+              <div class="impact-item positive"><span>分析深度</span><span>+25%</span></div>
+              <div class="impact-item neutral"><span>耗时</span><span>+4h</span></div>
+              <div class="impact-item negative"><span>模型调用</span><span>+120</span></div>
+              <div class="impact-item"><span>覆盖</span><span>3 竞品</span></div>
+            </div>
+          </div>
+          <div class="decision-actions">
+            <button class="btn btn-approve">批准</button>
+            <button class="btn btn-reject">拒绝</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 栖息地侧栏 -->
+    <section class="panel habitat-panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          <div class="panel-title-bar" style="background: var(--jade);"></div>
+          <span>Agent 栖息地</span>
+        </div>
+        <span class="panel-badge" style="background: var(--jade-dim); color: var(--jade);">6</span>
+      </div>
+      <div class="habitat-canvas-wrap">
+        <canvas id="habitatCanvas"></canvas>
+        <div class="agent-legend">
+          <div class="legend-item">
+            <div class="legend-dot amber"></div>
+            <span>管家</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot jade"></div>
+            <span>探索</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot ultramarine"></div>
+            <span>分析</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot vermillion"></div>
+            <span>请求</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </aside>
+
+  <!-- 底部状态栏 -->
+  <footer class="bottombar">
+    <div class="bottom-stats">
+      <div class="stat-group">
+        <div class="stat-label">任务时间</div>
+        <div class="stat-values">
+          <div class="stat-item"><b>06:42</b><span>开始</span></div>
+          <div class="stat-item"><b>17:42</b><span>预计完成</span></div>
+          <div class="stat-item"><b style="color: var(--amber);">2h 18m</b><span>剩余</span></div>
+        </div>
+      </div>
+
+      <div class="stat-group">
+        <div class="stat-label">成本与预算</div>
+        <div class="stat-item" style="width: 100%;">
+          <div style="display: flex; justify-content: space-between;">
+            <b style="font-size: 13px;">¥458.72</b>
+            <span style="color: var(--text-muted); font-size: 10px;">/ ¥1,200</span>
+          </div>
+          <div class="stat-bar-wrap">
+            <div class="stat-bar">
+              <div class="stat-bar-fill amber" style="width: 38.2%;"></div>
+            </div>
+            <span class="stat-bar-text">¥743.28 剩</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="stat-group">
+        <div class="stat-label">模型与工具</div>
+        <div class="stat-values">
+          <div class="stat-item"><b>1,248</b><span>模型调用</span></div>
+          <div class="stat-item"><b>3,647</b><span>工具调用</span></div>
+          <div class="stat-item"><b>12.8M</b><span>Token</span></div>
+        </div>
+      </div>
+
+      <div class="stat-group timeline-container">
+        <div class="stat-label">活动时间线</div>
+        <div class="timeline">
+          <div class="timeline-track">
+            <div class="timeline-progress" id="timelineProgress" style="width: 0%;"></div>
+            <div class="timeline-dots" id="timelineDots"></div>
+          </div>
+        </div>
+        <div class="timeline-labels">
+          <span>06:42</span>
+          <span>10:00</span>
+          <span>13:00</span>
+          <span>17:42</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<script>
+// ============================================================
+//  工具函数
+// ============================================================
+const COLORS = {
+  jade: '#8ef0bf',
+  ultramarine: '#5b7fff',
+  amber: '#ffc35a',
+  vermillion: '#ff7a6f',
+};
+
+function hexToRgb(hex) {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return { r, g, b };
+}
+
+function setupCanvas(canvas) {
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  return { ctx, w: rect.width, h: rect.height };
+}
+
+function ease(t) {
+  return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+}
+
+// ============================================================
+//  背景 Canvas（雾气、光粒子、远山）
+// ============================================================
+const bgCanvas = document.getElementById('bgCanvas');
+let bgCtx, bgW, bgH;
+
+const bgParticles = [];
+const fogLayers = [];
+const mountains = [];
+
+function initBackground() {
+  const setup = setupCanvas(bgCanvas);
+  bgCtx = setup.ctx;
+  bgW = setup.w;
+  bgH = setup.h;
+
+  // 光粒子
+  bgParticles.length = 0;
+  for (let i = 0; i < 60; i++) {
+    bgParticles.push({
+      x: Math.random() * bgW,
+      y: Math.random() * bgH,
+      r: 0.5 + Math.random() * 1.8,
+      alpha: 0.1 + Math.random() * 0.4,
+      vx: (Math.random() - 0.5) * 0.15,
+      vy: -0.05 - Math.random() * 0.15,
+      phase: Math.random() * Math.PI * 2,
+      color: Object.values(COLORS)[Math.floor(Math.random() * 4)],
+    });
+  }
+
+  // 雾气层
+  fogLayers.length = 0;
+  for (let i = 0; i < 3; i++) {
+    fogLayers.push({
+      y: bgH * (0.3 + i * 0.25),
+      speed: 0.08 + i * 0.04,
+      offset: Math.random() * 1000,
+      alpha: 0.03 + i * 0.02,
+    });
+  }
+
+  // 远山
+  mountains.length = 0;
+  const peaks = 5;
+  for (let layer = 0; layer < 2; layer++) {
+    const pts = [];
+    const baseY = bgH * (0.55 + layer * 0.15);
+    const peakH = (60 + layer * 40);
+    for (let i = 0; i <= peaks * 2; i++) {
+      pts.push({
+        x: (bgW / (peaks * 2)) * i + (layer * 30),
+        y: baseY - (i % 2 === 0 ? peakH * (0.6 + Math.random() * 0.4) : peakH * 0.2),
+      });
+    }
+    mountains.push({ pts, alpha: 0.06 + layer * 0.04, color: '#5b7fff' });
+  }
+}
+
+function drawBackground(time) {
+  bgCtx.clearRect(0, 0, bgW, bgH);
+
+  // 径向渐变底色
+  const grad = bgCtx.createRadialGradient(bgW * 0.3, bgH * 0.3, 0, bgW * 0.5, bgH * 0.5, bgW * 0.8);
+  grad.addColorStop(0, 'rgba(91, 127, 255, 0.06)');
+  grad.addColorStop(0.5, 'rgba(11, 18, 32, 0)');
+  grad.addColorStop(1, 'rgba(11, 18, 32, 0)');
+  bgCtx.fillStyle = grad;
+  bgCtx.fillRect(0, 0, bgW, bgH);
+
+  // 远山
+  mountains.forEach((m, mi) => {
+    bgCtx.beginPath();
+    bgCtx.moveTo(0, bgH);
+    m.pts.forEach(p => bgCtx.lineTo(p.x, p.y));
+    bgCtx.lineTo(bgW, bgH);
+    bgCtx.closePath();
+    const rg = bgCtx.createLinearGradient(0, bgH * 0.4, 0, bgH);
+    rg.addColorStop(0, `rgba(91, 127, 255, ${m.alpha})`);
+    rg.addColorStop(1, 'rgba(91, 127, 255, 0)');
+    bgCtx.fillStyle = rg;
+    bgCtx.fill();
+  });
+
+  // 雾气
+  fogLayers.forEach(fog => {
+    bgCtx.beginPath();
+    bgCtx.moveTo(0, fog.y + 30);
+    for (let x = 0; x <= bgW; x += 20) {
+      const yOff = Math.sin((x + fog.offset + time * fog.speed * 10) * 0.008) * 20
+                + Math.sin((x + fog.offset * 0.5 + time * fog.speed * 8) * 0.012) * 12;
+      bgCtx.lineTo(x, fog.y + yOff);
+    }
+    bgCtx.lineTo(bgW, fog.y + 80);
+    bgCtx.lineTo(0, fog.y + 80);
+    bgCtx.closePath();
+    const fg = bgCtx.createLinearGradient(0, fog.y - 20, 0, fog.y + 80);
+    fg.addColorStop(0, `rgba(142, 240, 191, 0)`);
+    fg.addColorStop(0.5, `rgba(91, 127, 255, ${fog.alpha})`);
+    fg.addColorStop(1, 'rgba(15, 26, 46, 0)');
+    bgCtx.fillStyle = fg;
+    bgCtx.fill();
+  });
+
+  // 光粒子
+  bgParticles.forEach(p => {
+    p.x += p.vx;
+    p.y += p.vy;
+    p.phase += 0.02;
+
+    if (p.y < -10) { p.y = bgH + 10; p.x = Math.random() * bgW; }
+    if (p.x < -10) p.x = bgW + 10;
+    if (p.x > bgW + 10) p.x = -10;
+
+    const breathe = 0.5 + 0.5 * Math.sin(p.phase);
+    const alpha = p.alpha * (0.5 + 0.5 * breathe);
+
+    const pg = bgCtx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 4);
+    pg.addColorStop(0, p.color + toHexAlpha(alpha * 0.8));
+    pg.addColorStop(0.4, p.color + toHexAlpha(alpha * 0.3));
+    pg.addColorStop(1, p.color + '00');
+    bgCtx.fillStyle = pg;
+    bgCtx.beginPath();
+    bgCtx.arc(p.x, p.y, p.r * 4, 0, Math.PI * 2);
+    bgCtx.fill();
+  });
+}
+
+function toHexAlpha(a) {
+  const v = Math.max(0, Math.min(1, a));
+  const hex = Math.round(v * 255).toString(16).padStart(2, '0');
+  return hex;
+}
+
+// ============================================================
+//  节点数据
+// ============================================================
+const nodes = [
+  {
+    id: 1, num: '01', title: '目标确认', status: 'completed',
+    agent: '琥珀管家', agentColor: 'amber', progress: 100,
+    detail: { duration: '32 分钟', output: '研究范围界定文档', confidence: '100%' },
+  },
+  {
+    id: 2, num: '02', title: '信息采集', status: 'active',
+    agent: '青绿探索', agentColor: 'jade', progress: 78,
+    tempAgents: ['采集员 A', '采集员 B'],
+    detail: { duration: '4h 12m', sources: '18 个', remaining: '1h 18m' },
+  },
+  {
+    id: 3, num: '03', title: '交叉验证', status: 'pending',
+    agent: '群青分析', agentColor: 'ultramarine', progress: 0,
+    detail: { duration: '预计 2h', methods: '5 种交叉验证', sources: '待定' },
+  },
+  {
+    id: 4, num: '04', title: '风险评估', status: 'pending',
+    agent: '临时风险分析师', agentColor: 'vermillion', progress: 0,
+    isTemp: true,
+    detail: { duration: '预计 3h', dimensions: '6 维风险', framework: 'ISC 2022' },
+  },
+  {
+    id: 5, num: '05', title: '权限请求', status: 'decision',
+    agent: '朱砂请求者', agentColor: 'vermillion', progress: 0,
+    detail: { requests: '2 项待批', impact: '置信度 +18%', cost: '¥200' },
+  },
+  {
+    id: 6, num: '06', title: '报告生成', status: 'pending',
+    agent: '琥珀管家', agentColor: 'amber', progress: 0,
+    detail: { duration: '预计 1h', format: 'PDF + 摘要', pages: '约 12 页' },
+  },
+  {
+    id: 7, num: '07', title: '记忆沉淀', status: 'pending',
+    agent: '群青分析', agentColor: 'ultramarine', progress: 0,
+    detail: { duration: '预计 30m', entities: '约 80 个', relations: '约 120 条' },
+  },
+];
+
+// ============================================================
+//  任务轨迹图
+// ============================================================
+const trajectoryContainer = document.querySelector('.trajectory-container');
+const trajectoryCanvas = document.getElementById('trajectoryCanvas');
+const nodesContainer = document.getElementById('trajectoryNodes');
+
+let trajCtx, trajW, trajH;
+let nodePositions = [];
+
+// S 形布局位置（百分比）
+function calcNodePositions() {
+  const setup = setupCanvas(trajectoryCanvas);
+  trajCtx = setup.ctx;
+  trajW = setup.w;
+  trajH = setup.h;
+
+  nodePositions = [];
+  const paddingX = 120;
+  const paddingY = 60;
+  const usableW = trajW - paddingX * 2;
+  const usableH = trajH - paddingY * 2;
+
+  // 3 行布局：上排 01-02-03，中间 04-05，下排 06-07 (从右往左回溯)
+  // 更好的 S 形: 01(左上) -> 02(上中) -> 03(右上) -> 04(右中) -> 05(中) -> 06(左下) -> 07(下中)
+  const positions = [
+    { x: 0.08, y: 0.5 },    // 01 目标确认 左
+    { x: 0.25, y: 0.25 },   // 02 信息采集 左上
+    { x: 0.5, y: 0.15 },    // 03 交叉验证 上
+    { x: 0.72, y: 0.32 },   // 04 风险评估 右上
+    { x: 0.88, y: 0.55 },   // 05 权限请求 右
+    { x: 0.62, y: 0.75 },   // 06 报告生成 右下
+    { x: 0.35, y: 0.82 },   // 07 记忆沉淀 下
+  ];
+
+  nodes.forEach((node, i) => {
+    const p = positions[i];
+    nodePositions.push({
+      x: paddingX + p.x * usableW,
+      y: paddingY + p.y * usableH,
+    });
+  });
+
+  renderNodeCards();
+}
+
+function renderNodeCards() {
+  nodesContainer.innerHTML = '';
+
+  nodes.forEach((node, i) => {
+    const pos = nodePositions[i];
+    const card = document.createElement('div');
+    card.className = `node-card ${node.status}`;
+    card.style.left = pos.x + 'px';
+    card.style.top = pos.y + 'px';
+
+    const statusText = {
+      completed: '已完成',
+      active: '进行中',
+      pending: '待开始',
+      decision: '待决策',
+    }[node.status];
+
+    const progressBar = node.status === 'active'
+      ? `<div class="node-progress">
+           <div class="node-progress-fill ${node.agentColor}" style="width: ${node.progress}%;"></div>
+         </div>`
+      : '';
+
+    const tempAgentsHtml = node.tempAgents && node.tempAgents.length
+      ? `<div class="node-temp-agents">
+           ${node.tempAgents.map(t => `<span class="temp-agent-tag">${t}</span>`).join('')}
+         </div>`
+      : '';
+
+    const detailHtml = node.detail
+      ? `<div class="node-detail">
+           ${Object.entries(node.detail).map(([k, v]) =>
+             `<div class="node-detail-row"><span>${formatLabel(k)}</span><span>${v}</span></div>`
+           ).join('')}
+         </div>`
+      : '';
+
+    card.innerHTML = `
+      <div class="node-top">
+        <span class="node-num">${node.num}</span>
+        <span class="node-status ${node.status}">
+          <span class="node-status-icon"></span>${statusText}
+        </span>
+      </div>
+      <div class="node-title">${node.title}</div>
+      <div class="node-agent">
+        <span class="node-agent-dot ${node.agentColor}"></span>
+        ${node.agent}${node.isTemp ? ' (临时)' : ''}
+      </div>
+      ${progressBar}
+      ${tempAgentsHtml}
+      ${detailHtml}
+    `;
+
+    nodesContainer.appendChild(card);
+  });
+}
+
+function formatLabel(key) {
+  const map = {
+    duration: '耗时',
+    output: '产出',
+    confidence: '置信度',
+    sources: '数据源',
+    remaining: '剩余',
+    methods: '验证方法',
+    dimensions: '风险维度',
+    framework: '评估框架',
+    requests: '请求数',
+    impact: '预期影响',
+    cost: '成本',
+    format: '格式',
+    pages: '页数',
+    entities: '实体数',
+    relations: '关系数',
+  };
+  return map[key] || key;
+}
+
+// 连接线流动光效
+let flowPhase = 0;
+
+function drawTrajectoryLines(time) {
+  trajCtx.clearRect(0, 0, trajW, trajH);
+  flowPhase += 0.015;
+
+  for (let i = 0; i < nodes.length - 1; i++) {
+    const from = nodePositions[i];
+    const to = nodePositions[i + 1];
+    const fromStatus = nodes[i].status;
+    const toStatus = nodes[i + 1].status;
+
+    let lineStatus;
+    if (fromStatus === 'completed' && (toStatus === 'completed' || toStatus === 'active' || toStatus === 'decision')) {
+      lineStatus = 'completed';
+    } else if (fromStatus === 'active' || toStatus === 'active') {
+      lineStatus = 'active';
+    } else {
+      lineStatus = 'pending';
+    }
+
+    drawFlowLine(from, to, lineStatus, flowPhase + i * 0.3);
+  }
+}
+
+function drawFlowLine(from, to, status, phase) {
+  // 贝塞尔曲线控制点
+  const dx = to.x - from.x;
+  const dy = to.y - from.y;
+  const dist = Math.sqrt(dx * dx + dy * dy);
+  const midX = (from.x + to.x) / 2;
+  const midY = (from.y + to.y) / 2;
+
+  // 控制点偏移（垂直方向扰动）
+  const perpX = -dy / dist * 30;
+  const perpY = dx / dist * 30;
+
+  const cp1x = from.x + dx * 0.4 + perpX * 0.3;
+  const cp1y = from.y + dy * 0.4 + perpY * 0.3;
+  const cp2x = from.x + dx * 0.6 - perpX * 0.3;
+  const cp2y = from.y + dy * 0.6 - perpY * 0.3;
+
+  let baseColor, alpha, dash = false;
+
+  if (status === 'completed') {
+    baseColor = COLORS.jade;
+    alpha = 0.6;
+  } else if (status === 'active') {
+    baseColor = COLORS.ultramarine;
+    alpha = 0.5;
+    dash = true;
+  } else {
+    baseColor = '#5f6e8a';
+    alpha = 0.2;
+  }
+
+  // 底层线
+  trajCtx.beginPath();
+  trajCtx.moveTo(from.x, from.y);
+  trajCtx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, to.x, to.y);
+  trajCtx.strokeStyle = baseColor + toHexAlpha(alpha * 0.4);
+  trajCtx.lineWidth = 1.5;
+  if (status === 'pending') {
+    trajCtx.setLineDash([4, 6]);
+  } else {
+    trajCtx.setLineDash([]);
+  }
+  trajCtx.stroke();
+  trajCtx.setLineDash([]);
+
+  // 流动光点（已完成和进行中的线）
+  if (status === 'completed' || status === 'active') {
+    const numDots = 3;
+    for (let d = 0; d < numDots; d++) {
+      const t = ((phase + d / numDots) % 1 + 1) % 1;
+      const et = ease(t);
+      const { x: px, y: py } = bezierPoint(from.x, from.y, cp1x, cp1y, cp2x, cp2y, to.x, to.y, et);
+
+      const dotSize = status === 'active' ? 3 : 2;
+      const dotAlpha = status === 'active' ? 0.9 : 0.7;
+
+      const dg = trajCtx.createRadialGradient(px, py, 0, px, py, dotSize * 4);
+      dg.addColorStop(0, baseColor + toHexAlpha(dotAlpha));
+      dg.addColorStop(0.4, baseColor + toHexAlpha(dotAlpha * 0.4));
+      dg.addColorStop(1, baseColor + '00');
+      trajCtx.fillStyle = dg;
+      trajCtx.beginPath();
+      trajCtx.arc(px, py, dotSize * 4, 0, Math.PI * 2);
+      trajCtx.fill();
+    }
+  }
+}
+
+function bezierPoint(x0, y0, x1, y1, x2, y2, x3, y3, t) {
+  const mt = 1 - t;
+  const x = mt * mt * mt * x0 + 3 * mt * mt * t * x1 + 3 * mt * t * t * x2 + t * t * t * x3;
+  const y = mt * mt * mt * y0 + 3 * mt * mt * t * y1 + 3 * mt * t * t * y2 + t * t * t * y3;
+  return { x, y };
+}
+
+// ============================================================
+//  栖息地 Canvas（右侧面板 + 顶部微缩）
+// ============================================================
+const habitatCanvas = document.getElementById('habitatCanvas');
+const miniCanvas = document.getElementById('miniHabitat');
+
+// Agent 定义
+const agents = [
+  { name: '管家', color: 'amber', role: 'coordinator',
+    breatheSpeed: 0.8, baseSize: 22, orbitSpeed: 0.6, particles: 8 },
+  { name: '探索', color: 'jade', role: 'explorer',
+    breatheSpeed: 1.2, baseSize: 18, orbitSpeed: 1.0, particles: 10 },
+  { name: '分析', color: 'ultramarine', role: 'analyst',
+    breatheSpeed: 0.6, baseSize: 20, orbitSpeed: 0.5, particles: 7 },
+  { name: '请求', color: 'vermillion', role: 'requester',
+    breatheSpeed: 1.0, baseSize: 16, orbitSpeed: 1.3, particles: 6 },
+];
+
+// 临时 Agent 依附关系
+const tempAgents = [
+  { name: '采集员 A', parent: 1, color: 'jade', size: 10, angle: 0, orbitR: 40, speed: 1.5 },
+  { name: '采集员 B', parent: 1, color: 'jade', size: 9, angle: Math.PI, orbitR: 48, speed: -1.2 },
+];
+
+function drawAgent(ctx, cx, cy, agent, time, scale = 1) {
+  const color = COLORS[agent.color];
+  const { r, g, b } = hexToRgb(color);
+  const breathe = 0.5 + 0.5 * Math.sin(time * 0.002 * agent.breatheSpeed);
+  const size = agent.baseSize * scale * (0.88 + 0.12 * breathe);
+
+  // 外层光晕
+  const glowR = size * 2.2;
+  const gg = ctx.createRadialGradient(cx, cy, 0, cx, cy, glowR);
+  gg.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${0.3 * breathe + 0.1})`);
+  gg.addColorStop(0.5, `rgba(${r}, ${g}, ${b}, ${0.08 * breathe + 0.04})`);
+  gg.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
+  ctx.fillStyle = gg;
+  ctx.beginPath();
+  ctx.arc(cx, cy, glowR, 0, Math.PI * 2);
+  ctx.fill();
+
+  // 水滴主体
+  ctx.save();
+  ctx.translate(cx, cy);
+
+  // 水滴形路径
+  ctx.beginPath();
+  const w = size * 0.7;
+  const h = size;
+  ctx.moveTo(0, -h);
+  ctx.bezierCurveTo(w, -h * 0.3, w * 0.8, h * 0.6, 0, h);
+  ctx.bezierCurveTo(-w * 0.8, h * 0.6, -w, -h * 0.3, 0, -h);
+  ctx.closePath();
+
+  // 水滴填充
+  const wg = ctx.createRadialGradient(0, -size * 0.2, 0, 0, 0, size);
+  wg.addColorStop(0, `rgba(${r}, ${g}, ${b}, 0.95)`);
+  wg.addColorStop(0.6, `rgba(${r}, ${g}, ${b}, 0.6)`);
+  wg.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0.25)`);
+  ctx.fillStyle = wg;
+  ctx.fill();
+
+  // 水滴边缘
+  ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, 0.5)`;
+  ctx.lineWidth = 0.8 * scale;
+  ctx.stroke();
+
+  // 核心亮点
+  const coreX = 0;
+  const coreY = -size * 0.25;
+  const coreR = size * 0.22;
+  const cg = ctx.createRadialGradient(coreX, coreY, 0, coreX, coreY, coreR);
+  cg.addColorStop(0, 'rgba(255, 255, 255, 0.9)');
+  cg.addColorStop(0.5, `rgba(${r}, ${g}, ${b}, 0.7)`);
+  cg.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
+  ctx.fillStyle = cg;
+  ctx.beginPath();
+  ctx.arc(coreX, coreY, coreR, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.restore();
+
+  // 环绕粒子
+  const numParticles = agent.particles;
+  for (let i = 0; i < numParticles; i++) {
+    const angle = (i / numParticles) * Math.PI * 2 + time * 0.001 * agent.orbitSpeed;
+    const orbitR = size * 1.4 + Math.sin(time * 0.002 + i) * size * 0.2;
+    const px = cx + Math.cos(angle) * orbitR;
+    const py = cy + Math.sin(angle) * orbitR * 0.7;
+    const pr = (0.8 + 0.6 * Math.sin(time * 0.003 + i * 0.7)) * scale;
+
+    const pg = ctx.createRadialGradient(px, py, 0, px, py, pr * 3);
+    pg.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${0.7 + 0.3 * breathe})`);
+    pg.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
+    ctx.fillStyle = pg;
+    ctx.beginPath();
+    ctx.arc(px, py, pr * 3, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
+function drawTempAgent(ctx, parentX, parentY, temp, time, scale = 1) {
+  const color = COLORS[temp.color];
+  const { r, g, b } = hexToRgb(color);
+  temp.angle += temp.speed * 0.005;
+
+  const angle = temp.angle;
+  const dist = temp.orbitR * scale;
+  const tx = parentX + Math.cos(angle) * dist;
+  const ty = parentY + Math.sin(angle) * dist * 0.6;
+
+  const size = temp.size * scale;
+  const breathe = 0.5 + 0.5 * Math.sin(time * 0.004);
+
+  // 光晕
+  const tg = ctx.createRadialGradient(tx, ty, 0, tx, ty, size * 2);
+  tg.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${0.25 * breathe})`);
+  tg.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
+  ctx.fillStyle = tg;
+  ctx.beginPath();
+  ctx.arc(tx, ty, size * 2, 0, Math.PI * 2);
+  ctx.fill();
+
+  // 主体
+  ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 0.7)`;
+  ctx.beginPath();
+  ctx.arc(tx, ty, size * 0.6, 0, Math.PI * 2);
+  ctx.fill();
+
+  // 连接线到父 Agent
+  ctx.beginPath();
+  ctx.moveTo(parentX, parentY);
+  ctx.lineTo(tx, ty);
+  ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, 0.15)`;
+  ctx.lineWidth = 1 * scale;
+  ctx.setLineDash([2, 3]);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  return { x: tx, y: ty };
+}
+
+function drawHabitatFull(canvas, time) {
+  const setup = setupCanvas(canvas);
+  const ctx = setup.ctx;
+  const w = setup.w;
+  const h = setup.h;
+
+  ctx.clearRect(0, 0, w, h);
+
+  // 底部雾气
+  const fogY = h * 0.7;
+  ctx.beginPath();
+  ctx.moveTo(0, fogY);
+  for (let x = 0; x <= w; x += 15) {
+    const yOff = Math.sin(x * 0.02 + time * 0.0005) * 8 + Math.sin(x * 0.01 + time * 0.0003) * 5;
+    ctx.lineTo(x, fogY + yOff);
+  }
+  ctx.lineTo(w, h);
+  ctx.lineTo(0, h);
+  ctx.closePath();
+  const fg = ctx.createLinearGradient(0, fogY, 0, h);
+  fg.addColorStop(0, 'rgba(91, 127, 255, 0.05)');
+  fg.addColorStop(1, 'rgba(15, 26, 46, 0.2)');
+  ctx.fillStyle = fg;
+  ctx.fill();
+
+  // 背景微光粒子
+  for (let i = 0; i < 15; i++) {
+    const px = ((time * 0.02 + i * 47) % w + w) % w;
+    const py = h - ((time * 0.015 + i * 31) % (h * 0.8));
+    const pr = 0.5 + (i % 3) * 0.4;
+    const col = Object.values(COLORS)[i % 4];
+    const pg = ctx.createRadialGradient(px, py, 0, px, py, pr * 4);
+    pg.addColorStop(0, col + '50');
+    pg.addColorStop(1, col + '00');
+    ctx.fillStyle = pg;
+    ctx.beginPath();
+    ctx.arc(px, py, pr * 4, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // Agent 位置分布（2x2 网格感，但有错落）
+  const positions = [
+    { x: w * 0.28, y: h * 0.35 }, // 管家
+    { x: w * 0.72, y: h * 0.32 }, // 探索
+    { x: w * 0.3, y: h * 0.72 },  // 分析
+    { x: w * 0.7, y: h * 0.7 },   // 请求
+  ];
+
+  // 先画连接光流（活跃 Agent 之间）
+  ctx.beginPath();
+  ctx.moveTo(positions[0].x, positions[0].y);
+  const activeIdx = [0, 1, 2, 3];
+  for (let i = 0; i < positions.length; i++) {
+    for (let j = i + 1; j < positions.length; j++) {
+      if ((i === 0 && j === 1) || (i === 1 && j === 3) || (i === 0 && j === 2) || (i === 2 && j === 3)) {
+        ctx.beginPath();
+        ctx.moveTo(positions[i].x, positions[i].y);
+        ctx.lineTo(positions[j].x, positions[j].y);
+
+        // 动态光流
+        const grad = ctx.createLinearGradient(positions[i].x, positions[i].y, positions[j].x, positions[j].y);
+        const flow = (Math.sin(time * 0.002 + i + j) * 0.5 + 0.5);
+        grad.addColorStop(0, 'rgba(91, 127, 255, 0.02)');
+        grad.addColorStop(flow * 0.5, 'rgba(142, 240, 191, 0.08)');
+        grad.addColorStop(flow * 0.5 + 0.1, 'rgba(91, 127, 255, 0.06)');
+        grad.addColorStop(1, 'rgba(91, 127, 255, 0.02)');
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+    }
+  }
+
+  // 画 Agent
+  const tempAgentPositions = [];
+  agents.forEach((agent, i) => {
+    const pos = positions[i];
+    drawAgent(ctx, pos.x, pos.y, agent, time, 1);
+
+    // 临时 Agent
+    const relatedTemps = tempAgents.filter(t => t.parent === i);
+    relatedTemps.forEach(t => {
+      const tp = drawTempAgent(ctx, pos.x, pos.y, t, time, 1);
+      tempAgentPositions.push(tp);
+    });
+  });
+}
+
+function drawHabitatMini(canvas, time) {
+  const setup = setupCanvas(canvas);
+  const ctx = setup.ctx;
+  const w = setup.w;
+  const h = setup.h;
+
+  ctx.clearRect(0, 0, w, h);
+
+  // 4 个小光点
+  const positions = [
+    { x: w * 0.25, y: h * 0.4 },
+    { x: w * 0.75, y: h * 0.35 },
+    { x: w * 0.28, y: h * 0.75 },
+    { x: w * 0.72, y: h * 0.7 },
+  ];
+
+  agents.forEach((agent, i) => {
+    const pos = positions[i];
+    const color = COLORS[agent.color];
+    const breathe = 0.5 + 0.5 * Math.sin(time * 0.003 * agent.breatheSpeed);
+    const size = 3 + breathe * 2;
+
+    const gg = ctx.createRadialGradient(pos.x, pos.y, 0, pos.x, pos.y, size * 2);
+    gg.addColorStop(0, color + 'cc');
+    gg.addColorStop(1, color + '00');
+    ctx.fillStyle = gg;
+    ctx.beginPath();
+    ctx.arc(pos.x, pos.y, size * 2, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(pos.x, pos.y, size * 0.6, 0, Math.PI * 2);
+    ctx.fill();
+  });
+}
+
+// ============================================================
+//  时间线
+// ============================================================
+const timelineEvents = [
+  { time: 0.05, color: 'amber', label: '任务启动' },
+  { time: 0.08, color: 'jade', label: '目标确认完成' },
+  { time: 0.15, color: 'jade', label: '开始信息采集' },
+  { time: 0.22, color: 'ultramarine', label: '接入数据源' },
+  { time: 0.3, color: 'jade', label: '采集员 A 上线' },
+  { time: 0.38, color: 'jade', label: '采集员 B 上线' },
+  { time: 0.45, color: 'amber', label: '阶段性摘要' },
+  { time: 0.52, color: 'vermillion', label: '检测到数据冲突' },
+  { time: 0.58, color: 'vermillion', label: '权限请求生成' },
+  { time: 0.65, color: 'ultramarine', label: '竞品关联发现' },
+];
+
+function renderTimeline() {
+  const dotsContainer = document.getElementById('timelineDots');
+  dotsContainer.innerHTML = '';
+
+  timelineEvents.forEach(ev => {
+    const dot = document.createElement('div');
+    dot.className = `timeline-dot ${ev.color}`;
+    dot.style.left = (ev.time * 100) + '%';
+    dot.title = ev.label;
+    dotsContainer.appendChild(dot);
+  });
+}
+
+// ============================================================
+//  进度动画
+// ============================================================
+function animateProgress() {
+  const globalProg = 32; // 整体进度约 32%
+  const globalEl = document.getElementById('globalProgress');
+  const globalText = document.getElementById('globalProgressText');
+  const timelineProg = document.getElementById('timelineProgress');
+
+  let start = null;
+  const duration = 1500;
+
+  function step(ts) {
+    if (!start) start = ts;
+    const t = Math.min((ts - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - t, 3);
+    const pct = globalProg * eased;
+
+    globalEl.style.width = pct + '%';
+    globalText.textContent = Math.round(pct) + '%';
+    timelineProg.style.width = (pct * 1.6) + '%'; // 时间线稍快
+
+    if (t < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+// ============================================================
+//  主循环
+// ============================================================
+let startTime = performance.now();
+let resizeTimeout;
+
+function resizeHandler() {
+  clearTimeout(resizeTimeout);
+  resizeTimeout = setTimeout(() => {
+    initBackground();
+    calcNodePositions();
+  }, 100);
+}
+
+window.addEventListener('resize', resizeHandler);
+
+function animate(time) {
+  const elapsed = time - startTime;
+
+  drawBackground(elapsed);
+  drawTrajectoryLines(elapsed);
+  drawHabitatFull(habitatCanvas, elapsed);
+  drawHabitatMini(miniCanvas, elapsed);
+
+  requestAnimationFrame(animate);
+}
+
+// 初始化
+function init() {
+  initBackground();
+  calcNodePositions();
+  renderTimeline();
+  animateProgress();
+  requestAnimationFrame(animate);
+}
+
+// DOM 就绪后初始化
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
+</script>
+
+</body>
+</html>

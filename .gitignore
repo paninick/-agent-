@@ -1,0 +1,42 @@
+node_modules/
+
+# Local secrets and runtime configuration
+.env
+.env.*
+!.env.example
+
+# Generated outputs
+dist/
+.superpowers/
+*.log
+outputs/
+
+# Neural memory runtime data (JSONL + WAL + index)
+.data/
+
+# Local Codex/browser repair and agent state
+.agents/
+.playwright-cli/
+config.chrome-repair.toml
+codex-chrome-extension-*/
+
+# Git archive bundles (local backup artifacts, not tracked)
+*.bundle
+*.zip
+
+# Test coverage reports
+coverage/
+
+# IDE / agent local configuration
+.claude/
+.learnings/
+.trae/project.json
+.trae/rules/
+.trae/skills-reference.md
+
+# Temporary test output files
+vitest-*-output.txt
+vitest-stderr.txt
+vitest-stdout.txt
+seedream_static_review/
+seedream_review_frames/

@@ -1,0 +1,2027 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>个人 Agent 栖息地</title>
+<style>
+/* ============================================
+   Design Tokens
+   ============================================ */
+:root {
+  --ink-deep: #0f1828;
+  --ink-mid: #1a2332;
+  --ink-fog: #2a3548;
+  --ink-veil: rgba(255,255,255,0.03);
+  --jade: #8ef0bf;
+  --ultramarine: #5b7fff;
+  --amber: #ffc35a;
+  --vermillion: #ff7a6f;
+  --text-primary: #eef2e8;
+  --text-secondary: #aab7ac;
+  --text-muted: #6b7a72;
+  --font-display: "Aptos", "Segoe UI", "Helvetica Neue", sans-serif;
+  --font-mono: "Cascadia Code", "Consolas", "Courier New", monospace;
+  --border-soft: rgba(170,183,172,0.10);
+  --border-mid: rgba(170,183,172,0.18);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: var(--ink-deep);
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: 14px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: 0.01em;
+}
+
+/* ============================================
+   Background Canvas (atmosphere layer)
+   ============================================ */
+#bgCanvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ============================================
+   App Layout
+   ============================================ */
+.app {
+  position: relative;
+  z-index: 1;
+  height: 100vh;
+  display: grid;
+  grid-template-rows: 54px 1fr 68px;
+}
+
+/* ============================================
+   Status Bar (top)
+   ============================================ */
+.status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  border-bottom: 1px solid var(--border-soft);
+  background: linear-gradient(180deg, rgba(15,24,40,0.85), rgba(15,24,40,0.4));
+  backdrop-filter: blur(8px);
+}
+
+.status-left {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.brand {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: var(--text-primary);
+  opacity: 0.85;
+}
+
+.time-block {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.time-now {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  color: var(--text-primary);
+  letter-spacing: 0.04em;
+}
+
+.time-phase {
+  font-size: 12px;
+  color: var(--amber);
+  letter-spacing: 0.12em;
+}
+
+.status-right {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+}
+
+.signal {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.signal-glyph {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  position: relative;
+}
+
+.signal-glyph::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  opacity: 0.25;
+}
+
+.signal-jade .signal-glyph { background: var(--jade); color: var(--jade); }
+.signal-amber .signal-glyph { background: var(--amber); color: var(--amber); }
+.signal-verm .signal-glyph { background: var(--vermillion); color: var(--vermillion); }
+
+.signal-count {
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* ============================================
+   Main Habitat Grid
+   ============================================ */
+.habitat {
+  display: grid;
+  grid-template-columns: 360px 1fr 320px;
+  overflow: hidden;
+}
+
+.habitat > section,
+.habitat > aside {
+  border-right: 1px solid var(--border-soft);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.habitat > section:last-child,
+.habitat > aside:last-child {
+  border-right: none;
+}
+
+/* ============================================
+   Left: Agent Habitat Canvas
+   ============================================ */
+.agent-habitat {
+  position: relative;
+  background: rgba(15,24,40,0.3);
+}
+
+#agentCanvas {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+}
+
+.habitat-overlay {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px 22px;
+  pointer-events: none;
+}
+
+.habitat-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.section-label {
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.habitat-title {
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--text-primary);
+  letter-spacing: 0.04em;
+}
+
+.habitat-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  margin-top: 2px;
+}
+
+.agent-roster {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: auto;
+}
+
+.agent-tag {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border: 1px solid var(--border-soft);
+  border-radius: 6px;
+  background: rgba(26,35,50,0.55);
+  backdrop-filter: blur(4px);
+  cursor: default;
+  transition: border-color 0.3s, background 0.3s;
+}
+
+.agent-tag:hover {
+  border-color: var(--border-mid);
+  background: rgba(42,53,72,0.65);
+}
+
+.agent-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.agent-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.agent-name {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+.agent-status {
+  font-size: 10px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.agent-tag[data-id="amber"] .agent-dot { background: var(--amber); box-shadow: 0 0 8px rgba(255,195,90,0.6); }
+.agent-tag[data-id="amber"] .agent-name { color: var(--amber); }
+.agent-tag[data-id="jade"] .agent-dot { background: var(--jade); box-shadow: 0 0 8px rgba(142,240,191,0.5); }
+.agent-tag[data-id="jade"] .agent-name { color: var(--jade); }
+.agent-tag[data-id="ultra"] .agent-dot { background: var(--ultramarine); box-shadow: 0 0 8px rgba(91,127,255,0.6); }
+.agent-tag[data-id="ultra"] .agent-name { color: var(--ultramarine); }
+.agent-tag[data-id="verm"] .agent-dot { background: var(--vermillion); box-shadow: 0 0 8px rgba(255,122,111,0.5); }
+.agent-tag[data-id="verm"] .agent-name { color: var(--vermillion); }
+
+/* ============================================
+   Center: Decisions + Activity Stream
+   ============================================ */
+.center-col {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.center-decisions {
+  padding: 18px 24px 16px;
+  border-bottom: 1px solid var(--border-soft);
+  flex-shrink: 0;
+}
+
+.decisions-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.decisions-title {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.decisions-title h2 {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--text-primary);
+}
+
+.decisions-count {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--vermillion);
+}
+
+.decisions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.decision-card {
+  border: 1px solid var(--border-soft);
+  border-left: 2px solid;
+  border-radius: 4px;
+  padding: 12px 16px;
+  background: rgba(26,35,50,0.45);
+  transition: background 0.25s;
+}
+
+.decision-card:hover {
+  background: rgba(42,53,72,0.55);
+}
+
+.decision-card[data-type="permission"] {
+  border-left-color: var(--vermillion);
+  box-shadow: inset 3px 0 12px -8px rgba(255,122,111,0.4);
+}
+
+.decision-card[data-type="decision"] {
+  border-left-color: var(--amber);
+}
+
+.decision-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.decision-type {
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.decision-card[data-type="permission"] .decision-type { color: var(--vermillion); }
+.decision-card[data-type="decision"] .decision-type { color: var(--amber); }
+
+.decision-agent {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.decision-time {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-left: auto;
+}
+
+.decision-body {
+  font-size: 13px;
+  color: var(--text-primary);
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.decision-budget {
+  font-family: var(--font-mono);
+  color: var(--amber);
+  font-size: 12px;
+}
+
+.decision-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn {
+  font-family: var(--font-display);
+  font-size: 12px;
+  padding: 6px 16px;
+  border: 1px solid var(--border-mid);
+  border-radius: 3px;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.06em;
+}
+
+.btn:hover {
+  border-color: var(--text-secondary);
+  color: var(--text-primary);
+}
+
+.btn-primary {
+  background: rgba(255,122,111,0.12);
+  border-color: rgba(255,122,111,0.4);
+  color: var(--vermillion);
+}
+
+.btn-primary:hover {
+  background: rgba(255,122,111,0.2);
+  border-color: var(--vermillion);
+  color: var(--vermillion);
+}
+
+.btn-amber {
+  background: rgba(255,195,90,0.12);
+  border-color: rgba(255,195,90,0.4);
+  color: var(--amber);
+}
+
+.btn-amber:hover {
+  background: rgba(255,195,90,0.2);
+  border-color: var(--amber);
+}
+
+/* Activity Stream */
+.activity-section {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 24px 20px;
+}
+
+.activity-section::-webkit-scrollbar { width: 4px; }
+.activity-section::-webkit-scrollbar-track { background: transparent; }
+.activity-section::-webkit-scrollbar-thumb { background: var(--border-mid); border-radius: 2px; }
+
+.activity-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  position: sticky;
+  top: 0;
+  background: linear-gradient(180deg, var(--ink-deep) 70%, transparent);
+  padding-bottom: 8px;
+  z-index: 5;
+}
+
+.activity-header h2 {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--text-primary);
+}
+
+.live-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  color: var(--jade);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.live-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--jade);
+  animation: livePulse 1.6s ease-in-out infinite;
+}
+
+@keyframes livePulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.7); }
+}
+
+.activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.activity-item {
+  display: flex;
+  gap: 14px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(170,183,172,0.05);
+  position: relative;
+}
+
+.activity-item.expandable {
+  cursor: pointer;
+}
+
+.activity-item.expandable:hover {
+  background: rgba(255,255,255,0.015);
+  margin: 0 -12px;
+  padding: 10px 12px;
+  border-radius: 4px;
+}
+
+.activity-rail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding-top: 2px;
+  flex-shrink: 0;
+  width: 16px;
+}
+
+.activity-marker {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.activity-marker.amber { background: var(--amber); box-shadow: 0 0 6px rgba(255,195,90,0.5); }
+.activity-marker.jade { background: var(--jade); box-shadow: 0 0 6px rgba(142,240,191,0.4); }
+.activity-marker.ultra { background: var(--ultramarine); box-shadow: 0 0 6px rgba(91,127,255,0.5); }
+.activity-marker.verm { background: var(--vermillion); box-shadow: 0 0 6px rgba(255,122,111,0.4); }
+
+.activity-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.activity-line {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.activity-agent {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.activity-agent.amber { color: var(--amber); }
+.activity-agent.jade { color: var(--jade); }
+.activity-agent.ultra { color: var(--ultramarine); }
+.activity-agent.verm { color: var(--vermillion); }
+
+.activity-text {
+  font-size: 13px;
+  color: var(--text-primary);
+  opacity: 0.92;
+}
+
+.activity-time {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.activity-expand-hint {
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+  margin-top: 2px;
+}
+
+/* Reasoning chain (expandable) */
+.reasoning-chain {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, margin-top 0.3s;
+  margin-top: 0;
+}
+
+.activity-item.expanded .reasoning-chain {
+  max-height: 400px;
+  margin-top: 10px;
+}
+
+.reasoning-inner {
+  padding: 12px 14px;
+  border: 1px solid var(--border-soft);
+  border-radius: 4px;
+  background: rgba(26,35,50,0.5);
+}
+
+.reasoning-label {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.reasoning-step {
+  display: flex;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  padding-left: 12px;
+  position: relative;
+}
+
+.reasoning-step::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 8px;
+  width: 8px;
+  height: 1px;
+  background: var(--border-mid);
+}
+
+.reasoning-step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 0; top: 9px;
+  width: 1px;
+  height: calc(100% + 4px);
+  background: var(--border-soft);
+}
+
+.reasoning-step strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.reasoning-evidence {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--border-soft);
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.reasoning-evidence span {
+  font-family: var(--font-mono);
+  color: var(--ultramarine);
+  opacity: 0.8;
+}
+
+.reasoning-linked {
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.reasoning-linked b {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* ============================================
+   Right: Timeline + Goal
+   ============================================ */
+.side-panel {
+  background: rgba(15,24,40,0.25);
+}
+
+.side-section {
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.side-section:last-child {
+  border-bottom: none;
+  flex: 1;
+}
+
+.side-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.side-header h2 {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--text-primary);
+}
+
+.side-header .meta {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+/* Timeline */
+.timeline {
+  position: relative;
+  padding-left: 4px;
+}
+
+.timeline-item {
+  display: flex;
+  gap: 14px;
+  padding: 7px 0;
+  position: relative;
+}
+
+.timeline-time {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  width: 42px;
+  padding-top: 1px;
+}
+
+.timeline-body {
+  flex: 1;
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.45;
+  padding-left: 14px;
+  position: relative;
+}
+
+.timeline-body::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 6px;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--text-muted);
+}
+
+.timeline-item[data-agent="amber"] .timeline-body::before { background: var(--amber); }
+.timeline-item[data-agent="jade"] .timeline-body::before { background: var(--jade); }
+.timeline-item[data-agent="ultra"] .timeline-body::before { background: var(--ultramarine); }
+.timeline-item[data-agent="verm"] .timeline-body::before { background: var(--vermillion); }
+.timeline-item[data-agent="temp"] .timeline-body::before { background: var(--text-muted); opacity: 0.5; }
+
+.timeline-item[data-agent="amber"] .timeline-body strong { color: var(--amber); font-weight: 500; }
+.timeline-item[data-agent="jade"] .timeline-body strong { color: var(--jade); font-weight: 500; }
+.timeline-item[data-agent="ultra"] .timeline-body strong { color: var(--ultramarine); font-weight: 500; }
+.timeline-item[data-agent="verm"] .timeline-body strong { color: var(--vermillion); font-weight: 500; }
+
+.timeline-body strong {
+  font-weight: 500;
+}
+
+.timeline-item:not(:last-child) .timeline-body::after {
+  content: '';
+  position: absolute;
+  left: 2px; top: 13px;
+  width: 1px;
+  bottom: -7px;
+  background: var(--border-soft);
+}
+
+.timeline-now {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0 4px 56px;
+  font-size: 10px;
+  color: var(--jade);
+  letter-spacing: 0.14em;
+  font-family: var(--font-mono);
+}
+
+.timeline-now::before {
+  content: '';
+  width: 18px;
+  height: 1px;
+  background: var(--jade);
+  opacity: 0.5;
+}
+
+/* Goal Progress */
+.goal-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.goal-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.goal-journey {
+  position: relative;
+  padding: 16px 0 8px;
+}
+
+.journey-track {
+  height: 2px;
+  background: var(--border-soft);
+  border-radius: 1px;
+  position: relative;
+}
+
+.journey-fill {
+  position: absolute;
+  top: 0; left: 0;
+  height: 100%;
+  width: 68%;
+  background: linear-gradient(90deg, var(--jade), var(--ultramarine));
+  border-radius: 1px;
+  box-shadow: 0 0 8px rgba(91,127,255,0.4);
+}
+
+.journey-nodes {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 2px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.journey-node {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--ink-deep);
+  border: 2px solid var(--text-muted);
+  margin-top: -4px;
+  position: relative;
+  z-index: 2;
+}
+
+.journey-node.done {
+  border-color: var(--jade);
+  background: var(--jade);
+  box-shadow: 0 0 8px rgba(142,240,191,0.5);
+}
+
+.journey-node.current {
+  border-color: var(--ultramarine);
+  background: var(--ink-deep);
+  animation: nodePulse 2s ease-in-out infinite;
+}
+
+@keyframes nodePulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(91,127,255,0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(91,127,255,0); }
+}
+
+.journey-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.journey-label {
+  font-size: 9px;
+  color: var(--text-muted);
+  text-align: center;
+  width: 56px;
+  letter-spacing: 0.02em;
+  line-height: 1.3;
+}
+
+.journey-label.done { color: var(--jade); }
+.journey-label.current { color: var(--ultramarine); }
+
+.goal-stats {
+  display: flex;
+  gap: 20px;
+  padding-top: 6px;
+}
+
+.goal-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.goal-stat-value {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.goal-stat-value .pct { color: var(--jade); }
+
+.goal-stat-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.goal-eta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  padding-top: 4px;
+  border-top: 1px solid var(--border-soft);
+}
+
+.goal-eta .eta-value {
+  font-family: var(--font-mono);
+  color: var(--amber);
+}
+
+/* ============================================
+   Bottom Input Bar
+   ============================================ */
+.input-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 28px;
+  border-top: 1px solid var(--border-soft);
+  background: linear-gradient(0deg, rgba(15,24,40,0.9), rgba(15,24,40,0.5));
+  backdrop-filter: blur(8px);
+}
+
+.input-glyph {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.input-glyph span {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  opacity: 0.7;
+}
+
+.input-glyph span:nth-child(1) { background: var(--amber); }
+.input-glyph span:nth-child(2) { background: var(--jade); }
+.input-glyph span:nth-child(3) { background: var(--ultramarine); }
+.input-glyph span:nth-child(4) { background: var(--vermillion); }
+
+.input-field {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: 14px;
+  padding: 10px 0;
+  letter-spacing: 0.02em;
+}
+
+.input-field::placeholder {
+  color: var(--text-muted);
+}
+
+.input-hint {
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+  flex-shrink: 0;
+}
+
+.input-hint kbd {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 2px 6px;
+  border: 1px solid var(--border-mid);
+  border-radius: 3px;
+  color: var(--text-secondary);
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+@media (max-width: 1180px) {
+  .habitat {
+    grid-template-columns: 300px 1fr 280px;
+  }
+}
+
+@media (max-width: 960px) {
+  .app {
+    grid-template-rows: 54px 1fr 68px;
+  }
+  .habitat {
+    grid-template-columns: 1fr;
+    grid-template-rows: 280px 1fr auto;
+    overflow-y: auto;
+  }
+  .habitat > section,
+  .habitat > aside {
+    border-right: none;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .side-panel {
+    flex-direction: row;
+    overflow-x: auto;
+  }
+  .side-section {
+    min-width: 300px;
+    border-bottom: none;
+    border-right: 1px solid var(--border-soft);
+  }
+}
+
+@media (max-width: 720px) {
+  .status-bar { padding: 0 16px; }
+  .status-right { gap: 14px; }
+  .signal span:not(.signal-glyph):not(.signal-count) { display: none; }
+  .input-bar { padding: 0 16px; }
+  .input-hint { display: none; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="bgCanvas"></canvas>
+
+<div class="app">
+
+  <!-- ========== Status Bar ========== -->
+  <header class="status-bar">
+    <div class="status-left">
+      <div class="brand">个 人 栖 息 地</div>
+      <div class="time-block">
+        <span class="time-now" id="clockTime">18:42</span>
+        <span class="time-phase">暮色时分</span>
+      </div>
+    </div>
+    <div class="status-right">
+      <div class="signal signal-jade">
+        <span class="signal-glyph"></span>
+        <span>常驻</span>
+        <span class="signal-count">4</span>
+      </div>
+      <div class="signal signal-amber">
+        <span class="signal-glyph"></span>
+        <span>组队中</span>
+        <span class="signal-count">2</span>
+      </div>
+      <div class="signal signal-verm">
+        <span class="signal-glyph"></span>
+        <span>待你决策</span>
+        <span class="signal-count">2</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========== Main Habitat ========== -->
+  <main class="habitat">
+
+    <!-- Left: Agent Habitat -->
+    <section class="agent-habitat">
+      <canvas id="agentCanvas"></canvas>
+      <div class="habitat-overlay">
+        <div class="habitat-header">
+          <span class="section-label">栖 息 地</span>
+          <h1 class="habitat-title">四位常驻者</h1>
+          <div class="habitat-meta">2 个临时 Agent 协作中</div>
+        </div>
+        <div class="agent-roster">
+          <div class="agent-tag" data-id="amber">
+            <span class="agent-dot"></span>
+            <div class="agent-info">
+              <span class="agent-name">琥珀管家</span>
+              <span class="agent-status">协调子任务，分配临时分析师</span>
+            </div>
+          </div>
+          <div class="agent-tag" data-id="jade">
+            <span class="agent-dot"></span>
+            <div class="agent-info">
+              <span class="agent-name">青绿探索</span>
+              <span class="agent-status">采集上游供应商信息</span>
+            </div>
+          </div>
+          <div class="agent-tag" data-id="ultra">
+            <span class="agent-dot"></span>
+            <div class="agent-info">
+              <span class="agent-name">群青分析</span>
+              <span class="agent-status">交叉验证财报数据一致性</span>
+            </div>
+          </div>
+          <div class="agent-tag" data-id="verm">
+            <span class="agent-dot"></span>
+            <div class="agent-info">
+              <span class="agent-name">朱砂请求者</span>
+              <span class="agent-status">等待你确认付费数据访问</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Center: Decisions + Activity -->
+    <section class="center-col">
+
+      <!-- Decisions -->
+      <div class="center-decisions">
+        <div class="decisions-header">
+          <div class="decisions-title">
+            <h2>需 要 你 处 理</h2>
+            <span class="decisions-count">2 项待决</span>
+          </div>
+        </div>
+        <div class="decisions-list">
+
+          <div class="decision-card" data-type="permission">
+            <div class="decision-meta">
+              <span class="decision-type">权 限 请 求</span>
+              <span class="decision-agent">朱砂请求者 转发</span>
+              <span class="decision-time">3 分钟前</span>
+            </div>
+            <div class="decision-body">
+              群青分析需要访问付费工商数据库以补充股权穿透信息，预计消耗 <span class="decision-budget">¥200</span> 预算。
+            </div>
+            <div class="decision-actions">
+              <button class="btn btn-primary">允许访问</button>
+              <button class="btn">查看详情</button>
+              <button class="btn">拒绝</button>
+            </div>
+          </div>
+
+          <div class="decision-card" data-type="decision">
+            <div class="decision-meta">
+              <span class="decision-type">决 策 请 求</span>
+              <span class="decision-agent">琥珀管家 提出</span>
+              <span class="decision-time">12 分钟前</span>
+            </div>
+            <div class="decision-body">
+              青绿探索发现 2 个冲突信息源：Wind 数据库显示营收 ¥3.2 亿，公司年报显示 ¥2.8 亿。采用哪种策略推进？
+            </div>
+            <div class="decision-actions">
+              <button class="btn btn-amber">优先官方年报</button>
+              <button class="btn btn-amber">继续交叉验证</button>
+              <button class="btn">我来裁决</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Activity Stream -->
+      <div class="activity-section">
+        <div class="activity-header">
+          <h2>正 在 发 生</h2>
+          <div class="live-indicator">
+            <span class="live-dot"></span>
+            <span>实时</span>
+          </div>
+        </div>
+
+        <div class="activity-list">
+
+          <div class="activity-item expandable" data-id="a1">
+            <div class="activity-rail">
+              <span class="activity-marker ultra"></span>
+            </div>
+            <div class="activity-content">
+              <div class="activity-line">
+                <span class="activity-agent ultra">群青分析</span>
+                <span class="activity-text">正在交叉验证 3 份财报数据的一致性</span>
+                <span class="activity-time">11:23</span>
+              </div>
+              <div class="activity-expand-hint">点击查看推理过程</div>
+              <div class="reasoning-chain">
+                <div class="reasoning-inner">
+                  <div class="reasoning-label">推 理 过 程</div>
+                  <div class="reasoning-step"><span><strong>识别冲突</strong>：来源 A（Wind）营收 ¥3.2 亿，来源 B（年报）¥2.8 亿，差异 12%</span></div>
+                  <div class="reasoning-step"><span><strong>评估范围</strong>：差异超出统计口径容差，非四舍五入误差</span></div>
+                  <div class="reasoning-step"><span><strong>决策</strong>：追溯两份来源的原始财报，定位合并报表口径差异</span></div>
+                  <div class="reasoning-evidence">证据来源：<span>Wind 金融终端 2023Q3</span> 、<span>公司年度报告 PDF</span></div>
+                  <div class="reasoning-linked">关联 Agent：<b>群青分析</b>、临时<b>财务分析师</b></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="activity-item">
+            <div class="activity-rail">
+              <span class="activity-marker jade"></span>
+            </div>
+            <div class="activity-content">
+              <div class="activity-line">
+                <span class="activity-agent jade">青绿探索</span>
+                <span class="activity-text">完成了 12 个网页的采集，发现 2 个冲突信息源</span>
+                <span class="activity-time">11:18</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="activity-item expandable" data-id="a3">
+            <div class="activity-rail">
+              <span class="activity-marker amber"></span>
+            </div>
+            <div class="activity-content">
+              <div class="activity-line">
+                <span class="activity-agent amber">琥珀管家</span>
+                <span class="activity-text">将子任务"供应链风险评估"分配给临时财务分析师</span>
+                <span class="activity-time">11:15</span>
+              </div>
+              <div class="activity-expand-hint">点击查看推理过程</div>
+              <div class="reasoning-chain">
+                <div class="reasoning-inner">
+                  <div class="reasoning-label">推 理 过 程</div>
+                  <div class="reasoning-step"><span><strong>任务分析</strong>：供应链风险评估需要财务专业判断能力</span></div>
+                  <div class="reasoning-step"><span><strong>负载评估</strong>：群青分析当前正在处理财报验证，负载 82%</span></div>
+                  <div class="reasoning-step"><span><strong>决策</strong>：创建临时"财务分析师"Agent，任务完成后自动解散</span></div>
+                  <div class="reasoning-linked">关联 Agent：<b>琥珀管家</b>、临时<b>财务分析师</b>（已创建）</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="activity-item">
+            <div class="activity-rail">
+              <span class="activity-marker ultra"></span>
+            </div>
+            <div class="activity-content">
+              <div class="activity-line">
+                <span class="activity-agent ultra">群青分析</span>
+                <span class="activity-text">识别出 3 条关键供应链关系，标记 1 条高风险</span>
+                <span class="activity-time">11:02</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="activity-item">
+            <div class="activity-rail">
+              <span class="activity-marker verm"></span>
+            </div>
+            <div class="activity-content">
+              <div class="activity-line">
+                <span class="activity-agent verm">朱砂请求者</span>
+                <span class="activity-text">生成权限请求：付费工商数据库访问（预算 ¥200）</span>
+                <span class="activity-time">10:58</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="activity-item">
+            <div class="activity-rail">
+              <span class="activity-marker jade"></span>
+            </div>
+            <div class="activity-content">
+              <div class="activity-line">
+                <span class="activity-agent jade">青绿探索</span>
+                <span class="activity-text">开始采集 X 公司上游供应商公开信息，已启动临时"网页采集员"</span>
+                <span class="activity-time">10:45</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="activity-item">
+            <div class="activity-rail">
+              <span class="activity-marker amber"></span>
+            </div>
+            <div class="activity-content">
+              <div class="activity-line">
+                <span class="activity-agent amber">琥珀管家</span>
+                <span class="activity-text">拆解需求"完成 X 公司供应链完整画像"为 5 个子任务</span>
+                <span class="activity-time">10:32</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Right: Timeline + Goal -->
+    <aside class="side-panel">
+
+      <div class="side-section">
+        <div class="side-header">
+          <h2>过 去 24 小 时</h2>
+          <span class="meta">6 条记录</span>
+        </div>
+        <div class="timeline">
+          <div class="timeline-item" data-agent="amber">
+            <span class="timeline-time">06:30</span>
+            <div class="timeline-body"><strong>琥珀管家</strong> 生成晨间摘要，标记 7 条关键变化</div>
+          </div>
+          <div class="timeline-item" data-agent="jade">
+            <span class="timeline-time">09:15</span>
+            <div class="timeline-body"><strong>青绿探索</strong> 采集 28 条相关资讯</div>
+          </div>
+          <div class="timeline-item" data-agent="ultra">
+            <span class="timeline-time">11:00</span>
+            <div class="timeline-body"><strong>群青分析</strong> 完成初步交叉验证</div>
+          </div>
+          <div class="timeline-item" data-agent="verm">
+            <span class="timeline-time">14:30</span>
+            <div class="timeline-body"><strong>朱砂请求者</strong> 请求权限访问工商数据</div>
+          </div>
+          <div class="timeline-item" data-agent="temp">
+            <span class="timeline-time">17:45</span>
+            <div class="timeline-body">临时"财务分析师"Agent 完成任务后已解散</div>
+          </div>
+          <div class="timeline-item" data-agent="amber">
+            <span class="timeline-time">22:00</span>
+            <div class="timeline-body"><strong>琥珀管家</strong> 开始记忆整理与知识沉淀</div>
+          </div>
+          <div class="timeline-now">此 刻</div>
+        </div>
+      </div>
+
+      <div class="side-section">
+        <div class="side-header">
+          <h2>目 标 进 度</h2>
+          <span class="meta">活跃中</span>
+        </div>
+        <div class="goal-card">
+          <div class="goal-title">完成 X 公司供应链完整画像</div>
+          <div class="goal-journey">
+            <div class="journey-track">
+              <div class="journey-fill"></div>
+            </div>
+            <div class="journey-nodes">
+              <div class="journey-node done"></div>
+              <div class="journey-node done"></div>
+              <div class="journey-node current"></div>
+              <div class="journey-node"></div>
+              <div class="journey-node"></div>
+            </div>
+            <div class="journey-labels">
+              <span class="journey-label done">基础<br>采集</span>
+              <span class="journey-label done">关系<br>梳理</span>
+              <span class="journey-label current">数据<br>验证</span>
+              <span class="journey-label">风险<br>评估</span>
+              <span class="journey-label">画像<br>输出</span>
+            </div>
+          </div>
+          <div class="goal-stats">
+            <div class="goal-stat">
+              <span class="goal-stat-value"><span class="pct">68</span>%</span>
+              <span class="goal-stat-label">完成度</span>
+            </div>
+            <div class="goal-stat">
+              <span class="goal-stat-value">3<span style="color:var(--text-muted);font-size:13px">/5</span></span>
+              <span class="goal-stat-label">里程碑</span>
+            </div>
+            <div class="goal-stat">
+              <span class="goal-stat-value">2</span>
+              <span class="goal-stat-label">天后完成</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- ========== Input Bar ========== -->
+  <footer class="input-bar">
+    <div class="input-glyph">
+      <span></span><span></span><span></span><span></span>
+    </div>
+    <input type="text" class="input-field" placeholder="发布一个需求，让 Agent 开始工作">
+    <div class="input-hint">按 <kbd>Enter</kbd> 发布需求</div>
+  </footer>
+
+</div>
+
+<script>
+/* ============================================
+   Utility: color helpers
+   ============================================ */
+function hexToRgb(hex) {
+  const r = parseInt(hex.slice(1,3), 16);
+  const g = parseInt(hex.slice(3,5), 16);
+  const b = parseInt(hex.slice(5,7), 16);
+  return { r, g, b };
+}
+
+function rgba(hex, a) {
+  const { r, g, b } = hexToRgb(hex);
+  return `rgba(${r},${g},${b},${a})`;
+}
+
+// Safe radial gradient: ensures all args are finite and radii are positive
+function safeRadialGradient(ctx, x0, y0, r0, x1, y1, r1) {
+  const fin = (v) => isFinite(v) ? v : 0;
+  const pos = (v) => isFinite(v) && v > 0 ? v : 0.1;
+  return ctx.createRadialGradient(fin(x0), fin(y0), pos(r0), fin(x1), fin(y1), pos(r1));
+}
+
+/* ============================================
+   Background Canvas: fog, mountains, grid, particles
+   ============================================ */
+(function() {
+  const canvas = document.getElementById('bgCanvas');
+  const ctx = canvas.getContext('2d');
+  let W = 0, H = 0, dpr = window.devicePixelRatio || 1;
+
+  // Fog blobs
+  const fogBlobs = [];
+  // Drifting light particles
+  const particles = [];
+  // Mountain layers (precomputed silhouettes)
+  let mountainLayers = [];
+
+  function resize() {
+    W = window.innerWidth;
+    H = window.innerHeight;
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
+    canvas.style.width = W + 'px';
+    canvas.style.height = H + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    generateMountains();
+  }
+
+  function generateMountains() {
+    mountainLayers = [];
+    // Three layers of distant mountains, far to near
+    const configs = [
+      { baseY: H * 0.72, amp: 40, freq: 0.004, color: '#141d2e', seed: 1 },
+      { baseY: H * 0.82, amp: 55, freq: 0.005, color: '#101826', seed: 2 },
+      { baseY: H * 0.92, amp: 35, freq: 0.008, color: '#0c1320', seed: 3 }
+    ];
+    configs.forEach(cfg => {
+      const points = [];
+      for (let x = -50; x <= W + 50; x += 6) {
+        // Layered sine for organic ridge
+        const y = cfg.baseY
+          - Math.sin(x * cfg.freq + cfg.seed) * cfg.amp
+          - Math.sin(x * cfg.freq * 2.7 + cfg.seed * 3) * cfg.amp * 0.4
+          - Math.sin(x * cfg.freq * 5.1 + cfg.seed * 7) * cfg.amp * 0.15;
+        points.push({ x, y });
+      }
+      mountainLayers.push({ points, color: cfg.color });
+    });
+  }
+
+  function initFog() {
+    fogBlobs.length = 0;
+    const count = 6;
+    for (let i = 0; i < count; i++) {
+      fogBlobs.push({
+        x: Math.random() * W,
+        y: H * (0.3 + Math.random() * 0.6),
+        r: 180 + Math.random() * 220,
+        vx: (Math.random() - 0.5) * 0.15,
+        alpha: 0.015 + Math.random() * 0.02
+      });
+    }
+  }
+
+  function initParticles() {
+    particles.length = 0;
+    const count = 40;
+    for (let i = 0; i < count; i++) {
+      particles.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: 0.5 + Math.random() * 1.2,
+        vy: -0.1 - Math.random() * 0.2,
+        vx: (Math.random() - 0.5) * 0.05,
+        alpha: 0.1 + Math.random() * 0.3,
+        phase: Math.random() * Math.PI * 2
+      });
+    }
+  }
+
+  function drawBackground(t) {
+    if (!W || !H || !isFinite(W) || !isFinite(H)) return;
+    // Base gradient: deep ink at top, slightly warm at bottom (dusk feel)
+    const grad = ctx.createLinearGradient(0, 0, 0, H);
+    grad.addColorStop(0, '#0d1525');
+    grad.addColorStop(0.5, '#0f1828');
+    grad.addColorStop(0.85, '#121c2e');
+    grad.addColorStop(1, '#161f33');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
+
+    // Subtle warm horizon glow (dusk)
+    const horizonGrad = safeRadialGradient(ctx, W * 0.5, H * 0.85, 0, W * 0.5, H * 0.85, W * 0.6);
+    horizonGrad.addColorStop(0, 'rgba(255,180,90,0.04)');
+    horizonGrad.addColorStop(0.5, 'rgba(255,140,70,0.015)');
+    horizonGrad.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = horizonGrad;
+    ctx.fillRect(0, 0, W, H);
+
+    // Sci-fi perspective grid (very faint, softened)
+    drawGrid(t);
+
+    // Distant mountain silhouettes (ink wash feel)
+    mountainLayers.forEach((layer, i) => {
+      ctx.beginPath();
+      ctx.moveTo(layer.points[0].x, H);
+      layer.points.forEach(p => {
+        ctx.lineTo(p.x, p.y);
+      });
+      ctx.lineTo(W + 50, H);
+      ctx.closePath();
+      ctx.fillStyle = layer.color;
+      ctx.fill();
+
+      // Soft top edge glow on nearest layer
+      if (i === 0) {
+        ctx.save();
+        ctx.globalCompositeOperation = 'screen';
+        ctx.beginPath();
+        layer.points.forEach((p, idx) => {
+          if (idx === 0) ctx.moveTo(p.x, p.y);
+          else ctx.lineTo(p.x, p.y);
+        });
+        ctx.strokeStyle = 'rgba(255,180,100,0.05)';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+        ctx.restore();
+      }
+    });
+
+    // Drifting fog blobs
+    fogBlobs.forEach(blob => {
+      blob.x += blob.vx;
+      if (blob.x < -blob.r) blob.x = W + blob.r;
+      if (blob.x > W + blob.r) blob.x = -blob.r;
+
+      const fg = safeRadialGradient(ctx, blob.x, blob.y, 0, blob.x, blob.y, blob.r);
+      fg.addColorStop(0, `rgba(180,200,210,${blob.alpha})`);
+      fg.addColorStop(1, 'rgba(180,200,210,0)');
+      ctx.fillStyle = fg;
+      ctx.beginPath();
+      ctx.arc(blob.x, blob.y, blob.r, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    // Light particles drifting upward
+    particles.forEach(p => {
+      p.y += p.vy;
+      p.x += p.vx + Math.sin(t * 0.001 + p.phase) * 0.1;
+      if (p.y < -10) { p.y = H + 10; p.x = Math.random() * W; }
+      if (p.x < 0) p.x = W;
+      if (p.x > W) p.x = 0;
+
+      const flicker = 0.7 + Math.sin(t * 0.003 + p.phase) * 0.3;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(200,220,230,${p.alpha * flicker})`;
+      ctx.fill();
+    });
+  }
+
+  function drawGrid(t) {
+    ctx.save();
+    ctx.strokeStyle = 'rgba(91,127,255,0.04)';
+    ctx.lineWidth = 1;
+    const vanishX = W * 0.5;
+    const vanishY = H * 0.35;
+    const gridSpacing = 80;
+
+    // Vertical converging lines
+    for (let i = -8; i <= 8; i++) {
+      const bottomX = vanishX + i * gridSpacing * 2;
+      ctx.beginPath();
+      ctx.moveTo(bottomX, H);
+      ctx.lineTo(vanishX + i * 8, vanishY);
+      ctx.stroke();
+    }
+
+    // Horizontal perspective lines
+    for (let i = 1; i <= 8; i++) {
+      const progress = i / 8;
+      const y = vanishY + (H - vanishY) * (progress * progress);
+      const width = (W * 1.8) * (progress * progress);
+      ctx.globalAlpha = 0.04 + progress * 0.03;
+      ctx.beginPath();
+      ctx.moveTo(vanishX - width / 2, y);
+      ctx.lineTo(vanishX + width / 2, y);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function animate(t) {
+    try { drawBackground(t); } catch(e) {}
+    requestAnimationFrame(animate);
+  }
+
+  window.addEventListener('resize', () => {
+    resize();
+    initFog();
+    initParticles();
+  });
+
+  resize();
+  initFog();
+  initParticles();
+  requestAnimationFrame(animate);
+})();
+
+/* ============================================
+   Agent Habitat Canvas: light bodies, connections
+   ============================================ */
+(function() {
+  const canvas = document.getElementById('agentCanvas');
+  const ctx = canvas.getContext('2d');
+  let W = 0, H = 0, dpr = window.devicePixelRatio || 1;
+
+  // Agent definitions
+  const AGENTS = [
+    {
+      id: 'amber',
+      name: '琥珀管家',
+      color: '#ffc35a',
+      role: '总控协调',
+      // Central position
+      xRatio: 0.5, yRatio: 0.42,
+      breathSpeed: 0.0012,
+      floatSpeed: 0.0006,
+      floatAmp: 4,
+      activity: 0.6, // 0..1 glow intensity
+      active: true
+    },
+    {
+      id: 'jade',
+      name: '青绿探索',
+      color: '#8ef0bf',
+      role: '采集搜索',
+      xRatio: 0.22, yRatio: 0.30,
+      breathSpeed: 0.002,
+      floatSpeed: 0.0012,
+      floatAmp: 7,
+      activity: 0.9,
+      active: true
+    },
+    {
+      id: 'ultra',
+      name: '群青分析',
+      color: '#5b7fff',
+      role: '推理分析',
+      xRatio: 0.78, yRatio: 0.32,
+      breathSpeed: 0.0008,
+      floatSpeed: 0.0005,
+      floatAmp: 3,
+      activity: 0.85,
+      active: true
+    },
+    {
+      id: 'verm',
+      name: '朱砂请求者',
+      color: '#ff7a6f',
+      role: '用户交互',
+      xRatio: 0.5, yRatio: 0.72,
+      breathSpeed: 0.0018,
+      floatSpeed: 0.0009,
+      floatAmp: 5,
+      activity: 0.5,
+      active: true
+    }
+  ];
+
+  // Temporary agents (smaller, tied to a parent)
+  const TEMP_AGENTS = [
+    {
+      id: 'temp1',
+      name: '网页采集员',
+      color: '#8ef0bf',
+      parent: 'jade',
+      offset: { x: -50, y: 35 },
+      breathSpeed: 0.0025,
+      floatSpeed: 0.0015,
+      floatAmp: 6,
+      scale: 0.5,
+      alpha: 0.8,
+      born: 0
+    },
+    {
+      id: 'temp2',
+      name: '财务分析师',
+      color: '#5b7fff',
+      parent: 'ultra',
+      offset: { x: 50, y: 38 },
+      breathSpeed: 0.002,
+      floatSpeed: 0.0011,
+      floatAmp: 5,
+      scale: 0.55,
+      alpha: 0.85,
+      born: 0
+    }
+  ];
+
+  // Connection links between agents
+  const LINKS = [
+    { from: 'amber', to: 'jade', strength: 0.7 },
+    { from: 'amber', to: 'ultra', strength: 0.7 },
+    { from: 'amber', to: 'verm', strength: 0.5 },
+    { from: 'jade', to: 'temp1', strength: 0.9, temp: true },
+    { from: 'ultra', to: 'temp2', strength: 0.9, temp: true }
+  ];
+
+  // Work particles emitted by active agents
+  const workParticles = [];
+
+  function resize() {
+    const rect = canvas.parentElement.getBoundingClientRect();
+    W = rect.width;
+    H = rect.height;
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
+    canvas.style.width = W + 'px';
+    canvas.style.height = H + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function getAgentPos(agent, t) {
+    const baseX = agent.xRatio * W;
+    const baseY = agent.yRatio * H;
+    const floatY = Math.sin(t * agent.floatSpeed + agent.xRatio * 10) * agent.floatAmp;
+    const floatX = Math.cos(t * agent.floatSpeed * 0.7 + agent.yRatio * 10) * agent.floatAmp * 0.4;
+    return { x: baseX + floatX, y: baseY + floatY };
+  }
+
+  function getTempAgentPos(temp, t) {
+    const parent = AGENTS.find(a => a.id === temp.parent);
+    const parentPos = getAgentPos(parent, t);
+    const fx = Math.sin(t * temp.floatSpeed + 2) * temp.floatAmp;
+    const fy = Math.cos(t * temp.floatSpeed * 0.6 + 1) * temp.floatAmp;
+    return { x: parentPos.x + temp.offset.x + fx, y: parentPos.y + temp.offset.y + fy };
+  }
+
+  // Draw an agent light body: aura + body form + core + particles
+  function drawAgent(agent, t, isTemp) {
+    const pos = isTemp ? getTempAgentPos(agent, t) : getAgentPos(agent, t);
+    const breath = Math.sin(t * agent.breathSpeed + agent.xRatio * 5) * 0.08 + 1;
+    const scale = (agent.scale || 1) * breath;
+    const activity = agent.activity || 0.5;
+    const baseAlpha = agent.alpha || 1;
+    const color = agent.color;
+
+    // Outer aura (large soft glow)
+    const auraR = 75 * scale;
+    const auraGrad = safeRadialGradient(ctx, pos.x, pos.y, 0, pos.x, pos.y, auraR);
+    auraGrad.addColorStop(0, rgba(color, 0.18 * activity * baseAlpha));
+    auraGrad.addColorStop(0.4, rgba(color, 0.06 * activity * baseAlpha));
+    auraGrad.addColorStop(1, rgba(color, 0));
+    ctx.fillStyle = auraGrad;
+    ctx.beginPath();
+    ctx.arc(pos.x, pos.y, auraR, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Body form: elongated teardrop (standing figure suggestion)
+    const bodyW = 14 * scale;
+    const bodyH = 38 * scale;
+    const bodyTop = pos.y - bodyH * 0.6;
+    const bodyBottom = pos.y + bodyH * 0.4;
+
+    ctx.save();
+    const bodyGrad = ctx.createLinearGradient(pos.x, bodyTop, pos.x, bodyBottom);
+    bodyGrad.addColorStop(0, rgba(color, 0.55 * baseAlpha));
+    bodyGrad.addColorStop(0.3, rgba(color, 0.35 * baseAlpha));
+    bodyGrad.addColorStop(1, rgba(color, 0.05 * baseAlpha));
+
+    ctx.fillStyle = bodyGrad;
+    ctx.beginPath();
+    // Teardrop shape: narrow at bottom, wider rounded at top
+    ctx.moveTo(pos.x, bodyBottom);
+    ctx.bezierCurveTo(
+      pos.x - bodyW * 0.5, bodyBottom - bodyH * 0.3,
+      pos.x - bodyW, bodyTop + bodyH * 0.2,
+      pos.x, bodyTop
+    );
+    ctx.bezierCurveTo(
+      pos.x + bodyW, bodyTop + bodyH * 0.2,
+      pos.x + bodyW * 0.5, bodyBottom - bodyH * 0.3,
+      pos.x, bodyBottom
+    );
+    ctx.fill();
+
+    // Inner body glow
+    const innerGrad = safeRadialGradient(ctx, pos.x, pos.y - bodyH * 0.15, 0, pos.x, pos.y - bodyH * 0.15, bodyW * 1.5);
+    innerGrad.addColorStop(0, rgba(color, 0.4 * baseAlpha));
+    innerGrad.addColorStop(1, rgba(color, 0));
+    ctx.fillStyle = innerGrad;
+    ctx.beginPath();
+    ctx.arc(pos.x, pos.y - bodyH * 0.15, bodyW * 1.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    // Core / head: bright orb near top
+    const coreR = (5 + activity * 2) * scale;
+    const corePulse = 0.85 + Math.sin(t * 0.003 + agent.xRatio * 8) * 0.15;
+    const coreGrad = safeRadialGradient(ctx, pos.x, bodyTop + 4, 0, pos.x, bodyTop + 4, coreR * 3);
+    coreGrad.addColorStop(0, rgba('#ffffff', 0.9 * baseAlpha));
+    coreGrad.addColorStop(0.2, rgba(color, 0.8 * baseAlpha));
+    coreGrad.addColorStop(1, rgba(color, 0));
+    ctx.fillStyle = coreGrad;
+    ctx.beginPath();
+    ctx.arc(pos.x, bodyTop + 4, coreR * 3 * corePulse, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Bright center dot
+    ctx.fillStyle = rgba('#ffffff', 0.95 * baseAlpha);
+    ctx.beginPath();
+    ctx.arc(pos.x, bodyTop + 4, coreR * 0.5 * corePulse, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Orbiting particles around agent
+    const particleCount = isTemp ? 3 : 5;
+    for (let i = 0; i < particleCount; i++) {
+      const angle = (t * 0.0005 + i * (Math.PI * 2 / particleCount)) % (Math.PI * 2);
+      const orbitR = 22 * scale + Math.sin(t * 0.001 + i) * 4;
+      const px = pos.x + Math.cos(angle) * orbitR;
+      const py = pos.y - bodyH * 0.1 + Math.sin(angle) * orbitR * 0.6;
+      const pAlpha = (0.3 + Math.sin(t * 0.002 + i * 2) * 0.2) * baseAlpha;
+      ctx.fillStyle = rgba(color, pAlpha);
+      ctx.beginPath();
+      ctx.arc(px, py, 1.2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Emit work particles for active agents
+    if (agent.active && !isTemp && Math.random() < 0.08 * activity) {
+      workParticles.push({
+        x: pos.x + (Math.random() - 0.5) * 10,
+        y: bodyTop + 4,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: -0.4 - Math.random() * 0.5,
+        life: 1,
+        color: color,
+        r: 1 + Math.random() * 1
+      });
+    }
+  }
+
+  // Draw connection link with flowing light
+  function drawLink(link, t) {
+    const fromAgent = AGENTS.find(a => a.id === link.from);
+    const toTarget = link.temp
+      ? TEMP_AGENTS.find(a => a.id === link.to)
+      : AGENTS.find(a => a.id === link.to);
+    if (!fromAgent || !toTarget) return;
+
+    const from = getAgentPos(fromAgent, t);
+    const to = link.temp ? getTempAgentPos(toTarget, t) : getAgentPos(toTarget, t);
+
+    // Bezier control point (slight curve)
+    const midX = (from.x + to.x) / 2;
+    const midY = (from.y + to.y) / 2 - 20;
+
+    const strength = link.strength;
+
+    // Glow underlay
+    ctx.save();
+    ctx.strokeStyle = rgba(fromAgent.color, 0.06 * strength);
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(from.x, from.y);
+    ctx.quadraticCurveTo(midX, midY, to.x, to.y);
+    ctx.stroke();
+
+    // Main line with flowing dash
+    ctx.strokeStyle = rgba(fromAgent.color, 0.25 * strength);
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 8]);
+    ctx.lineDashOffset = -t * 0.04;
+    ctx.beginPath();
+    ctx.moveTo(from.x, from.y);
+    ctx.quadraticCurveTo(midX, midY, to.x, to.y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Flowing light packets along the path
+    const packetCount = 2;
+    for (let i = 0; i < packetCount; i++) {
+      const progress = ((t * 0.0003 * strength + i / packetCount) % 1);
+      const pt = quadPoint(from, { x: midX, y: midY }, to, progress);
+      const pGrad = safeRadialGradient(ctx, pt.x, pt.y, 0, pt.x, pt.y, 6);
+      pGrad.addColorStop(0, rgba(fromAgent.color, 0.7 * strength));
+      pGrad.addColorStop(1, rgba(fromAgent.color, 0));
+      ctx.fillStyle = pGrad;
+      ctx.beginPath();
+      ctx.arc(pt.x, pt.y, 6, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  function quadPoint(p0, p1, p2, t) {
+    const x = (1 - t) * (1 - t) * p0.x + 2 * (1 - t) * t * p1.x + t * t * p2.x;
+    const y = (1 - t) * (1 - t) * p0.y + 2 * (1 - t) * t * p1.y + t * t * p2.y;
+    return { x, y };
+  }
+
+  function updateWorkParticles() {
+    for (let i = workParticles.length - 1; i >= 0; i--) {
+      const p = workParticles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.life -= 0.012;
+      if (p.life <= 0) {
+        workParticles.splice(i, 1);
+        continue;
+      }
+      ctx.fillStyle = rgba(p.color, p.life * 0.5);
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r * p.life, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  // Subtle ground platform under the habitat
+  function drawGround(t) {
+    const cy = H * 0.88;
+    const grad = ctx.createLinearGradient(0, cy, 0, H);
+    grad.addColorStop(0, 'rgba(91,127,255,0.02)');
+    grad.addColorStop(1, 'rgba(91,127,255,0)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, cy, W, H - cy);
+
+    // Faint elliptical platform rings
+    ctx.save();
+    ctx.strokeStyle = 'rgba(170,183,172,0.05)';
+    ctx.lineWidth = 1;
+    for (let i = 0; i < 3; i++) {
+      const ry = 12 + i * 8;
+      const rx = W * 0.4 - i * 30;
+      ctx.beginPath();
+      ctx.ellipse(W * 0.5, cy + 5, Math.max(20, rx), ry, 0, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function animate(t) {
+    ctx.clearRect(0, 0, W, H);
+
+    if (!W || !H || !isFinite(W) || !isFinite(H)) {
+      requestAnimationFrame(animate);
+      return;
+    }
+
+    try {
+      drawGround(t);
+      // Draw links first (behind agents)
+      LINKS.forEach(link => drawLink(link, t));
+      // Draw temp agents (behind main agents)
+      TEMP_AGENTS.forEach(temp => drawAgent(temp, t, true));
+      // Draw main agents
+      AGENTS.forEach(agent => drawAgent(agent, t, false));
+      // Work particles on top
+      updateWorkParticles();
+    } catch(e) {}
+
+    requestAnimationFrame(animate);
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+  requestAnimationFrame(animate);
+})();
+
+/* ============================================
+   UI Interactions: expandable reasoning, clock
+   ============================================ */
+(function() {
+  // Expandable activity items
+  document.querySelectorAll('.activity-item.expandable').forEach(item => {
+    item.addEventListener('click', () => {
+      item.classList.toggle('expanded');
+      const hint = item.querySelector('.activity-expand-hint');
+      if (hint) {
+        hint.textContent = item.classList.contains('expanded') ? '点击收起' : '点击查看推理过程';
+      }
+    });
+  });
+
+  // Decision buttons: simple visual feedback
+  document.querySelectorAll('.decision-actions .btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const card = btn.closest('.decision-card');
+      if (btn.classList.contains('btn-primary') || btn.classList.contains('btn-amber')) {
+        card.style.transition = 'opacity 0.4s, transform 0.4s';
+        card.style.opacity = '0.4';
+        card.style.transform = 'translateX(8px)';
+        btn.textContent = '已处理';
+      }
+    });
+  });
+
+  // Live clock (updates time display, keeps dusk phase)
+  function updateClock() {
+    const now = new Date();
+    const hh = String(now.getHours()).padStart(2, '0');
+    const mm = String(now.getMinutes()).padStart(2, '0');
+    const clockEl = document.getElementById('clockTime');
+    if (clockEl) clockEl.textContent = `${hh}:${mm}`;
+  }
+  updateClock();
+  setInterval(updateClock, 30000);
+
+  // Input bar: enter to "publish"
+  const input = document.querySelector('.input-field');
+  if (input) {
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && input.value.trim()) {
+        input.value = '';
+        input.placeholder = '需求已发布，琥珀管家正在拆解';
+        setTimeout(() => {
+          input.placeholder = '发布一个需求，让 Agent 开始工作';
+        }, 3000);
+      }
+    });
+  }
+})();
+</script>
+
+</body>
+</html>

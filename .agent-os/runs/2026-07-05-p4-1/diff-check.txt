@@ -1,0 +1,13 @@
+P4.1 diff check placeholder.
+
+Current expected state:
+- No P4.1 implementation diff yet.
+- No src/* changes for P4.1 until N0/N1/N2 lock scope.
+- No .mcp.json.
+- No real MCP connection.
+- No API key / token / credential.
+- No GitHub Actions / GitLab CI / Slack / headless integration.
+
+Run before N4/N5:
+- git diff --name-only
+- rg for forbidden imports and real transport calls

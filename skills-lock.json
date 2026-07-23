@@ -1,0 +1,539 @@
+{
+  "version": 1,
+  "skills": {
+    "api-design": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/api-design/SKILL.md",
+      "computedHash": "b8b8ac0f02e6a2e13849ab08d0a763d290863b50b0d46d1645440c7666bc5b1b"
+    },
+    "article-writing": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/article-writing/SKILL.md",
+      "computedHash": "76f5be32e669c87abdf47f8a17b32b45525b8cb78679b6738f5a120ae9682a4d"
+    },
+    "autonomous-loops": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/autonomous-loops/SKILL.md",
+      "computedHash": "cde06273e6d32a27551602b4c4f77434aa8f2591edab58abd0cf14798e1c9ffd"
+    },
+    "backend-patterns": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/backend-patterns/SKILL.md",
+      "computedHash": "44ef91ae0795a237d8b551e451520606f8394d14e6f82177ed03b569da0c314b"
+    },
+    "brainstorming": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "skillPath": "skills/brainstorming/SKILL.md",
+      "computedHash": "b73750a92bc4b5deeaafa0680fba706b9e89e091cdea40ee36a0420fc059fe4c"
+    },
+    "clickhouse-io": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/clickhouse-io/SKILL.md",
+      "computedHash": "de169232f06532508406868af815fe2e98e2d73e0bec4f9ccfe9e195a01473d4"
+    },
+    "coding-standards": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/coding-standards/SKILL.md",
+      "computedHash": "20f3b80f50649d7e456296bfa95575003266bcf21b59547c3f24054852afad6f"
+    },
+    "configure-ecc": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/configure-ecc/SKILL.md",
+      "computedHash": "0c36d78f66b87c89c5c6d1b898772ea71bf011d21676dc736c001c1b45e71225"
+    },
+    "content-engine": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/content-engine/SKILL.md",
+      "computedHash": "a76536c2757194effc14897f69782acefea85f7830f22f7ad82375d0d78f69db"
+    },
+    "content-hash-cache-pattern": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/content-hash-cache-pattern/SKILL.md",
+      "computedHash": "da3f1bafba9e7b2ef6fd0225011461f359488a950c92bc58a97d048b433abf75"
+    },
+    "continuous-learning": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/continuous-learning/SKILL.md",
+      "computedHash": "4fd0ba6fc785c1987890c309d36b197bcd7d5bfc2b2502d32a1e077d950bc560"
+    },
+    "continuous-learning-v2": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/continuous-learning-v2/SKILL.md",
+      "computedHash": "3df5853997f6a4ab9bd05690093c148ea30d0d0e0d701a0c0468cee601bd8ff5"
+    },
+    "cost-aware-llm-pipeline": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/cost-aware-llm-pipeline/SKILL.md",
+      "computedHash": "6d181da721b432f7c0ed48f3e138abd4cd52d5bbef745e9fcb9c6e791dfd083c"
+    },
+    "cpp-coding-standards": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/cpp-coding-standards/SKILL.md",
+      "computedHash": "60aa1058c09257e7abd04b6576a5ab9eb0dc2379226033112ba5b9570df7dba3"
+    },
+    "cpp-testing": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/cpp-testing/SKILL.md",
+      "computedHash": "a1ab937e61c8d5df23f5bbaa525e4cf998732994752b83a6fc62c0a5c33c6704"
+    },
+    "database-migrations": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/database-migrations/SKILL.md",
+      "computedHash": "ef44b8832bb52c7cde6f7cee0c422dc1d74f6d0a18190886f2283e0022d94094"
+    },
+    "define-goal": {
+      "source": "openai/skills",
+      "sourceType": "github",
+      "skillPath": "skills/.curated/define-goal/SKILL.md",
+      "computedHash": "0fab24178b759e1ebedc894f524d32fd3e580b55455cfeb459ea39a9cf4927c2"
+    },
+    "deployment-patterns": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/deployment-patterns/SKILL.md",
+      "computedHash": "33a5e99a3676e8c205e2def5a3815b213f1eef4aa333dbb7ab7ae937f83bd751"
+    },
+    "dispatching-parallel-agents": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "skillPath": "skills/dispatching-parallel-agents/SKILL.md",
+      "computedHash": "85df55d2235a7623b315dac4bc340c14a37dcdc57c869c80a829e1a53a174689"
+    },
+    "django-patterns": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/django-patterns/SKILL.md",
+      "computedHash": "c55caa1c78d1fe936891b402dc4bfa3683f808238b7a9c64941a6429b61e9bf8"
+    },
+    "django-security": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/django-security/SKILL.md",
+      "computedHash": "d65ac8ee9f754fddc8746b2d25135ce305bda69ca00c95a771facc9065b307c1"
+    },
+    "django-tdd": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/django-tdd/SKILL.md",
+      "computedHash": "45544e265a956475683b21a04a44e1bb1c0911768439dde736b34186f5bb0486"
+    },
+    "django-verification": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/django-verification/SKILL.md",
+      "computedHash": "ccba8d9425307bab57858321dde17ef985d0394a07a1ea83a5f531015a6fc4b8"
+    },
+    "docker-patterns": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/docker-patterns/SKILL.md",
+      "computedHash": "b43bd4348f3e9e7983fb0a6b06e5057fa4231227348166c193a041145afc1a5e"
+    },
+    "e2e-testing": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/e2e-testing/SKILL.md",
+      "computedHash": "51b3c9e9525324be4824dda117e3ffbcd70849ca6f23e8649590eb2d2867247a"
+    },
+    "eval-harness": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/eval-harness/SKILL.md",
+      "computedHash": "53466cd1a7bc5c495d0e91777644233e7d6890065bdea2e123322e3a4249f14b"
+    },
+    "executing-plans": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "skillPath": "skills/executing-plans/SKILL.md",
+      "computedHash": "08604f93f2e38dd3575e5503c79cda5c623c78a8df0e472457ac5ef7a33f22b8"
+    },
+    "figma-code-connect": {
+      "source": "figma/mcp-server-guide",
+      "sourceType": "github",
+      "skillPath": "skills/figma-code-connect/SKILL.md",
+      "computedHash": "674fe1f3ffb747d83dc286ae25bebdad0dc4b9f2674ac42876852d75b4a2d057"
+    },
+    "figma-create-new-file": {
+      "source": "figma/mcp-server-guide",
+      "sourceType": "github",
+      "skillPath": "skills/figma-create-new-file/SKILL.md",
+      "computedHash": "501c141d348ac68947430761a187b6f0aaa2ed8b1fab439a3bb9e38b631949ed"
+    },
+    "figma-generate-design": {
+      "source": "figma/mcp-server-guide",
+      "sourceType": "github",
+      "skillPath": "skills/figma-generate-design/SKILL.md",
+      "computedHash": "81aee018a92b9fb2d82e5d1ddf5bfa503166fe0de4d5a71e63130fb21d21dbcf"
+    },
+    "figma-generate-diagram": {
+      "source": "figma/mcp-server-guide",
+      "sourceType": "github",
+      "skillPath": "skills/figma-generate-diagram/SKILL.md",
+      "computedHash": "31473388e25fc6f9b70d7588128396c6a290a9b3159f76d5bbf37e91929d4671"
+    },
+    "figma-generate-library": {
+      "source": "figma/mcp-server-guide",
+      "sourceType": "github",
+      "skillPath": "skills/figma-generate-library/SKILL.md",
+      "computedHash": "edbe718641c1732862fed6be244e100178a78e8c307655bfbc29b457e48a9fc3"
+    },
+    "figma-implement-motion": {
+      "source": "figma/mcp-server-guide",
+      "sourceType": "github",
+      "skillPath": "skills/figma-implement-motion/SKILL.md",
+      "computedHash": "f20f571038e03c01391b2c385dbfd90123b50447238280274a1bca8953d3d4c1"
+    },
+    "figma-swiftui": {
+      "source": "figma/mcp-server-guide",
+      "sourceType": "github",
+      "skillPath": "skills/figma-swiftui/SKILL.md",
+      "computedHash": "f67a955227176336e4331470447829cf654a19f08c79a26465ff1918920fe73e"
+    },
+    "figma-use": {
+      "source": "figma/mcp-server-guide",
+      "sourceType": "github",
+      "skillPath": "skills/figma-use/SKILL.md",
+      "computedHash": "91b51970c35a511be53e1281f4679639c41f01cb2856bed8697d7158109a28a1"
+    },
+    "figma-use-figjam": {
+      "source": "figma/mcp-server-guide",
+      "sourceType": "github",
+      "skillPath": "skills/figma-use-figjam/SKILL.md",
+      "computedHash": "33311462a7451f3c707519f48fa13eeaa74f4489d19f96cfe88e18f299b6b569"
+    },
+    "figma-use-motion": {
+      "source": "figma/mcp-server-guide",
+      "sourceType": "github",
+      "skillPath": "skills/figma-use-motion/SKILL.md",
+      "computedHash": "0f0141f7a0a8caf9725b744c39dfd98a943d0fca629b325c34184350716fd332"
+    },
+    "figma-use-slides": {
+      "source": "figma/mcp-server-guide",
+      "sourceType": "github",
+      "skillPath": "skills/figma-use-slides/SKILL.md",
+      "computedHash": "ee9fd8b68a330549d69a0bf7af88f6ceb1c053529bd95b42739ace2998ae4db6"
+    },
+    "finishing-a-development-branch": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "skillPath": "skills/finishing-a-development-branch/SKILL.md",
+      "computedHash": "aa2632ed96df59c36348bd8f8ec1ff0fb0c5cc68b60691834687bf4cedc6be3f"
+    },
+    "foundation-models-on-device": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/foundation-models-on-device/SKILL.md",
+      "computedHash": "064bc779cd453725ff3acd0e3b043c513a22501ae382d38d1949769e2777935e"
+    },
+    "frontend-design": {
+      "source": "anthropics/skills",
+      "sourceType": "github",
+      "skillPath": "skills/frontend-design/SKILL.md",
+      "computedHash": "93f53fd1c0352d3d7ec17b8f73d7351bf76f4821e55d123c9d2abc2c53ba48e4"
+    },
+    "frontend-patterns": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/frontend-patterns/SKILL.md",
+      "computedHash": "312e011b4cc75e3ddff7290df11ec5a5e9df0484787a8ab0a380ccf0cb804339"
+    },
+    "frontend-slides": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/frontend-slides/SKILL.md",
+      "computedHash": "d8725674ccc6c78c71b1532feec1c337ec0b86a2a8dbf68f79d6899963a08e48"
+    },
+    "golang-patterns": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/golang-patterns/SKILL.md",
+      "computedHash": "8bba10ee100493c6190c8fc950b4b32a3d982f9c1d9c8c93b3bc9df524f5c4c5"
+    },
+    "golang-testing": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/golang-testing/SKILL.md",
+      "computedHash": "49da6e07ef8fba1ffe1ebf35ae006ebdd404ff242e27941ac0cc086f52d0ced4"
+    },
+    "investor-materials": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/investor-materials/SKILL.md",
+      "computedHash": "96cc565bd1cbfc693f1bbc4eb50aed2ceb799fcb7e754b042f3bff7c174870f0"
+    },
+    "investor-outreach": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/investor-outreach/SKILL.md",
+      "computedHash": "b28547179342d142e23d9b63a22b4c688993e66e6fd99c9e5658fb4403582fdb"
+    },
+    "iterative-retrieval": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/iterative-retrieval/SKILL.md",
+      "computedHash": "b251ea01ea9dd403063826aa7435a4ccdc021b4af049dfafc608583854d5566f"
+    },
+    "java-coding-standards": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/java-coding-standards/SKILL.md",
+      "computedHash": "e08000d8494982ad5642484685e9acc98e0805bc14da6bad73264769c61c70f2"
+    },
+    "jpa-patterns": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/jpa-patterns/SKILL.md",
+      "computedHash": "d836508b7e9f577be5406aacdb6c6a3d4d5bea965ed9a46294a4ba8931aa8e13"
+    },
+    "karpathy-guidelines": {
+      "source": "multica-ai/andrej-karpathy-skills",
+      "sourceType": "github",
+      "skillPath": "skills/karpathy-guidelines/SKILL.md",
+      "computedHash": "0ec1641120accbb458780e0bd19a50a4182f2b97863e90851b91307f29802c9f"
+    },
+    "liquid-glass-design": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/liquid-glass-design/SKILL.md",
+      "computedHash": "d3ba199db53d1daaf633b0908410851d7685b4146261f38832fcc47de7b51788"
+    },
+    "market-research": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/market-research/SKILL.md",
+      "computedHash": "ba1263d8b613009efdad22f15996040045b7a954ad48d196941884b90f8a0f2a"
+    },
+    "nutrient-document-processing": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/nutrient-document-processing/SKILL.md",
+      "computedHash": "36dbcfe3d38276cb15b23b27783586955b8fe23154c98ae6804fc8221fac9510"
+    },
+    "oneskill": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/oneskill/SKILL.md",
+      "computedHash": "5cfd7c4e2d2376b65fee0a2a670a7c7abf1b452896ad7d13ceac00bc0b4adcc8"
+    },
+    "openai-docs": {
+      "source": "openai/skills",
+      "sourceType": "github",
+      "skillPath": "skills/.curated/openai-docs/SKILL.md",
+      "computedHash": "80d1836b9c7cdee24521c47e33a77cbf02b34783267f5a7e32c41557170fa6dd"
+    },
+    "plankton-code-quality": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/plankton-code-quality/SKILL.md",
+      "computedHash": "b7616b3765ca4036df6c2d27e903507940f23fa158e6fc2e4523d0857a8d8c23"
+    },
+    "postgres-patterns": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/postgres-patterns/SKILL.md",
+      "computedHash": "27eb3695053fcb5639955231a671de1eae94117a7dd041bfd83b7004ae3e56ad"
+    },
+    "project-guidelines-example": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/project-guidelines-example/SKILL.md",
+      "computedHash": "4edb69ddaf70970e0f717df66314d98d340f834278db95ce8c5d980fd1704758"
+    },
+    "python-patterns": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/python-patterns/SKILL.md",
+      "computedHash": "d1b1887ee1441aa309754b223a7dc3edb0f13496aac11ff70a029203962a881b"
+    },
+    "python-testing": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/python-testing/SKILL.md",
+      "computedHash": "0d26987f244e1f57fea8c73d2fa87ca70df474bfa8faf40c2899a78f521f2cd6"
+    },
+    "receiving-code-review": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "skillPath": "skills/receiving-code-review/SKILL.md",
+      "computedHash": "3f56080356c62e4f74a183d7371686babc661e41a952dc67a97c2c76fe8a9329"
+    },
+    "regex-vs-llm-structured-text": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/regex-vs-llm-structured-text/SKILL.md",
+      "computedHash": "c53dc1c1f135fe2fad1b52c71e7130aa20aa95657c35a300c7524f4aeed256af"
+    },
+    "remotion-best-practices": {
+      "source": "remotion-dev/skills",
+      "sourceType": "github",
+      "skillPath": "skills/remotion/SKILL.md",
+      "computedHash": "664bd31140897056bd575ef57a15f22f517bd576c6b81df429c1f4ed6453e312"
+    },
+    "requesting-code-review": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "skillPath": "skills/requesting-code-review/SKILL.md",
+      "computedHash": "cde520e9118d7e6b74b5ab0123cff2f68d9c07bddb3f82c997753b6126600aed"
+    },
+    "search-first": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/search-first/SKILL.md",
+      "computedHash": "4d86f7f9b04bf663d112f3c9b6f4daa30cccaa6b7f5e1310fe232aa5c7a1e0a2"
+    },
+    "security-review": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/security-review/SKILL.md",
+      "computedHash": "e3289d1aa9388acb18d97da31b2f7afbe8009e97abd86f7bc3ae088bf01572fc"
+    },
+    "security-scan": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/security-scan/SKILL.md",
+      "computedHash": "c60de13576e3dcea4df9428697f2d10c8ddfd5a37f83c258ff6a614b2ddd5c4e"
+    },
+    "sentry": {
+      "source": "openai/skills",
+      "sourceType": "github",
+      "skillPath": "skills/.curated/sentry/SKILL.md",
+      "computedHash": "7f2811d9ff70b0aaf4d12b68ce2879e91a170197fbf192dc1011d40fe1c838bb"
+    },
+    "springboot-patterns": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/springboot-patterns/SKILL.md",
+      "computedHash": "354dced2e69eb8337ec9366b4c4820abc07bee644f5ff544d915d54dc4f947ed"
+    },
+    "springboot-security": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/springboot-security/SKILL.md",
+      "computedHash": "e755f79a936e427d6706db792628dffe21b194c4828c70f80fbc3a2fd7a46a3d"
+    },
+    "springboot-tdd": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/springboot-tdd/SKILL.md",
+      "computedHash": "e601c50ef72f9ae51f31ab1aa3141b19f1f2282b6baa632e9615dafe14e32657"
+    },
+    "springboot-verification": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/springboot-verification/SKILL.md",
+      "computedHash": "e390247be9f8daea1bcba994cd855687e959037d505bc7bdfe4e8c1d71e485ab"
+    },
+    "strategic-compact": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/strategic-compact/SKILL.md",
+      "computedHash": "8fdbb03442cbdffc1c4c598f375c6ec9481252d92d4e0056642cc4c1dfcd4105"
+    },
+    "subagent-driven-development": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "skillPath": "skills/subagent-driven-development/SKILL.md",
+      "computedHash": "13f644a90690df7ffe77f85e078c37402fe24016e3e0e8732b6693b17625f160"
+    },
+    "swift-actor-persistence": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/swift-actor-persistence/SKILL.md",
+      "computedHash": "e968af02e46afe173f18c93ab9140abc897368a413c56e93f30eeb8293f9e3dc"
+    },
+    "swift-concurrency-6-2": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/swift-concurrency-6-2/SKILL.md",
+      "computedHash": "e2d350e2e2ab9292b1c72d5f1fda70ea4c85d16e6cff20210a7b522060158ae4"
+    },
+    "swift-protocol-di-testing": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/swift-protocol-di-testing/SKILL.md",
+      "computedHash": "cb2b295f53f475e5409b90b97dbf2dbfaaae73274f1f41e2abd77843d9b80263"
+    },
+    "swiftui-patterns": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/swiftui-patterns/SKILL.md",
+      "computedHash": "c5ab56dcec812c7a71c063f99c6f77fdf436f7fd4687e0fa16d126804352ced7"
+    },
+    "systematic-debugging": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "skillPath": "skills/systematic-debugging/SKILL.md",
+      "computedHash": "792a368e074981d7e3138edb439e138489b2ac247cd1e5739fab52af680fb17b"
+    },
+    "tdd-workflow": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/tdd-workflow/SKILL.md",
+      "computedHash": "a49363ba6df8c952bd1a9414da708451de2c4c04ef94cecc507e9d3e63fecec6"
+    },
+    "test-driven-development": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "skillPath": "skills/test-driven-development/SKILL.md",
+      "computedHash": "eee144aea35d783296d178017e9fe843c6d16cc8b240e106f5e50910f6caf329"
+    },
+    "using-git-worktrees": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "skillPath": "skills/using-git-worktrees/SKILL.md",
+      "computedHash": "212ad917e5543e84ea3adf4e3fab537675db976fdab05d4de432870e38b49e80"
+    },
+    "using-superpowers": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "skillPath": "skills/using-superpowers/SKILL.md",
+      "computedHash": "e94af48fd52e1c329952fae638bde84671997744901c780281aff6e6986b8f1d"
+    },
+    "verification-before-completion": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "skillPath": "skills/verification-before-completion/SKILL.md",
+      "computedHash": "9b446f0c7fe1cfb560b1d34439523b1a76d5f177290007b2c053a1c749a4a8ba"
+    },
+    "verification-loop": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/verification-loop/SKILL.md",
+      "computedHash": "9590e81c73f09053adff829c67ae9fd25984b4e1388ba83e72e2b96b63dbff67"
+    },
+    "visa-doc-translate": {
+      "source": "xu-xiang/everything-claude-code-zh",
+      "sourceType": "github",
+      "skillPath": "skills/visa-doc-translate/SKILL.md",
+      "computedHash": "b916648f6f1727cd113d07a3024921816e7c846c269bcc68696fe6720303a6b9"
+    },
+    "writing-plans": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "skillPath": "skills/writing-plans/SKILL.md",
+      "computedHash": "b73b59d43c34c3fc225bfae419c458bb216af80df25fc0c545dfa7fd2a161722"
+    },
+    "writing-skills": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "skillPath": "skills/writing-skills/SKILL.md",
+      "computedHash": "2ad61dd96d969b2f582b11bb581f2fa912523e22c8763fbd105d6e46414bdaf2"
+    }
+  }
+}

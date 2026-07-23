@@ -1,0 +1,63 @@
+version: 1
+project: Agent OS v2
+canonical_sources:
+  - README.md
+  - CHANGELOG.md
+  - AGENTS.md
+  - docs/AGENT_OS_V2_MODEL_ROLE_ROUTING_CN.md
+  - docs/AGENT_OS_V2_MULTI_MODEL_CONSISTENCY_CN.md
+  - docs/AGENT_OS_V2_CODE_GUARDRAILS_CN.md
+  - docs/AGENT_OS_V2_VENDOR_TOOLING_STANDARD_CN.md
+sealed_phases:
+  - P0 Intelligence Verification / Source Classification
+  - P1 RunStore + Approval Resume
+  - P2 Model Selection / Model Router
+  - P3 Tool Permission Governance
+  - P4.0 MCP Gateway Static Registry + Tool Descriptor
+  - P4.1 MCP Transport Interface + Fake Transport Harness
+  - P4.2 Tool Execution Adapter + Audit Bridge
+  - P5 Skill Progressive Loading + Context Budget
+  - P6 ModelGateway streaming + Skill Injection
+  - P7 ModelRouter + Skill Scanner Integration
+  - P8 Release Governance Console
+  - GOV governance documentation and consistency patches
+current_phase: P9 Node Runner Config Sync
+current_run: .agent-os/runs/2026-07-05-p9-node-runner-config-sync
+documented_dirty_files:
+  - skills/ECC
+nodes:
+  N0_PRD_LOCK:
+    model: glm-5.2
+    prompt: .agent-os/prompts/N0_PRD_LOCK.md
+  N1_LONG_CONTEXT_ARCH_REVIEW:
+    model: longcat
+    prompt: .agent-os/prompts/N1_LONG_CONTEXT_ARCH_REVIEW.md
+  N2_TECH_REVIEW:
+    model: deepseek-v4-pro
+    prompt: .agent-os/prompts/N2_TECH_REVIEW.md
+  N3_IMPLEMENTATION:
+    model: doubao-seed-2.0-code / Codex
+    prompt: .agent-os/prompts/N3_IMPLEMENTATION.md
+  N4_FILE_STRUCTURE_REVIEW:
+    model: doubao-seed-2.0-code / Codex
+    prompt: .agent-os/prompts/N4_FILE_STRUCTURE_REVIEW.md
+  N5_VALIDATION:
+    model: deepseek-v4-pro
+    prompt: .agent-os/prompts/N5_VALIDATION.md
+  N6_DOC_SYNC:
+    model: doubao-seed-2.0-pro
+    prompt: .agent-os/prompts/N6_DOC_SYNC.md
+  N7_RELEASE_SEAL:
+    model: glm-5.2
+    prompt: .agent-os/prompts/N7_RELEASE_SEAL.md
+validation_commands:
+  - npm run lint
+  - npm run typecheck
+  - npm test
+  - npm run build
+  - npm run verify:release
+prohibitions:
+  - Do not redefine sealed phase semantics.
+  - Do not connect real MCP unless the current phase explicitly allows it.
+  - Do not read or commit API keys, tokens, or credentials.
+  - Do not bypass N0-N7 node gates.

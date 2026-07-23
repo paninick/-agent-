@@ -1,0 +1,2208 @@
+{
+  "checkedAt": "2026-07-14T07:00:48.524Z",
+  "registryVersion": "2026-06-30.seed",
+  "artifact": {
+    "path": "outputs/intelligence/verification-latest.json",
+    "bounded": true,
+    "containsSecrets": false,
+    "note": "This artifact stores normalized verification output only; API keys are reported as present/missing and never serialized."
+  },
+  "sourceCount": 23,
+  "healthySourceCount": 7,
+  "degradedSourceCount": 16,
+  "failedSourceCount": 0,
+  "unavailableSourceCount": 16,
+  "sourceResultBreakdown": {
+    "healthy": 7,
+    "degraded": 0,
+    "missingCredentials": 2,
+    "invalidCredentials": 0,
+    "permissionDenied": 0,
+    "rateLimited": 0,
+    "notFound": 0,
+    "adapterNotImplemented": 14,
+    "notProbed": 0,
+    "adapterError": 0,
+    "fetchTimeout": 0,
+    "schemaInvalid": 0,
+    "noData": 0
+  },
+  "failedSourceBreakdown": {
+    "invalidCredentials": 0,
+    "permissionDenied": 0,
+    "adapterError": 0,
+    "fetchTimeout": 0,
+    "schemaInvalid": 0
+  },
+  "unavailableSourceBreakdown": {
+    "missingCredentials": 2,
+    "rateLimited": 0,
+    "notFound": 0,
+    "adapterNotImplemented": 14,
+    "notProbed": 0,
+    "noData": 0
+  },
+  "adapterHealthSnapshot": [
+    {
+      "sourceId": "un-comtrade",
+      "status": "degraded",
+      "resultStatus": "missing_credentials",
+      "latencyMs": 0,
+      "errorRate": 0,
+      "failureReason": "UN_COMTRADE_API_KEY is not set; use the official API subscription key header for physical verification.",
+      "credentialRequired": true,
+      "credentialPresent": false,
+      "validation": {
+        "fetchSuccess": false,
+        "schemaValid": false,
+        "indicatorMappingSuccess": false,
+        "freshnessPassed": false
+      }
+    },
+    {
+      "sourceId": "world-bank-wits",
+      "status": "degraded",
+      "resultStatus": "adapter_not_implemented",
+      "latencyMs": 0,
+      "errorRate": 0,
+      "failureReason": "adapter not implemented for this verification profile",
+      "credentialRequired": false,
+      "credentialPresent": false,
+      "validation": {
+        "fetchSuccess": false,
+        "schemaValid": false,
+        "indicatorMappingSuccess": false,
+        "freshnessPassed": false
+      }
+    },
+    {
+      "sourceId": "sec-edgar",
+      "status": "healthy",
+      "resultStatus": "healthy",
+      "latencyMs": 902,
+      "errorRate": 0,
+      "lastSuccessAt": "2026-07-14T07:00:26.902Z",
+      "validation": {
+        "fetchSuccess": true,
+        "schemaValid": true,
+        "indicatorMappingSuccess": true,
+        "freshnessPassed": true
+      }
+    },
+    {
+      "sourceId": "edinet-japan",
+      "status": "degraded",
+      "resultStatus": "adapter_not_implemented",
+      "latencyMs": 0,
+      "errorRate": 0,
+      "failureReason": "adapter not implemented for this verification profile",
+      "credentialRequired": true,
+      "credentialPresent": false,
+      "validation": {
+        "fetchSuccess": false,
+        "schemaValid": false,
+        "indicatorMappingSuccess": false,
+        "freshnessPassed": false
+      }
+    },
+    {
+      "sourceId": "estat-japan",
+      "status": "degraded",
+      "resultStatus": "adapter_not_implemented",
+      "latencyMs": 0,
+      "errorRate": 0,
+      "failureReason": "adapter not implemented for this verification profile",
+      "credentialRequired": true,
+      "credentialPresent": false,
+      "validation": {
+        "fetchSuccess": false,
+        "schemaValid": false,
+        "indicatorMappingSuccess": false,
+        "freshnessPassed": false
+      }
+    },
+    {
+      "sourceId": "usitc-dataweb",
+      "status": "degraded",
+      "resultStatus": "adapter_not_implemented",
+      "latencyMs": 0,
+      "errorRate": 0,
+      "failureReason": "adapter not implemented for this verification profile",
+      "credentialRequired": true,
+      "credentialPresent": false,
+      "validation": {
+        "fetchSuccess": false,
+        "schemaValid": false,
+        "indicatorMappingSuccess": false,
+        "freshnessPassed": false
+      }
+    },
+    {
+      "sourceId": "us-census-trade",
+      "status": "healthy",
+      "resultStatus": "healthy",
+      "latencyMs": 15301,
+      "errorRate": 0,
+      "lastSuccessAt": "2026-07-14T07:00:33.217Z",
+      "validation": {
+        "fetchSuccess": true,
+        "schemaValid": true,
+        "indicatorMappingSuccess": true,
+        "freshnessPassed": true
+      }
+    },
+    {
+      "sourceId": "world-bank",
+      "status": "healthy",
+      "resultStatus": "healthy",
+      "latencyMs": 2773,
+      "errorRate": 0,
+      "lastSuccessAt": "2026-07-14T07:00:24.128Z",
+      "validation": {
+        "fetchSuccess": true,
+        "schemaValid": true,
+        "indicatorMappingSuccess": true,
+        "freshnessPassed": true
+      }
+    },
+    {
+      "sourceId": "oecd-data-explorer",
+      "status": "degraded",
+      "resultStatus": "adapter_not_implemented",
+      "latencyMs": 0,
+      "errorRate": 0,
+      "failureReason": "adapter not implemented for this verification profile",
+      "credentialRequired": false,
+      "credentialPresent": false,
+      "validation": {
+        "fetchSuccess": false,
+        "schemaValid": false,
+        "indicatorMappingSuccess": false,
+        "freshnessPassed": false
+      }
+    },
+    {
+      "sourceId": "fred",
+      "status": "healthy",
+      "resultStatus": "healthy",
+      "latencyMs": 2400,
+      "errorRate": 0,
+      "lastSuccessAt": "2026-07-14T07:00:30.817Z",
+      "validation": {
+        "fetchSuccess": true,
+        "schemaValid": true,
+        "indicatorMappingSuccess": true,
+        "freshnessPassed": true
+      }
+    },
+    {
+      "sourceId": "bls-public-api",
+      "status": "healthy",
+      "resultStatus": "healthy",
+      "latencyMs": 1544,
+      "errorRate": 0,
+      "lastSuccessAt": "2026-07-14T07:00:29.273Z",
+      "validation": {
+        "fetchSuccess": true,
+        "schemaValid": true,
+        "indicatorMappingSuccess": true,
+        "freshnessPassed": true
+      }
+    },
+    {
+      "sourceId": "ecb-eurofxref",
+      "status": "healthy",
+      "resultStatus": "healthy",
+      "latencyMs": 473,
+      "errorRate": 0,
+      "lastSuccessAt": "2026-07-14T07:00:28.800Z",
+      "validation": {
+        "fetchSuccess": true,
+        "schemaValid": true,
+        "indicatorMappingSuccess": true,
+        "freshnessPassed": true
+      }
+    },
+    {
+      "sourceId": "eurostat",
+      "status": "healthy",
+      "resultStatus": "healthy",
+      "latencyMs": 996,
+      "errorRate": 0,
+      "lastSuccessAt": "2026-07-14T07:00:27.804Z",
+      "validation": {
+        "fetchSuccess": true,
+        "schemaValid": true,
+        "indicatorMappingSuccess": true,
+        "freshnessPassed": true
+      }
+    },
+    {
+      "sourceId": "open-supply-hub",
+      "status": "degraded",
+      "resultStatus": "missing_credentials",
+      "latencyMs": 0,
+      "errorRate": 0,
+      "failureReason": "OPEN_SUPPLY_HUB_API_KEY is not set; unauthenticated probe returned 401 in local testing.",
+      "credentialRequired": true,
+      "credentialPresent": false,
+      "validation": {
+        "fetchSuccess": false,
+        "schemaValid": false,
+        "indicatorMappingSuccess": false,
+        "freshnessPassed": false
+      }
+    },
+    {
+      "sourceId": "better-work",
+      "status": "degraded",
+      "resultStatus": "adapter_not_implemented",
+      "latencyMs": 0,
+      "errorRate": 0,
+      "failureReason": "adapter not implemented for this verification profile",
+      "credentialRequired": true,
+      "credentialPresent": false,
+      "validation": {
+        "fetchSuccess": false,
+        "schemaValid": false,
+        "indicatorMappingSuccess": false,
+        "freshnessPassed": false
+      }
+    },
+    {
+      "sourceId": "ilo",
+      "status": "degraded",
+      "resultStatus": "adapter_not_implemented",
+      "latencyMs": 0,
+      "errorRate": 0,
+      "failureReason": "adapter not implemented for this verification profile",
+      "credentialRequired": false,
+      "credentialPresent": false,
+      "validation": {
+        "fetchSuccess": false,
+        "schemaValid": false,
+        "indicatorMappingSuccess": false,
+        "freshnessPassed": false
+      }
+    },
+    {
+      "sourceId": "ilostat-api",
+      "status": "degraded",
+      "resultStatus": "adapter_not_implemented",
+      "latencyMs": 0,
+      "errorRate": 0,
+      "failureReason": "adapter not implemented for this verification profile",
+      "credentialRequired": false,
+      "credentialPresent": false,
+      "validation": {
+        "fetchSuccess": false,
+        "schemaValid": false,
+        "indicatorMappingSuccess": false,
+        "freshnessPassed": false
+      }
+    },
+    {
+      "sourceId": "wto",
+      "status": "degraded",
+      "resultStatus": "adapter_not_implemented",
+      "latencyMs": 0,
+      "errorRate": 0,
+      "failureReason": "adapter not implemented for this verification profile",
+      "credentialRequired": false,
+      "credentialPresent": false,
+      "validation": {
+        "fetchSuccess": false,
+        "schemaValid": false,
+        "indicatorMappingSuccess": false,
+        "freshnessPassed": false
+      }
+    },
+    {
+      "sourceId": "shopee-open-platform",
+      "status": "degraded",
+      "resultStatus": "adapter_not_implemented",
+      "latencyMs": 0,
+      "errorRate": 0,
+      "failureReason": "adapter not implemented for this verification profile",
+      "credentialRequired": true,
+      "credentialPresent": false,
+      "validation": {
+        "fetchSuccess": false,
+        "schemaValid": false,
+        "indicatorMappingSuccess": false,
+        "freshnessPassed": false
+      }
+    },
+    {
+      "sourceId": "temu-partner-api",
+      "status": "degraded",
+      "resultStatus": "adapter_not_implemented",
+      "latencyMs": 0,
+      "errorRate": 0,
+      "failureReason": "adapter not implemented for this verification profile",
+      "credentialRequired": true,
+      "credentialPresent": false,
+      "validation": {
+        "fetchSuccess": false,
+        "schemaValid": false,
+        "indicatorMappingSuccess": false,
+        "freshnessPassed": false
+      }
+    },
+    {
+      "sourceId": "alibaba-open-platform",
+      "status": "degraded",
+      "resultStatus": "adapter_not_implemented",
+      "latencyMs": 0,
+      "errorRate": 0,
+      "failureReason": "adapter not implemented for this verification profile",
+      "credentialRequired": true,
+      "credentialPresent": false,
+      "validation": {
+        "fetchSuccess": false,
+        "schemaValid": false,
+        "indicatorMappingSuccess": false,
+        "freshnessPassed": false
+      }
+    },
+    {
+      "sourceId": "internal-bom-system",
+      "status": "degraded",
+      "resultStatus": "adapter_not_implemented",
+      "latencyMs": 0,
+      "errorRate": 0,
+      "failureReason": "adapter not implemented for this verification profile",
+      "credentialRequired": true,
+      "credentialPresent": false,
+      "validation": {
+        "fetchSuccess": false,
+        "schemaValid": false,
+        "indicatorMappingSuccess": false,
+        "freshnessPassed": false
+      }
+    },
+    {
+      "sourceId": "mckinsey-bof-state-of-fashion",
+      "status": "degraded",
+      "resultStatus": "adapter_not_implemented",
+      "latencyMs": 0,
+      "errorRate": 0,
+      "failureReason": "adapter not implemented for this verification profile",
+      "credentialRequired": true,
+      "credentialPresent": false,
+      "validation": {
+        "fetchSuccess": false,
+        "schemaValid": false,
+        "indicatorMappingSuccess": false,
+        "freshnessPassed": false
+      }
+    }
+  ],
+  "evidenceGraphSnapshot": {
+    "nodes": [
+      {
+        "id": "source:un-comtrade",
+        "type": "SourceNode",
+        "sourceId": "un-comtrade",
+        "value": "UN Comtrade",
+        "confidence": 1,
+        "timestamp": "2026-07-14T07:00:48.520Z",
+        "provenance": {
+          "sourceId": "un-comtrade",
+          "sourceTier": "S",
+          "url": "https://comtrade.un.org/"
+        },
+        "metadata": {
+          "tier": "S",
+          "sourceWeight": 1,
+          "trustWeight": 1,
+          "latencyScore": 0.65,
+          "reliabilityScore": 1,
+          "coverageDomain": "global_trade",
+          "healthStatus": "degraded"
+        }
+      },
+      {
+        "id": "source:world-bank-wits",
+        "type": "SourceNode",
+        "sourceId": "world-bank-wits",
+        "value": "World Integrated Trade Solution API",
+        "confidence": 0.93,
+        "timestamp": "2026-07-14T07:00:48.520Z",
+        "provenance": {
+          "sourceId": "world-bank-wits",
+          "sourceTier": "S",
+          "url": "https://wits.worldbank.org/witsapiintro.aspx?lang=en"
+        },
+        "metadata": {
+          "tier": "S",
+          "sourceWeight": 0.93,
+          "trustWeight": 0.93,
+          "latencyScore": 0.85,
+          "reliabilityScore": 0.93,
+          "coverageDomain": "global_trade",
+          "healthStatus": "degraded"
+        }
+      },
+      {
+        "id": "source:sec-edgar",
+        "type": "SourceNode",
+        "sourceId": "sec-edgar",
+        "value": "SEC EDGAR APIs",
+        "confidence": 1,
+        "timestamp": "2026-07-14T07:00:48.520Z",
+        "provenance": {
+          "sourceId": "sec-edgar",
+          "sourceTier": "S",
+          "url": "https://www.sec.gov/search-filings/edgar-application-programming-interfaces"
+        },
+        "metadata": {
+          "tier": "S",
+          "sourceWeight": 1,
+          "trustWeight": 1,
+          "latencyScore": 0.85,
+          "reliabilityScore": 1,
+          "coverageDomain": "us_listed_company_filings",
+          "healthStatus": "healthy"
+        }
+      },
+      {
+        "id": "source:edinet-japan",
+        "type": "SourceNode",
+        "sourceId": "edinet-japan",
+        "value": "EDINET",
+        "confidence": 1,
+        "timestamp": "2026-07-14T07:00:48.520Z",
+        "provenance": {
+          "sourceId": "edinet-japan",
+          "sourceTier": "S",
+          "url": "https://disclosure2.edinet-fsa.go.jp/weee0010.aspx"
+        },
+        "metadata": {
+          "tier": "S",
+          "sourceWeight": 1,
+          "trustWeight": 1,
+          "latencyScore": 0.65,
+          "reliabilityScore": 1,
+          "coverageDomain": "japan_listed_company_filings",
+          "healthStatus": "degraded"
+        }
+      },
+      {
+        "id": "source:estat-japan",
+        "type": "SourceNode",
+        "sourceId": "estat-japan",
+        "value": "e-Stat Japan",
+        "confidence": 0.95,
+        "timestamp": "2026-07-14T07:00:48.520Z",
+        "provenance": {
+          "sourceId": "estat-japan",
+          "sourceTier": "S",
+          "url": "https://www.e-stat.go.jp/api/en"
+        },
+        "metadata": {
+          "tier": "S",
+          "sourceWeight": 0.95,
+          "trustWeight": 0.95,
+          "latencyScore": 0.65,
+          "reliabilityScore": 0.95,
+          "coverageDomain": "japan_statistics",
+          "healthStatus": "degraded"
+        }
+      },
+      {
+        "id": "source:usitc-dataweb",
+        "type": "SourceNode",
+        "sourceId": "usitc-dataweb",
+        "value": "USITC DataWeb API",
+        "confidence": 1,
+        "timestamp": "2026-07-14T07:00:48.520Z",
+        "provenance": {
+          "sourceId": "usitc-dataweb",
+          "sourceTier": "S",
+          "url": "https://datawebws.usitc.gov/dataweb/swagger-ui/index.html"
+        },
+        "metadata": {
+          "tier": "S",
+          "sourceWeight": 1,
+          "trustWeight": 1,
+          "latencyScore": 0.65,
+          "reliabilityScore": 1,
+          "coverageDomain": "us_trade",
+          "healthStatus": "degraded"
+        }
+      },
+      {
+        "id": "source:us-census-trade",
+        "type": "SourceNode",
+        "sourceId": "us-census-trade",
+        "value": "U.S. Census International Trade API",
+        "confidence": 0.98,
+        "timestamp": "2026-07-14T07:00:48.520Z",
+        "provenance": {
+          "sourceId": "us-census-trade",
+          "sourceTier": "S",
+          "url": "https://www.census.gov/data/developers/data-sets/international-trade.html"
+        },
+        "metadata": {
+          "tier": "S",
+          "sourceWeight": 0.98,
+          "trustWeight": 0.98,
+          "latencyScore": 0.65,
+          "reliabilityScore": 0.98,
+          "coverageDomain": "us_trade",
+          "healthStatus": "healthy"
+        }
+      },
+      {
+        "id": "source:world-bank",
+        "type": "SourceNode",
+        "sourceId": "world-bank",
+        "value": "World Bank Indicators API",
+        "confidence": 0.95,
+        "timestamp": "2026-07-14T07:00:48.520Z",
+        "provenance": {
+          "sourceId": "world-bank",
+          "sourceTier": "S",
+          "url": "https://datahelpdesk.worldbank.org/knowledgebase/articles/889392-about-the-indicators-api-documentation"
+        },
+        "metadata": {
+          "tier": "S",
+          "sourceWeight": 0.95,
+          "trustWeight": 0.95,
+          "latencyScore": 0.85,
+          "reliabilityScore": 0.95,
+          "coverageDomain": "macro",
+          "healthStatus": "healthy"
+        }
+      },
+      {
+        "id": "source:oecd-data-explorer",
+        "type": "SourceNode",
+        "sourceId": "oecd-data-explorer",
+        "value": "OECD Data Explorer API",
+        "confidence": 0.9,
+        "timestamp": "2026-07-14T07:00:48.520Z",
+        "provenance": {
+          "sourceId": "oecd-data-explorer",
+          "sourceTier": "S",
+          "url": "https://data-explorer.oecd.org/"
+        },
+        "metadata": {
+          "tier": "S",
+          "sourceWeight": 0.9,
+          "trustWeight": 0.9,
+          "latencyScore": 0.85,
+          "reliabilityScore": 0.9,
+          "coverageDomain": "macro",
+          "healthStatus": "degraded"
+        }
+      },
+      {
+        "id": "source:fred",
+        "type": "SourceNode",
+        "sourceId": "fred",
+        "value": "FRED API",
+        "confidence": 0.95,
+        "timestamp": "2026-07-14T07:00:48.520Z",
+        "provenance": {
+          "sourceId": "fred",
+          "sourceTier": "S",
+          "url": "https://fred.stlouisfed.org/docs/api/fred/"
+        },
+        "metadata": {
+          "tier": "S",
+          "sourceWeight": 0.95,
+          "trustWeight": 0.95,
+          "latencyScore": 0.65,
+          "reliabilityScore": 0.95,
+          "coverageDomain": "rates",
+          "healthStatus": "healthy"
+        }
+      },
+      {
+        "id": "source:bls-public-api",
+        "type": "SourceNode",
+        "sourceId": "bls-public-api",
+        "value": "U.S. Bureau of Labor Statistics Public Data API",
+        "confidence": 0.95,
+        "timestamp": "2026-07-14T07:00:48.520Z",
+        "provenance": {
+          "sourceId": "bls-public-api",
+          "sourceTier": "S",
+          "url": "https://www.bls.gov/developers/"
+        },
+        "metadata": {
+          "tier": "S",
+          "sourceWeight": 0.95,
+          "trustWeight": 0.95,
+          "latencyScore": 0.85,
+          "reliabilityScore": 0.95,
+          "coverageDomain": "prices",
+          "healthStatus": "healthy"
+        }
+      },
+      {
+        "id": "source:ecb-eurofxref",
+        "type": "SourceNode",
+        "sourceId": "ecb-eurofxref",
+        "value": "European Central Bank Euro Foreign Exchange Reference Rates",
+        "confidence": 0.95,
+        "timestamp": "2026-07-14T07:00:48.520Z",
+        "provenance": {
+          "sourceId": "ecb-eurofxref",
+          "sourceTier": "S",
+          "url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html"
+        },
+        "metadata": {
+          "tier": "S",
+          "sourceWeight": 0.95,
+          "trustWeight": 0.95,
+          "latencyScore": 0.85,
+          "reliabilityScore": 0.95,
+          "coverageDomain": "fx",
+          "healthStatus": "healthy"
+        }
+      },
+      {
+        "id": "source:eurostat",
+        "type": "SourceNode",
+        "sourceId": "eurostat",
+        "value": "Eurostat Statistics API",
+        "confidence": 0.95,
+        "timestamp": "2026-07-14T07:00:48.520Z",
+        "provenance": {
+          "sourceId": "eurostat",
+          "sourceTier": "S",
+          "url": "https://ec.europa.eu/eurostat/web/user-guides/data-browser/api-data-access/api-getting-started"
+        },
+        "metadata": {
+          "tier": "S",
+          "sourceWeight": 0.95,
+          "trustWeight": 0.95,
+          "latencyScore": 0.85,
+          "reliabilityScore": 0.95,
+          "coverageDomain": "eu_trade",
+          "healthStatus": "healthy"
+        }
+      },
+      {
+        "id": "source:open-supply-hub",
+        "type": "SourceNode",
+        "sourceId": "open-supply-hub",
+        "value": "Open Supply Hub",
+        "confidence": 0.78,
+        "timestamp": "2026-07-14T07:00:48.520Z",
+        "provenance": {
+          "sourceId": "open-supply-hub",
+          "sourceTier": "A",
+          "url": "https://info.opensupplyhub.org/api"
+        },
+        "metadata": {
+          "tier": "A",
+          "sourceWeight": 0.78,
+          "trustWeight": 0.78,
+          "latencyScore": 0.65,
+          "reliabilityScore": 0.78,
+          "coverageDomain": "facility_identity",
+          "healthStatus": "degraded"
+        }
+      },
+      {
+        "id": "source:better-work",
+        "type": "SourceNode",
+        "sourceId": "better-work",
+        "value": "Better Work",
+        "confidence": 0.76,
+        "timestamp": "2026-07-14T07:00:48.520Z",
+        "provenance": {
+          "sourceId": "better-work",
+          "sourceTier": "A",
+          "url": "https://betterwork.org/data-and-evidence/"
+        },
+        "metadata": {
+          "tier": "A",
+          "sourceWeight": 0.76,
+          "trustWeight": 0.76,
+          "latencyScore": 0.65,
+          "reliabilityScore": 0.76,
+          "coverageDomain": "factory_compliance",
+          "healthStatus": "degraded"
+        }
+      },
+      {
+        "id": "source:ilo",
+        "type": "SourceNode",
+        "sourceId": "ilo",
+        "value": "International Labour Organization",
+        "confidence": 0.76,
+        "timestamp": "2026-07-14T07:00:48.520Z",
+        "provenance": {
+          "sourceId": "ilo",
+          "sourceTier": "A",
+          "url": "https://www.ilo.org/publications/employment-wages-and-productivity-asian-garment-sector-taking-stock-recent"
+        },
+        "metadata": {
+          "tier": "A",
+          "sourceWeight": 0.76,
+          "trustWeight": 0.76,
+          "latencyScore": 0.85,
+          "reliabilityScore": 0.76,
+          "coverageDomain": "labor",
+          "healthStatus": "degraded"
+        }
+      },
+      {
+        "id": "source:ilostat-api",
+        "type": "SourceNode",
+        "sourceId": "ilostat-api",
+        "value": "ILOSTAT API",
+        "confidence": 0.9,
+        "timestamp": "2026-07-14T07:00:48.520Z",
+        "provenance": {
+          "sourceId": "ilostat-api",
+          "sourceTier": "S",
+          "url": "https://ilostat.ilo.org/resources/concepts-and-definitions/ilostat-api/"
+        },
+        "metadata": {
+          "tier": "S",
+          "sourceWeight": 0.9,
+          "trustWeight": 0.9,
+          "latencyScore": 0.85,
+          "reliabilityScore": 0.9,
+          "coverageDomain": "labor",
+          "healthStatus": "degraded"
+        }
+      },
+      {
+        "id": "source:wto",
+        "type": "SourceNode",
+        "sourceId": "wto",
+        "value": "World Trade Organization",
+        "confidence": 0.74,
+        "timestamp": "2026-07-14T07:00:48.520Z",
+        "provenance": {
+          "sourceId": "wto",
+          "sourceTier": "A",
+          "url": "https://www.wto.org/"
+        },
+        "metadata": {
+          "tier": "A",
+          "sourceWeight": 0.74,
+          "trustWeight": 0.74,
+          "latencyScore": 0.85,
+          "reliabilityScore": 0.74,
+          "coverageDomain": "tariff",
+          "healthStatus": "degraded"
+        }
+      },
+      {
+        "id": "source:shopee-open-platform",
+        "type": "SourceNode",
+        "sourceId": "shopee-open-platform",
+        "value": "Shopee Open Platform",
+        "confidence": 0.9,
+        "timestamp": "2026-07-14T07:00:48.520Z",
+        "provenance": {
+          "sourceId": "shopee-open-platform",
+          "sourceTier": "A+",
+          "url": "https://open.shopee.com/developer-guide/4"
+        },
+        "metadata": {
+          "tier": "A+",
+          "sourceWeight": 0.9,
+          "trustWeight": 0.9,
+          "latencyScore": 0.65,
+          "reliabilityScore": 0.9,
+          "coverageDomain": "orders",
+          "healthStatus": "degraded"
+        }
+      },
+      {
+        "id": "source:temu-partner-api",
+        "type": "SourceNode",
+        "sourceId": "temu-partner-api",
+        "value": "Temu Partner API",
+        "confidence": 0.9,
+        "timestamp": "2026-07-14T07:00:48.520Z",
+        "provenance": {
+          "sourceId": "temu-partner-api",
+          "sourceTier": "A+",
+          "url": "https://partner.temu.com/documentation?menu_code=38e79b35d2cb463d85619c1c786dd303"
+        },
+        "metadata": {
+          "tier": "A+",
+          "sourceWeight": 0.9,
+          "trustWeight": 0.9,
+          "latencyScore": 0.65,
+          "reliabilityScore": 0.9,
+          "coverageDomain": "orders",
+          "healthStatus": "degraded"
+        }
+      },
+      {
+        "id": "source:alibaba-open-platform",
+        "type": "SourceNode",
+        "sourceId": "alibaba-open-platform",
+        "value": "Alibaba Open Platform",
+        "confidence": 0.88,
+        "timestamp": "2026-07-14T07:00:48.520Z",
+        "provenance": {
+          "sourceId": "alibaba-open-platform",
+          "sourceTier": "A+",
+          "url": "https://openapi.alibaba.com/doc/doc.htm"
+        },
+        "metadata": {
+          "tier": "A+",
+          "sourceWeight": 0.88,
+          "trustWeight": 0.88,
+          "latencyScore": 0.65,
+          "reliabilityScore": 0.88,
+          "coverageDomain": "products",
+          "healthStatus": "degraded"
+        }
+      },
+      {
+        "id": "source:internal-bom-system",
+        "type": "SourceNode",
+        "sourceId": "internal-bom-system",
+        "value": "Internal BOM and Material Ledger",
+        "confidence": 0.9,
+        "timestamp": "2026-07-14T07:00:48.520Z",
+        "provenance": {
+          "sourceId": "internal-bom-system",
+          "sourceTier": "A+",
+          "url": "https://internal.local/bom-system"
+        },
+        "metadata": {
+          "tier": "A+",
+          "sourceWeight": 0.9,
+          "trustWeight": 0.9,
+          "latencyScore": 0.65,
+          "reliabilityScore": 0.9,
+          "coverageDomain": "bom",
+          "healthStatus": "degraded"
+        }
+      },
+      {
+        "id": "source:mckinsey-bof-state-of-fashion",
+        "type": "SourceNode",
+        "sourceId": "mckinsey-bof-state-of-fashion",
+        "value": "McKinsey and BoF State of Fashion",
+        "confidence": 0.55,
+        "timestamp": "2026-07-14T07:00:48.520Z",
+        "provenance": {
+          "sourceId": "mckinsey-bof-state-of-fashion",
+          "sourceTier": "B",
+          "url": "https://www.mckinsey.com/industries/retail/our-insights/state-of-fashion"
+        },
+        "metadata": {
+          "tier": "B",
+          "sourceWeight": 0.55,
+          "trustWeight": 0.55,
+          "latencyScore": 0.65,
+          "reliabilityScore": 0.55,
+          "coverageDomain": "fashion_strategy",
+          "healthStatus": "degraded"
+        }
+      },
+      {
+        "id": "data-point:world-bank-macro-control-viet-nam-gdp-current-us-viet-nam-has-an-official-world-bank-value-for-g",
+        "type": "DataPointNode",
+        "sourceId": "world-bank",
+        "value": 514697215165.065,
+        "confidence": 1,
+        "timestamp": "2026-07-14T07:00:26.901Z",
+        "provenance": {
+          "sourceId": "world-bank",
+          "sourceTier": "S",
+          "method": "api",
+          "url": "https://api.worldbank.org/v2/"
+        },
+        "metadata": {
+          "evidenceId": "world-bank-macro-control-viet-nam-gdp-current-us-viet-nam-has-an-official-world-bank-value-for-gdp-current-us-in-2025-20",
+          "evidenceKind": "macro_control",
+          "subject": "Viet Nam GDP (current US$)",
+          "period": "2025",
+          "unit": "World Bank indicator native unit"
+        }
+      },
+      {
+        "id": "data-point:world-bank-macro-control-viet-nam-tariff-rate-applied-weighted-mean-all-products-viet-nam-has-an",
+        "type": "DataPointNode",
+        "sourceId": "world-bank",
+        "value": 1.07,
+        "confidence": 1,
+        "timestamp": "2026-07-14T07:00:26.902Z",
+        "provenance": {
+          "sourceId": "world-bank",
+          "sourceTier": "S",
+          "method": "api",
+          "url": "https://api.worldbank.org/v2/"
+        },
+        "metadata": {
+          "evidenceId": "world-bank-macro-control-viet-nam-tariff-rate-applied-weighted-mean-all-products-viet-nam-has-an-official-world-bank-val",
+          "evidenceKind": "macro_control",
+          "subject": "Viet Nam Tariff rate, applied, weighted mean, all products (%)",
+          "period": "2022",
+          "unit": "World Bank indicator native unit"
+        }
+      },
+      {
+        "id": "data-point:world-bank-macro-control-bangladesh-labor-force-participation-rate-female-of-female-population-a",
+        "type": "DataPointNode",
+        "sourceId": "world-bank",
+        "value": 38.649,
+        "confidence": 1,
+        "timestamp": "2026-07-14T07:00:26.902Z",
+        "provenance": {
+          "sourceId": "world-bank",
+          "sourceTier": "S",
+          "method": "api",
+          "url": "https://api.worldbank.org/v2/"
+        },
+        "metadata": {
+          "evidenceId": "world-bank-macro-control-bangladesh-labor-force-participation-rate-female-of-female-population-ages-15-modeled-ilo-estim",
+          "evidenceKind": "macro_control",
+          "subject": "Bangladesh Labor force participation rate, female (% of female population ages 15+) (modeled ILO estimate)",
+          "period": "2025",
+          "unit": "World Bank indicator native unit"
+        }
+      },
+      {
+        "id": "data-point:sec-edgar-financial-primary-gap-inc-gap-inc-has-sec-xbrl-operating-metrics-for-revenue-margin-in",
+        "type": "DataPointNode",
+        "sourceId": "sec-edgar",
+        "value": "revenue:15366000000 USD; grossProfit:6268000000 USD; costOfGoodsSold:9098000000 USD; inventory:2207000000 USD; operatingIncome:1115000000 USD; grossMargin=0.4079; inventoryToRevenue=0.1436",
+        "confidence": 1,
+        "timestamp": "2026-07-14T07:00:27.804Z",
+        "provenance": {
+          "sourceId": "sec-edgar",
+          "sourceTier": "S",
+          "method": "api",
+          "url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000039911.json"
+        },
+        "metadata": {
+          "evidenceId": "sec-edgar-financial-primary-gap-inc-gap-inc-has-sec-xbrl-operating-metrics-for-revenue-margin-inventory-and-cost-chain-a",
+          "evidenceKind": "financial_primary",
+          "subject": "GAP, INC",
+          "period": null,
+          "unit": "SEC XBRL native units"
+        }
+      },
+      {
+        "id": "data-point:eurostat-macro-control-de-population-on-1-january-by-age-and-sex-eurostat-exposes-population-on-",
+        "type": "DataPointNode",
+        "sourceId": "eurostat",
+        "value": 83456045,
+        "confidence": 1,
+        "timestamp": "2026-07-14T07:00:28.800Z",
+        "provenance": {
+          "sourceId": "eurostat",
+          "sourceTier": "S",
+          "method": "api",
+          "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/demo_pjan"
+        },
+        "metadata": {
+          "evidenceId": "eurostat-macro-control-de-population-on-1-january-by-age-and-sex-eurostat-exposes-population-on-1-january-by-age-and-sex",
+          "evidenceKind": "macro_control",
+          "subject": "DE Population on 1 January by age and sex",
+          "period": "2024",
+          "unit": "Eurostat dataset native unit"
+        }
+      },
+      {
+        "id": "data-point:ecb-eurofxref-macro-control-eur-reference-fx-rates-ecb-exposes-eur-reference-rates-for-29-curren",
+        "type": "DataPointNode",
+        "sourceId": "ecb-eurofxref",
+        "value": "USD=1.1424;JPY=185.23;USDJPY_cross=162.1411",
+        "confidence": 1,
+        "timestamp": "2026-07-14T07:00:29.273Z",
+        "provenance": {
+          "sourceId": "ecb-eurofxref",
+          "sourceTier": "S",
+          "method": "api",
+          "url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml"
+        },
+        "metadata": {
+          "evidenceId": "ecb-eurofxref-macro-control-eur-reference-fx-rates-ecb-exposes-eur-reference-rates-for-29-currencies-on-2026-07-13-2026-",
+          "evidenceKind": "macro_control",
+          "subject": "EUR reference FX rates",
+          "period": "2026-07-13",
+          "unit": "EUR base reference rates"
+        }
+      },
+      {
+        "id": "data-point:bls-public-api-market-signal-cusr0000saa-bls-exposes-a-latest-public-series-observation-for-cusr",
+        "type": "DataPointNode",
+        "sourceId": "bls-public-api",
+        "value": 137.069,
+        "confidence": 1,
+        "timestamp": "2026-07-14T07:00:30.817Z",
+        "provenance": {
+          "sourceId": "bls-public-api",
+          "sourceTier": "S",
+          "method": "api",
+          "url": "https://api.bls.gov/publicAPI/v2/timeseries/data/CUSR0000SAA"
+        },
+        "metadata": {
+          "evidenceId": "bls-public-api-market-signal-cusr0000saa-bls-exposes-a-latest-public-series-observation-for-cusr0000saa-in-2026-m05-2026",
+          "evidenceKind": "market_signal",
+          "subject": "CUSR0000SAA",
+          "period": "2026-M05",
+          "unit": "BLS series native index/value"
+        }
+      },
+      {
+        "id": "data-point:fred-macro-control-dexjpus-fred-exposes-a-latest-observation-for-dexjpus-on-2026-07-10-2026-07-1",
+        "type": "DataPointNode",
+        "sourceId": "fred",
+        "value": 161.31,
+        "confidence": 1,
+        "timestamp": "2026-07-14T07:00:33.217Z",
+        "provenance": {
+          "sourceId": "fred",
+          "sourceTier": "S",
+          "method": "api",
+          "url": "https://api.stlouisfed.org/fred/series/observations"
+        },
+        "metadata": {
+          "evidenceId": "fred-macro-control-dexjpus-fred-exposes-a-latest-observation-for-dexjpus-on-2026-07-10-2026-07-10",
+          "evidenceKind": "macro_control",
+          "subject": "DEXJPUS",
+          "period": "2026-07-10",
+          "unit": "FRED series native unit"
+        }
+      },
+      {
+        "id": "data-point:us-census-trade-trade-flow-primary-china-611020-u-s-census-reports-hs-611020-imports-from-china-",
+        "type": "DataPointNode",
+        "sourceId": "us-census-trade",
+        "value": 84149034,
+        "confidence": 1,
+        "timestamp": "2026-07-14T07:00:48.518Z",
+        "provenance": {
+          "sourceId": "us-census-trade",
+          "sourceTier": "S",
+          "method": "api",
+          "url": "https://api.census.gov/data/timeseries/intltrade/imports/hs"
+        },
+        "metadata": {
+          "evidenceId": "us-census-trade-trade-flow-primary-china-611020-u-s-census-reports-hs-611020-imports-from-china-in-2024-12-2024-12",
+          "evidenceKind": "trade_flow_primary",
+          "subject": "CHINA 611020",
+          "period": "2024-12",
+          "unit": "monthly general import value USD"
+        }
+      },
+      {
+        "id": "data-point:internal-bom-system-material-quantity-audit-counterexample-knit-base-tee-bom-material-model-deri",
+        "type": "DataPointNode",
+        "sourceId": "internal-bom-system",
+        "value": "netFabricKg=2200; grossFabricKg=2391.304; yarnInputKg=2543.941; reconciliation=yarn:outside_tolerance:0.2186",
+        "confidence": 0.274,
+        "timestamp": "2026-07-14T07:00:48.519Z",
+        "provenance": {
+          "sourceId": "internal-bom-system",
+          "sourceTier": "A+",
+          "method": "manual"
+        },
+        "metadata": {
+          "evidenceId": "internal-bom-system-material-quantity-audit-counterexample-knit-base-tee-bom-material-model-derives-fabric-yarn-and-fibe",
+          "evidenceKind": "material_quantity",
+          "subject": "audit-counterexample-knit-base-tee",
+          "period": null,
+          "unit": "kg and accessory native units"
+        }
+      },
+      {
+        "id": "entity:viet-nam",
+        "type": "EntityNode",
+        "sourceId": "world-bank",
+        "value": "Viet Nam",
+        "confidence": 1,
+        "timestamp": "2026-07-14T07:00:26.902Z",
+        "provenance": {
+          "sourceId": "world-bank",
+          "sourceTier": "S",
+          "method": "api",
+          "url": "https://api.worldbank.org/v2/"
+        },
+        "metadata": {
+          "entityType": "country",
+          "subject": "Viet Nam Tariff rate, applied, weighted mean, all products (%)",
+          "geography": "Viet Nam"
+        }
+      },
+      {
+        "id": "entity:bangladesh",
+        "type": "EntityNode",
+        "sourceId": "world-bank",
+        "value": "Bangladesh",
+        "confidence": 1,
+        "timestamp": "2026-07-14T07:00:26.902Z",
+        "provenance": {
+          "sourceId": "world-bank",
+          "sourceTier": "S",
+          "method": "api",
+          "url": "https://api.worldbank.org/v2/"
+        },
+        "metadata": {
+          "entityType": "country",
+          "subject": "Bangladesh Labor force participation rate, female (% of female population ages 15+) (modeled ILO estimate)",
+          "geography": "Bangladesh"
+        }
+      },
+      {
+        "id": "entity:united-states",
+        "type": "EntityNode",
+        "sourceId": "us-census-trade",
+        "value": "United States",
+        "confidence": 1,
+        "timestamp": "2026-07-14T07:00:48.518Z",
+        "provenance": {
+          "sourceId": "us-census-trade",
+          "sourceTier": "S",
+          "method": "api",
+          "url": "https://api.census.gov/data/timeseries/intltrade/imports/hs"
+        },
+        "metadata": {
+          "entityType": "country",
+          "subject": "CHINA 611020",
+          "geography": "United States"
+        }
+      },
+      {
+        "id": "entity:de",
+        "type": "EntityNode",
+        "sourceId": "eurostat",
+        "value": "DE",
+        "confidence": 1,
+        "timestamp": "2026-07-14T07:00:28.800Z",
+        "provenance": {
+          "sourceId": "eurostat",
+          "sourceTier": "S",
+          "method": "api",
+          "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/demo_pjan"
+        },
+        "metadata": {
+          "entityType": "country",
+          "subject": "DE Population on 1 January by age and sex",
+          "geography": "DE"
+        }
+      },
+      {
+        "id": "entity:eur-reference-fx-rates",
+        "type": "EntityNode",
+        "sourceId": "ecb-eurofxref",
+        "value": "EUR reference FX rates",
+        "confidence": 1,
+        "timestamp": "2026-07-14T07:00:29.273Z",
+        "provenance": {
+          "sourceId": "ecb-eurofxref",
+          "sourceTier": "S",
+          "method": "api",
+          "url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml"
+        },
+        "metadata": {
+          "entityType": "indicator_subject",
+          "subject": "EUR reference FX rates",
+          "geography": null
+        }
+      },
+      {
+        "id": "entity:dexjpus",
+        "type": "EntityNode",
+        "sourceId": "fred",
+        "value": "DEXJPUS",
+        "confidence": 1,
+        "timestamp": "2026-07-14T07:00:33.217Z",
+        "provenance": {
+          "sourceId": "fred",
+          "sourceTier": "S",
+          "method": "api",
+          "url": "https://api.stlouisfed.org/fred/series/observations"
+        },
+        "metadata": {
+          "entityType": "indicator_subject",
+          "subject": "DEXJPUS",
+          "geography": null
+        }
+      },
+      {
+        "id": "entity:audit-counterexample-knit-base-tee",
+        "type": "EntityNode",
+        "sourceId": "internal-bom-system",
+        "value": "audit-counterexample-knit-base-tee",
+        "confidence": 0.274,
+        "timestamp": "2026-07-14T07:00:48.519Z",
+        "provenance": {
+          "sourceId": "internal-bom-system",
+          "sourceTier": "A+",
+          "method": "manual"
+        },
+        "metadata": {
+          "entityType": "indicator_subject",
+          "subject": "audit-counterexample-knit-base-tee",
+          "geography": null
+        }
+      },
+      {
+        "id": "indicator:macro-control:viet-nam-gdp-current-us",
+        "type": "IndicatorNode",
+        "sourceId": "world-bank",
+        "value": "macro_control",
+        "confidence": 1,
+        "timestamp": "2026-07-14T07:00:26.901Z",
+        "provenance": {
+          "sourceId": "world-bank",
+          "sourceTier": "S",
+          "method": "api",
+          "url": "https://api.worldbank.org/v2/"
+        },
+        "metadata": {
+          "evidenceKind": "macro_control",
+          "unit": "World Bank indicator native unit"
+        }
+      },
+      {
+        "id": "indicator:macro-control:viet-nam-tariff-rate-applied-weighted-mean-all-products",
+        "type": "IndicatorNode",
+        "sourceId": "world-bank",
+        "value": "macro_control",
+        "confidence": 1,
+        "timestamp": "2026-07-14T07:00:26.902Z",
+        "provenance": {
+          "sourceId": "world-bank",
+          "sourceTier": "S",
+          "method": "api",
+          "url": "https://api.worldbank.org/v2/"
+        },
+        "metadata": {
+          "evidenceKind": "macro_control",
+          "unit": "World Bank indicator native unit"
+        }
+      },
+      {
+        "id": "indicator:macro-control:bangladesh-labor-force-participation-rate-female-of-female-population-ages-15-modeled-ilo-estima",
+        "type": "IndicatorNode",
+        "sourceId": "world-bank",
+        "value": "macro_control",
+        "confidence": 1,
+        "timestamp": "2026-07-14T07:00:26.902Z",
+        "provenance": {
+          "sourceId": "world-bank",
+          "sourceTier": "S",
+          "method": "api",
+          "url": "https://api.worldbank.org/v2/"
+        },
+        "metadata": {
+          "evidenceKind": "macro_control",
+          "unit": "World Bank indicator native unit"
+        }
+      },
+      {
+        "id": "indicator:financial-primary:gap-inc",
+        "type": "IndicatorNode",
+        "sourceId": "sec-edgar",
+        "value": "financial_primary",
+        "confidence": 1,
+        "timestamp": "2026-07-14T07:00:27.804Z",
+        "provenance": {
+          "sourceId": "sec-edgar",
+          "sourceTier": "S",
+          "method": "api",
+          "url": "https://data.sec.gov/api/xbrl/companyfacts/CIK0000039911.json"
+        },
+        "metadata": {
+          "evidenceKind": "financial_primary",
+          "unit": "SEC XBRL native units"
+        }
+      },
+      {
+        "id": "indicator:macro-control:de-population-on-1-january-by-age-and-sex",
+        "type": "IndicatorNode",
+        "sourceId": "eurostat",
+        "value": "macro_control",
+        "confidence": 1,
+        "timestamp": "2026-07-14T07:00:28.800Z",
+        "provenance": {
+          "sourceId": "eurostat",
+          "sourceTier": "S",
+          "method": "api",
+          "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/demo_pjan"
+        },
+        "metadata": {
+          "evidenceKind": "macro_control",
+          "unit": "Eurostat dataset native unit"
+        }
+      },
+      {
+        "id": "indicator:macro-control:eur-reference-fx-rates",
+        "type": "IndicatorNode",
+        "sourceId": "ecb-eurofxref",
+        "value": "macro_control",
+        "confidence": 1,
+        "timestamp": "2026-07-14T07:00:29.273Z",
+        "provenance": {
+          "sourceId": "ecb-eurofxref",
+          "sourceTier": "S",
+          "method": "api",
+          "url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml"
+        },
+        "metadata": {
+          "evidenceKind": "macro_control",
+          "unit": "EUR base reference rates"
+        }
+      },
+      {
+        "id": "indicator:market-signal:cusr0000saa",
+        "type": "IndicatorNode",
+        "sourceId": "bls-public-api",
+        "value": "market_signal",
+        "confidence": 1,
+        "timestamp": "2026-07-14T07:00:30.817Z",
+        "provenance": {
+          "sourceId": "bls-public-api",
+          "sourceTier": "S",
+          "method": "api",
+          "url": "https://api.bls.gov/publicAPI/v2/timeseries/data/CUSR0000SAA"
+        },
+        "metadata": {
+          "evidenceKind": "market_signal",
+          "unit": "BLS series native index/value"
+        }
+      },
+      {
+        "id": "indicator:macro-control:dexjpus",
+        "type": "IndicatorNode",
+        "sourceId": "fred",
+        "value": "macro_control",
+        "confidence": 1,
+        "timestamp": "2026-07-14T07:00:33.217Z",
+        "provenance": {
+          "sourceId": "fred",
+          "sourceTier": "S",
+          "method": "api",
+          "url": "https://api.stlouisfed.org/fred/series/observations"
+        },
+        "metadata": {
+          "evidenceKind": "macro_control",
+          "unit": "FRED series native unit"
+        }
+      },
+      {
+        "id": "indicator:trade-flow-primary:china-611020",
+        "type": "IndicatorNode",
+        "sourceId": "us-census-trade",
+        "value": "trade_flow_primary",
+        "confidence": 1,
+        "timestamp": "2026-07-14T07:00:48.518Z",
+        "provenance": {
+          "sourceId": "us-census-trade",
+          "sourceTier": "S",
+          "method": "api",
+          "url": "https://api.census.gov/data/timeseries/intltrade/imports/hs"
+        },
+        "metadata": {
+          "evidenceKind": "trade_flow_primary",
+          "unit": "monthly general import value USD"
+        }
+      },
+      {
+        "id": "indicator:material-quantity:audit-counterexample-knit-base-tee",
+        "type": "IndicatorNode",
+        "sourceId": "internal-bom-system",
+        "value": "material_quantity",
+        "confidence": 0.274,
+        "timestamp": "2026-07-14T07:00:48.519Z",
+        "provenance": {
+          "sourceId": "internal-bom-system",
+          "sourceTier": "A+",
+          "method": "manual"
+        },
+        "metadata": {
+          "evidenceKind": "material_quantity",
+          "unit": "kg and accessory native units"
+        }
+      }
+    ],
+    "edges": [
+      {
+        "id": "derived:world-bank-macro-control-viet-nam-gdp-current-us-viet-nam-has-an-official-world-bank-value-for-g",
+        "from": "data-point:world-bank-macro-control-viet-nam-gdp-current-us-viet-nam-has-an-official-world-bank-value-for-g",
+        "to": "source:world-bank",
+        "type": "derived_from",
+        "weight": 1,
+        "confidence": 1
+      },
+      {
+        "id": "describes:world-bank-macro-control-viet-nam-gdp-current-us-viet-nam-has-an-official-world-bank-value-for-g",
+        "from": "data-point:world-bank-macro-control-viet-nam-gdp-current-us-viet-nam-has-an-official-world-bank-value-for-g",
+        "to": "entity:viet-nam",
+        "type": "describes",
+        "weight": 0.9,
+        "confidence": 1
+      },
+      {
+        "id": "supports:world-bank-macro-control-viet-nam-gdp-current-us-viet-nam-has-an-official-world-bank-value-for-g",
+        "from": "data-point:world-bank-macro-control-viet-nam-gdp-current-us-viet-nam-has-an-official-world-bank-value-for-g",
+        "to": "indicator:macro-control:viet-nam-gdp-current-us",
+        "type": "supports",
+        "weight": 0.85,
+        "confidence": 1
+      },
+      {
+        "id": "derived:world-bank-macro-control-viet-nam-tariff-rate-applied-weighted-mean-all-products-viet-nam-has-an",
+        "from": "data-point:world-bank-macro-control-viet-nam-tariff-rate-applied-weighted-mean-all-products-viet-nam-has-an",
+        "to": "source:world-bank",
+        "type": "derived_from",
+        "weight": 1,
+        "confidence": 1
+      },
+      {
+        "id": "describes:world-bank-macro-control-viet-nam-tariff-rate-applied-weighted-mean-all-products-viet-nam-has-an",
+        "from": "data-point:world-bank-macro-control-viet-nam-tariff-rate-applied-weighted-mean-all-products-viet-nam-has-an",
+        "to": "entity:viet-nam",
+        "type": "describes",
+        "weight": 0.9,
+        "confidence": 1
+      },
+      {
+        "id": "supports:world-bank-macro-control-viet-nam-tariff-rate-applied-weighted-mean-all-products-viet-nam-has-an",
+        "from": "data-point:world-bank-macro-control-viet-nam-tariff-rate-applied-weighted-mean-all-products-viet-nam-has-an",
+        "to": "indicator:macro-control:viet-nam-tariff-rate-applied-weighted-mean-all-products",
+        "type": "supports",
+        "weight": 0.85,
+        "confidence": 1
+      },
+      {
+        "id": "derived:world-bank-macro-control-bangladesh-labor-force-participation-rate-female-of-female-population-a",
+        "from": "data-point:world-bank-macro-control-bangladesh-labor-force-participation-rate-female-of-female-population-a",
+        "to": "source:world-bank",
+        "type": "derived_from",
+        "weight": 1,
+        "confidence": 1
+      },
+      {
+        "id": "describes:world-bank-macro-control-bangladesh-labor-force-participation-rate-female-of-female-population-a",
+        "from": "data-point:world-bank-macro-control-bangladesh-labor-force-participation-rate-female-of-female-population-a",
+        "to": "entity:bangladesh",
+        "type": "describes",
+        "weight": 0.9,
+        "confidence": 1
+      },
+      {
+        "id": "supports:world-bank-macro-control-bangladesh-labor-force-participation-rate-female-of-female-population-a",
+        "from": "data-point:world-bank-macro-control-bangladesh-labor-force-participation-rate-female-of-female-population-a",
+        "to": "indicator:macro-control:bangladesh-labor-force-participation-rate-female-of-female-population-ages-15-modeled-ilo-estima",
+        "type": "supports",
+        "weight": 0.85,
+        "confidence": 1
+      },
+      {
+        "id": "derived:sec-edgar-financial-primary-gap-inc-gap-inc-has-sec-xbrl-operating-metrics-for-revenue-margin-in",
+        "from": "data-point:sec-edgar-financial-primary-gap-inc-gap-inc-has-sec-xbrl-operating-metrics-for-revenue-margin-in",
+        "to": "source:sec-edgar",
+        "type": "derived_from",
+        "weight": 1,
+        "confidence": 1
+      },
+      {
+        "id": "describes:sec-edgar-financial-primary-gap-inc-gap-inc-has-sec-xbrl-operating-metrics-for-revenue-margin-in",
+        "from": "data-point:sec-edgar-financial-primary-gap-inc-gap-inc-has-sec-xbrl-operating-metrics-for-revenue-margin-in",
+        "to": "entity:united-states",
+        "type": "describes",
+        "weight": 0.9,
+        "confidence": 1
+      },
+      {
+        "id": "supports:sec-edgar-financial-primary-gap-inc-gap-inc-has-sec-xbrl-operating-metrics-for-revenue-margin-in",
+        "from": "data-point:sec-edgar-financial-primary-gap-inc-gap-inc-has-sec-xbrl-operating-metrics-for-revenue-margin-in",
+        "to": "indicator:financial-primary:gap-inc",
+        "type": "supports",
+        "weight": 0.85,
+        "confidence": 1
+      },
+      {
+        "id": "derived:eurostat-macro-control-de-population-on-1-january-by-age-and-sex-eurostat-exposes-population-on-",
+        "from": "data-point:eurostat-macro-control-de-population-on-1-january-by-age-and-sex-eurostat-exposes-population-on-",
+        "to": "source:eurostat",
+        "type": "derived_from",
+        "weight": 1,
+        "confidence": 1
+      },
+      {
+        "id": "describes:eurostat-macro-control-de-population-on-1-january-by-age-and-sex-eurostat-exposes-population-on-",
+        "from": "data-point:eurostat-macro-control-de-population-on-1-january-by-age-and-sex-eurostat-exposes-population-on-",
+        "to": "entity:de",
+        "type": "describes",
+        "weight": 0.9,
+        "confidence": 1
+      },
+      {
+        "id": "supports:eurostat-macro-control-de-population-on-1-january-by-age-and-sex-eurostat-exposes-population-on-",
+        "from": "data-point:eurostat-macro-control-de-population-on-1-january-by-age-and-sex-eurostat-exposes-population-on-",
+        "to": "indicator:macro-control:de-population-on-1-january-by-age-and-sex",
+        "type": "supports",
+        "weight": 0.85,
+        "confidence": 1
+      },
+      {
+        "id": "derived:ecb-eurofxref-macro-control-eur-reference-fx-rates-ecb-exposes-eur-reference-rates-for-29-curren",
+        "from": "data-point:ecb-eurofxref-macro-control-eur-reference-fx-rates-ecb-exposes-eur-reference-rates-for-29-curren",
+        "to": "source:ecb-eurofxref",
+        "type": "derived_from",
+        "weight": 1,
+        "confidence": 1
+      },
+      {
+        "id": "describes:ecb-eurofxref-macro-control-eur-reference-fx-rates-ecb-exposes-eur-reference-rates-for-29-curren",
+        "from": "data-point:ecb-eurofxref-macro-control-eur-reference-fx-rates-ecb-exposes-eur-reference-rates-for-29-curren",
+        "to": "entity:eur-reference-fx-rates",
+        "type": "describes",
+        "weight": 0.9,
+        "confidence": 1
+      },
+      {
+        "id": "supports:ecb-eurofxref-macro-control-eur-reference-fx-rates-ecb-exposes-eur-reference-rates-for-29-curren",
+        "from": "data-point:ecb-eurofxref-macro-control-eur-reference-fx-rates-ecb-exposes-eur-reference-rates-for-29-curren",
+        "to": "indicator:macro-control:eur-reference-fx-rates",
+        "type": "supports",
+        "weight": 0.85,
+        "confidence": 1
+      },
+      {
+        "id": "derived:bls-public-api-market-signal-cusr0000saa-bls-exposes-a-latest-public-series-observation-for-cusr",
+        "from": "data-point:bls-public-api-market-signal-cusr0000saa-bls-exposes-a-latest-public-series-observation-for-cusr",
+        "to": "source:bls-public-api",
+        "type": "derived_from",
+        "weight": 1,
+        "confidence": 1
+      },
+      {
+        "id": "describes:bls-public-api-market-signal-cusr0000saa-bls-exposes-a-latest-public-series-observation-for-cusr",
+        "from": "data-point:bls-public-api-market-signal-cusr0000saa-bls-exposes-a-latest-public-series-observation-for-cusr",
+        "to": "entity:united-states",
+        "type": "describes",
+        "weight": 0.9,
+        "confidence": 1
+      },
+      {
+        "id": "supports:bls-public-api-market-signal-cusr0000saa-bls-exposes-a-latest-public-series-observation-for-cusr",
+        "from": "data-point:bls-public-api-market-signal-cusr0000saa-bls-exposes-a-latest-public-series-observation-for-cusr",
+        "to": "indicator:market-signal:cusr0000saa",
+        "type": "supports",
+        "weight": 0.85,
+        "confidence": 1
+      },
+      {
+        "id": "derived:fred-macro-control-dexjpus-fred-exposes-a-latest-observation-for-dexjpus-on-2026-07-10-2026-07-1",
+        "from": "data-point:fred-macro-control-dexjpus-fred-exposes-a-latest-observation-for-dexjpus-on-2026-07-10-2026-07-1",
+        "to": "source:fred",
+        "type": "derived_from",
+        "weight": 1,
+        "confidence": 1
+      },
+      {
+        "id": "describes:fred-macro-control-dexjpus-fred-exposes-a-latest-observation-for-dexjpus-on-2026-07-10-2026-07-1",
+        "from": "data-point:fred-macro-control-dexjpus-fred-exposes-a-latest-observation-for-dexjpus-on-2026-07-10-2026-07-1",
+        "to": "entity:dexjpus",
+        "type": "describes",
+        "weight": 0.9,
+        "confidence": 1
+      },
+      {
+        "id": "supports:fred-macro-control-dexjpus-fred-exposes-a-latest-observation-for-dexjpus-on-2026-07-10-2026-07-1",
+        "from": "data-point:fred-macro-control-dexjpus-fred-exposes-a-latest-observation-for-dexjpus-on-2026-07-10-2026-07-1",
+        "to": "indicator:macro-control:dexjpus",
+        "type": "supports",
+        "weight": 0.85,
+        "confidence": 1
+      },
+      {
+        "id": "derived:us-census-trade-trade-flow-primary-china-611020-u-s-census-reports-hs-611020-imports-from-china-",
+        "from": "data-point:us-census-trade-trade-flow-primary-china-611020-u-s-census-reports-hs-611020-imports-from-china-",
+        "to": "source:us-census-trade",
+        "type": "derived_from",
+        "weight": 1,
+        "confidence": 1
+      },
+      {
+        "id": "describes:us-census-trade-trade-flow-primary-china-611020-u-s-census-reports-hs-611020-imports-from-china-",
+        "from": "data-point:us-census-trade-trade-flow-primary-china-611020-u-s-census-reports-hs-611020-imports-from-china-",
+        "to": "entity:united-states",
+        "type": "describes",
+        "weight": 0.9,
+        "confidence": 1
+      },
+      {
+        "id": "supports:us-census-trade-trade-flow-primary-china-611020-u-s-census-reports-hs-611020-imports-from-china-",
+        "from": "data-point:us-census-trade-trade-flow-primary-china-611020-u-s-census-reports-hs-611020-imports-from-china-",
+        "to": "indicator:trade-flow-primary:china-611020",
+        "type": "supports",
+        "weight": 0.85,
+        "confidence": 1
+      },
+      {
+        "id": "derived:internal-bom-system-material-quantity-audit-counterexample-knit-base-tee-bom-material-model-deri",
+        "from": "data-point:internal-bom-system-material-quantity-audit-counterexample-knit-base-tee-bom-material-model-deri",
+        "to": "source:internal-bom-system",
+        "type": "derived_from",
+        "weight": 1,
+        "confidence": 0.274
+      },
+      {
+        "id": "describes:internal-bom-system-material-quantity-audit-counterexample-knit-base-tee-bom-material-model-deri",
+        "from": "data-point:internal-bom-system-material-quantity-audit-counterexample-knit-base-tee-bom-material-model-deri",
+        "to": "entity:audit-counterexample-knit-base-tee",
+        "type": "describes",
+        "weight": 0.9,
+        "confidence": 0.274
+      },
+      {
+        "id": "supports:internal-bom-system-material-quantity-audit-counterexample-knit-base-tee-bom-material-model-deri",
+        "from": "data-point:internal-bom-system-material-quantity-audit-counterexample-knit-base-tee-bom-material-model-deri",
+        "to": "indicator:material-quantity:audit-counterexample-knit-base-tee",
+        "type": "supports",
+        "weight": 0.85,
+        "confidence": 0.274
+      },
+      {
+        "id": "contradicts:internal-bom-system-material-quantity-audit-counterexample-knit-base-tee-bom-material-model-deri:0",
+        "from": "data-point:internal-bom-system-material-quantity-audit-counterexample-knit-base-tee-bom-material-model-deri",
+        "to": "indicator:material-quantity:audit-counterexample-knit-base-tee",
+        "type": "contradicts",
+        "weight": 0.75,
+        "confidence": 0.274
+      }
+    ],
+    "summary": {
+      "sourceNodeCount": 23,
+      "dataPointNodeCount": 10,
+      "entityNodeCount": 7,
+      "indicatorNodeCount": 10,
+      "edgeCount": 31
+    }
+  },
+  "confidenceScore": 0.571,
+  "confidenceBreakdown": {
+    "sourceReliability": 0.304,
+    "dataCompleteness": 1,
+    "freshnessScore": 1,
+    "crossSourceAgreement": 0.2,
+    "conflictPenalty": 0
+  },
+  "perSourceConfidence": {
+    "un-comtrade": 0,
+    "world-bank-wits": 0,
+    "sec-edgar": 1,
+    "edinet-japan": 0,
+    "estat-japan": 0,
+    "usitc-dataweb": 0,
+    "us-census-trade": 1,
+    "world-bank": 1,
+    "oecd-data-explorer": 0,
+    "fred": 1,
+    "bls-public-api": 1,
+    "ecb-eurofxref": 1,
+    "eurostat": 1,
+    "open-supply-hub": 0,
+    "better-work": 0,
+    "ilo": 0,
+    "ilostat-api": 0,
+    "wto": 0,
+    "shopee-open-platform": 0,
+    "temu-partner-api": 0,
+    "alibaba-open-platform": 0,
+    "internal-bom-system": 0.137,
+    "mckinsey-bof-state-of-fashion": 0
+  },
+  "conflictList": [],
+  "visualizationReadiness": {
+    "status": "degraded",
+    "missingFields": [
+      "missingCredentials",
+      "readyThreshold"
+    ],
+    "warnings": [
+      "Cross-source agreement is weak.",
+      "Some sources are degraded or unavailable.",
+      "Visualization is allowed only in degraded mode."
+    ],
+    "usableEvidence": true
+  },
+  "missingCredentials": [
+    "open-supply-hub",
+    "un-comtrade"
+  ],
+  "warnings": [
+    "Cross-source agreement is weak.",
+    "Some sources are degraded or unavailable.",
+    "Visualization is allowed only in degraded mode.",
+    "Missing credentials reduce coverage and confidence."
+  ],
+  "compatibility": {
+    "deprecatedVerifiedSourceCount": 7
+  },
+  "credentialStatus": [
+    {
+      "sourceId": "fred",
+      "envVar": "FRED_API_KEY",
+      "status": "present",
+      "purpose": "FRED FX/rates/macro series probe"
+    },
+    {
+      "sourceId": "us-census-trade",
+      "envVar": "CENSUS_API_KEY",
+      "status": "present",
+      "purpose": "U.S. HS-level import trade probe"
+    },
+    {
+      "sourceId": "open-supply-hub",
+      "envVar": "OPEN_SUPPLY_HUB_API_KEY",
+      "status": "missing",
+      "purpose": "facility identity probe"
+    },
+    {
+      "sourceId": "un-comtrade",
+      "envVar": "UN_COMTRADE_API_KEY",
+      "status": "missing",
+      "purpose": "global customs mirror probe"
+    }
+  ],
+  "verifications": [
+    {
+      "sourceId": "world-bank",
+      "status": "verified",
+      "evidenceId": "world-bank-macro-control-viet-nam-gdp-current-us-viet-nam-has-an-official-world-bank-value-for-gdp-current-us-in-2025-20",
+      "message": "world-bank adapter health is healthy.",
+      "checkedAt": "2026-07-14T07:00:24.128Z"
+    },
+    {
+      "sourceId": "sec-edgar",
+      "status": "verified",
+      "evidenceId": "sec-edgar-financial-primary-gap-inc-gap-inc-has-sec-xbrl-operating-metrics-for-revenue-margin-inventory-and-cost-chain-a",
+      "message": "sec-edgar adapter health is healthy.",
+      "checkedAt": "2026-07-14T07:00:26.902Z"
+    },
+    {
+      "sourceId": "eurostat",
+      "status": "verified",
+      "evidenceId": "eurostat-macro-control-de-population-on-1-january-by-age-and-sex-eurostat-exposes-population-on-1-january-by-age-and-sex",
+      "message": "eurostat adapter health is healthy.",
+      "checkedAt": "2026-07-14T07:00:27.804Z"
+    },
+    {
+      "sourceId": "ecb-eurofxref",
+      "status": "verified",
+      "evidenceId": "ecb-eurofxref-macro-control-eur-reference-fx-rates-ecb-exposes-eur-reference-rates-for-29-currencies-on-2026-07-13-2026-",
+      "message": "ecb-eurofxref adapter health is healthy.",
+      "checkedAt": "2026-07-14T07:00:28.800Z"
+    },
+    {
+      "sourceId": "bls-public-api",
+      "status": "verified",
+      "evidenceId": "bls-public-api-market-signal-cusr0000saa-bls-exposes-a-latest-public-series-observation-for-cusr0000saa-in-2026-m05-2026",
+      "message": "bls-public-api adapter health is healthy.",
+      "checkedAt": "2026-07-14T07:00:29.273Z"
+    },
+    {
+      "sourceId": "fred",
+      "status": "verified",
+      "evidenceId": "fred-macro-control-dexjpus-fred-exposes-a-latest-observation-for-dexjpus-on-2026-07-10-2026-07-10",
+      "message": "fred adapter health is healthy.",
+      "checkedAt": "2026-07-14T07:00:30.817Z"
+    },
+    {
+      "sourceId": "us-census-trade",
+      "status": "verified",
+      "evidenceId": "us-census-trade-trade-flow-primary-china-611020-u-s-census-reports-hs-611020-imports-from-china-in-2024-12-2024-12",
+      "message": "us-census-trade adapter health is healthy.",
+      "checkedAt": "2026-07-14T07:00:33.217Z"
+    },
+    {
+      "sourceId": "open-supply-hub",
+      "status": "skipped_auth_required",
+      "message": "OPEN_SUPPLY_HUB_API_KEY is not set; unauthenticated probe returned 401 in local testing.",
+      "checkedAt": "2026-07-14T07:00:48.518Z"
+    },
+    {
+      "sourceId": "un-comtrade",
+      "status": "skipped_auth_required",
+      "message": "UN_COMTRADE_API_KEY is not set; use the official API subscription key header for physical verification.",
+      "checkedAt": "2026-07-14T07:00:48.518Z"
+    }
+  ],
+  "brandPilot": {
+    "company": "GAP, INC",
+    "cik": "0000039911",
+    "metrics": [
+      {
+        "canonicalName": "revenue",
+        "tag": "Revenues",
+        "value": 15366000000,
+        "unit": "USD",
+        "fy": 2025,
+        "fp": "FY",
+        "form": "10-K",
+        "filed": "2026-03-17",
+        "end": "2026-01-31"
+      },
+      {
+        "canonicalName": "grossProfit",
+        "tag": "GrossProfit",
+        "value": 6268000000,
+        "unit": "USD",
+        "fy": 2025,
+        "fp": "FY",
+        "form": "10-K",
+        "filed": "2026-03-17",
+        "end": "2026-01-31"
+      },
+      {
+        "canonicalName": "costOfGoodsSold",
+        "tag": "CostOfGoodsAndServicesSold",
+        "value": 9098000000,
+        "unit": "USD",
+        "fy": 2025,
+        "fp": "FY",
+        "form": "10-K",
+        "filed": "2026-03-17",
+        "end": "2026-01-31"
+      },
+      {
+        "canonicalName": "inventory",
+        "tag": "InventoryFinishedGoodsNetOfReserves",
+        "value": 2207000000,
+        "unit": "USD",
+        "fy": 2025,
+        "fp": "FY",
+        "form": "10-K",
+        "filed": "2026-03-17",
+        "end": "2026-01-31"
+      },
+      {
+        "canonicalName": "operatingIncome",
+        "tag": "OperatingIncomeLoss",
+        "value": 1115000000,
+        "unit": "USD",
+        "fy": 2025,
+        "fp": "FY",
+        "form": "10-K",
+        "filed": "2026-03-17",
+        "end": "2026-01-31"
+      }
+    ],
+    "derived": {
+      "grossMargin": 0.4079,
+      "inventoryToRevenue": 0.1436
+    },
+    "interpretation": "This pilot proves SEC financial metrics can be extracted for brand-level cost, margin, and inventory analysis. It does not prove supplier shipments."
+  },
+  "evidence": [
+    {
+      "id": "world-bank-macro-control-viet-nam-gdp-current-us-viet-nam-has-an-official-world-bank-value-for-gdp-current-us-in-2025-20",
+      "sourceId": "world-bank",
+      "tier": "S",
+      "kind": "macro_control",
+      "subject": "Viet Nam GDP (current US$)",
+      "claim": "Viet Nam has an official World Bank value for GDP (current US$) in 2025",
+      "value": 514697215165.065,
+      "period": "2025",
+      "contradictions": [],
+      "confidence": 1,
+      "classification": "conclusion_ready"
+    },
+    {
+      "id": "world-bank-macro-control-viet-nam-tariff-rate-applied-weighted-mean-all-products-viet-nam-has-an-official-world-bank-val",
+      "sourceId": "world-bank",
+      "tier": "S",
+      "kind": "macro_control",
+      "subject": "Viet Nam Tariff rate, applied, weighted mean, all products (%)",
+      "claim": "Viet Nam has an official World Bank value for Tariff rate, applied, weighted mean, all products (%) in 2022",
+      "value": 1.07,
+      "period": "2022",
+      "contradictions": [],
+      "confidence": 1,
+      "classification": "conclusion_ready"
+    },
+    {
+      "id": "world-bank-macro-control-bangladesh-labor-force-participation-rate-female-of-female-population-ages-15-modeled-ilo-estim",
+      "sourceId": "world-bank",
+      "tier": "S",
+      "kind": "macro_control",
+      "subject": "Bangladesh Labor force participation rate, female (% of female population ages 15+) (modeled ILO estimate)",
+      "claim": "Bangladesh has an official World Bank value for Labor force participation rate, female (% of female population ages 15+) (modeled ILO estimate) in 2025",
+      "value": 38.649,
+      "period": "2025",
+      "contradictions": [],
+      "confidence": 1,
+      "classification": "conclusion_ready"
+    },
+    {
+      "id": "sec-edgar-financial-primary-gap-inc-gap-inc-has-sec-xbrl-operating-metrics-for-revenue-margin-inventory-and-cost-chain-a",
+      "sourceId": "sec-edgar",
+      "tier": "S",
+      "kind": "financial_primary",
+      "subject": "GAP, INC",
+      "claim": "GAP, INC has SEC XBRL operating metrics for revenue, margin, inventory, and cost-chain analysis",
+      "value": "revenue:15366000000 USD; grossProfit:6268000000 USD; costOfGoodsSold:9098000000 USD; inventory:2207000000 USD; operatingIncome:1115000000 USD; grossMargin=0.4079; inventoryToRevenue=0.1436",
+      "contradictions": [],
+      "confidence": 1,
+      "classification": "conclusion_ready"
+    },
+    {
+      "id": "eurostat-macro-control-de-population-on-1-january-by-age-and-sex-eurostat-exposes-population-on-1-january-by-age-and-sex",
+      "sourceId": "eurostat",
+      "tier": "S",
+      "kind": "macro_control",
+      "subject": "DE Population on 1 January by age and sex",
+      "claim": "Eurostat exposes Population on 1 January by age and sex for DE in 2024",
+      "value": 83456045,
+      "period": "2024",
+      "contradictions": [],
+      "confidence": 1,
+      "classification": "conclusion_ready"
+    },
+    {
+      "id": "ecb-eurofxref-macro-control-eur-reference-fx-rates-ecb-exposes-eur-reference-rates-for-29-currencies-on-2026-07-13-2026-",
+      "sourceId": "ecb-eurofxref",
+      "tier": "S",
+      "kind": "macro_control",
+      "subject": "EUR reference FX rates",
+      "claim": "ECB exposes EUR reference rates for 29 currencies on 2026-07-13",
+      "value": "USD=1.1424;JPY=185.23;USDJPY_cross=162.1411",
+      "period": "2026-07-13",
+      "contradictions": [],
+      "confidence": 1,
+      "classification": "conclusion_ready"
+    },
+    {
+      "id": "bls-public-api-market-signal-cusr0000saa-bls-exposes-a-latest-public-series-observation-for-cusr0000saa-in-2026-m05-2026",
+      "sourceId": "bls-public-api",
+      "tier": "S",
+      "kind": "market_signal",
+      "subject": "CUSR0000SAA",
+      "claim": "BLS exposes a latest public series observation for CUSR0000SAA in 2026 M05",
+      "value": 137.069,
+      "period": "2026-M05",
+      "contradictions": [],
+      "confidence": 1,
+      "classification": "conclusion_ready"
+    },
+    {
+      "id": "fred-macro-control-dexjpus-fred-exposes-a-latest-observation-for-dexjpus-on-2026-07-10-2026-07-10",
+      "sourceId": "fred",
+      "tier": "S",
+      "kind": "macro_control",
+      "subject": "DEXJPUS",
+      "claim": "FRED exposes a latest observation for DEXJPUS on 2026-07-10",
+      "value": 161.31,
+      "period": "2026-07-10",
+      "contradictions": [],
+      "confidence": 1,
+      "classification": "conclusion_ready"
+    },
+    {
+      "id": "us-census-trade-trade-flow-primary-china-611020-u-s-census-reports-hs-611020-imports-from-china-in-2024-12-2024-12",
+      "sourceId": "us-census-trade",
+      "tier": "S",
+      "kind": "trade_flow_primary",
+      "subject": "CHINA 611020",
+      "claim": "U.S. Census reports HS 611020 imports from CHINA in 2024-12",
+      "value": 84149034,
+      "period": "2024-12",
+      "contradictions": [],
+      "confidence": 1,
+      "classification": "conclusion_ready"
+    },
+    {
+      "id": "internal-bom-system-material-quantity-audit-counterexample-knit-base-tee-bom-material-model-derives-fabric-yarn-and-fibe",
+      "sourceId": "internal-bom-system",
+      "tier": "A+",
+      "kind": "material_quantity",
+      "subject": "audit-counterexample-knit-base-tee",
+      "claim": "BOM material model derives fabric, yarn, and fiber requirements for 10000 finished units",
+      "value": "netFabricKg=2200; grossFabricKg=2391.304; yarnInputKg=2543.941; reconciliation=yarn:outside_tolerance:0.2186",
+      "contradictions": [
+        "synthetic supplier yarn shipment yarn quantity outside tolerance by 0.2186"
+      ],
+      "confidence": 0.274,
+      "classification": "weak_or_conflicted"
+    }
+  ],
+  "gate": {
+    "status": "hard_conclusion",
+    "reasons": [
+      "one_S_or_A_plus_primary_source",
+      "one_independent_cross_check",
+      "documented_unit_or_currency_conversion",
+      "explicit_counterevidence_scan"
+    ],
+    "missing": []
+  },
+  "brandChainGate": {
+    "brand": "GAP, INC",
+    "status": "partial_chain",
+    "ledgers": [
+      {
+        "id": "financials",
+        "label": "Financials and operating disclosures",
+        "status": "passed",
+        "evidenceIds": [
+          "sec-edgar-financial-primary-gap-inc-gap-inc-has-sec-xbrl-operating-metrics-for-revenue-margin-inventory-and-cost-chain-a"
+        ],
+        "missing": [],
+        "nextActions": []
+      },
+      {
+        "id": "trade",
+        "label": "Customs and trade-flow ledger",
+        "status": "passed",
+        "evidenceIds": [
+          "us-census-trade-trade-flow-primary-china-611020-u-s-census-reports-hs-611020-imports-from-china-in-2024-12-2024-12"
+        ],
+        "missing": [],
+        "nextActions": [
+          "Set credentials or authorization for un-comtrade: UN_COMTRADE_API_KEY is not set; use the official API subscription key header for physical verification."
+        ]
+      },
+      {
+        "id": "supplier",
+        "label": "Supplier and facility ledger",
+        "status": "partial",
+        "evidenceIds": [],
+        "missing": [
+          "Need 1 strong supplier_identity/compliance_risk evidence item."
+        ],
+        "nextActions": [
+          "Set credentials or authorization for open-supply-hub: OPEN_SUPPLY_HUB_API_KEY is not set; unauthenticated probe returned 401 in local testing."
+        ]
+      },
+      {
+        "id": "platform",
+        "label": "Platform orders, price, inventory, and user feedback",
+        "status": "missing",
+        "evidenceIds": [],
+        "missing": [
+          "Need 1 strong platform_sales_primary/market_signal evidence item.",
+          "No relevant source probe for shopee-open-platform, temu-partner-api, alibaba-open-platform."
+        ],
+        "nextActions": [
+          "Add evidence from one of: shopee-open-platform, temu-partner-api, alibaba-open-platform.",
+          "Use authorized platform APIs or first-party shop data for orders, price, inventory, and return signals."
+        ]
+      },
+      {
+        "id": "materials",
+        "label": "Material, yarn, fabric, and BOM quantity ledger",
+        "status": "partial",
+        "evidenceIds": [],
+        "missing": [
+          "Need 1 strong material_quantity evidence item.",
+          "No relevant source probe for internal-bom-system, ice, supplier_quote, customs_records."
+        ],
+        "nextActions": [
+          "Add evidence from one of: internal-bom-system, ice, supplier_quote, customs_records.",
+          "Add BOM, fabric/yarn consumption, unit conversion, and wastage assumptions before claiming physical volume."
+        ]
+      },
+      {
+        "id": "macro_disruption",
+        "label": "FX, rates, labor, energy, tariff, and shipping disruption",
+        "status": "passed",
+        "evidenceIds": [
+          "world-bank-macro-control-viet-nam-gdp-current-us-viet-nam-has-an-official-world-bank-value-for-gdp-current-us-in-2025-20",
+          "world-bank-macro-control-viet-nam-tariff-rate-applied-weighted-mean-all-products-viet-nam-has-an-official-world-bank-val",
+          "world-bank-macro-control-bangladesh-labor-force-participation-rate-female-of-female-population-ages-15-modeled-ilo-estim",
+          "eurostat-macro-control-de-population-on-1-january-by-age-and-sex-eurostat-exposes-population-on-1-january-by-age-and-sex",
+          "ecb-eurofxref-macro-control-eur-reference-fx-rates-ecb-exposes-eur-reference-rates-for-29-currencies-on-2026-07-13-2026-",
+          "fred-macro-control-dexjpus-fred-exposes-a-latest-observation-for-dexjpus-on-2026-07-10-2026-07-10"
+        ],
+        "missing": [],
+        "nextActions": []
+      }
+    ],
+    "passedCount": 3,
+    "totalCount": 6,
+    "summary": "3/6 ledgers passed; this is a partial chain, not a full supply-chain verification."
+  },
+  "coverage": [
+    {
+      "dimensionId": "financials_and_disclosures",
+      "status": "covered_but_auth_needed",
+      "matchedSourceIds": [
+        "sec-edgar",
+        "edinet-japan"
+      ],
+      "missingCoverage": []
+    },
+    {
+      "dimensionId": "customs_and_trade",
+      "status": "covered_but_auth_needed",
+      "matchedSourceIds": [
+        "un-comtrade",
+        "world-bank-wits",
+        "usitc-dataweb",
+        "us-census-trade",
+        "wto",
+        "mckinsey-bof-state-of-fashion"
+      ],
+      "missingCoverage": []
+    },
+    {
+      "dimensionId": "supplier_facilities",
+      "status": "covered_but_auth_needed",
+      "matchedSourceIds": [
+        "open-supply-hub"
+      ],
+      "missingCoverage": []
+    },
+    {
+      "dimensionId": "macro_cost_drivers",
+      "status": "covered_but_auth_needed",
+      "matchedSourceIds": [
+        "world-bank",
+        "oecd-data-explorer",
+        "fred",
+        "bls-public-api",
+        "ecb-eurofxref",
+        "eurostat",
+        "better-work",
+        "ilo",
+        "ilostat-api"
+      ],
+      "missingCoverage": []
+    },
+    {
+      "dimensionId": "platform_orders_and_prices",
+      "status": "covered_but_auth_needed",
+      "matchedSourceIds": [
+        "shopee-open-platform",
+        "temu-partner-api",
+        "alibaba-open-platform"
+      ],
+      "missingCoverage": []
+    },
+    {
+      "dimensionId": "compliance_and_labor",
+      "status": "covered_but_auth_needed",
+      "matchedSourceIds": [
+        "better-work",
+        "ilo",
+        "ilostat-api"
+      ],
+      "missingCoverage": []
+    },
+    {
+      "dimensionId": "market_and_strategy_context",
+      "status": "covered_but_auth_needed",
+      "matchedSourceIds": [
+        "mckinsey-bof-state-of-fashion"
+      ],
+      "missingCoverage": []
+    }
+  ],
+  "interpretation": "Verification layer is degraded; degraded outputs are for monitoring and exploration, not final decisions."
+}
