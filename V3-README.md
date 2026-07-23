@@ -2,7 +2,7 @@
 
 > **v3 = 用真实数据 + Agent 智能路由，给中小服装工贸企业提供"老板 30 秒看到 3 方案"的决策支持**
 >
-> **服务对象**：南通富泉工贸（100-200 人，4 车间，对日/欧美 ODM/OEM）
+> **服务对象**：中小服装工贸企业（示例规模：100-200 人，4 车间，对日/欧美 ODM/OEM）
 > **当前阶段**：v3 路线已确立（`docs/产链引擎/00c_RESTART_PLAN_v3.md`），进入 P-Block 1 实施
 > **最后更新**：2026-07-01
 
@@ -17,7 +17,7 @@
 
 `Weekly + On-demand 商业决策简报，6 账本 + 7 监控维度 + 5 可视化门槛，每跑 `verify:intelligence` 输出 bounded artifact。`
 
-> **本版本（v3）定位取代 v2 全栈规划**：v2 是"7-agent 全产业链因果推导平台"，v3 是"先在 verify:intelligence 上跑通 5 个公开源 + 4 个授权源 + 3 个 candidate，再扩张"。
+> **本版本（v3）定位取代 v2 全栈规划**：v2 是"7-agent 全产业链因果推导平台"，v3 是"先在 verify:intelligence 上跑通 5 个公开源 + 4 个授权源 + 3 个 candidate，�[...]
 > v2 文档已归档于 `docs/产链引擎/` 子目录，**不再维护**。
 
 ---
@@ -44,7 +44,7 @@ npm run verify:intelligence
 # → 检查 verifiedSourceCount / brandChainGate.status / visualizationReadiness.status
 ```
 
-如果 `verify:intelligence` 输出 `visualizationReadiness.status = blocked`，意味着进入正式可视化/安装包阶段被硬门槛拦截；按 `docs/INTELLIGENCE_VERIFICATION_RUNBOOK_CN.md §7` 顺序补源。
+如果 `verify:intelligence` 输出 `visualizationReadiness.status = blocked`，意味着进入正式可视化/安装包阶段被硬门槛拦截；按 `docs/INTELLIGENCE_VERIFICATION_RUNBOOK_CN.md §7[...]
 
 ---
 
@@ -143,7 +143,7 @@ D:\Documents\New project 2\
 
 ## 6. 已知重要警告（2026-07-01 校准）
 
-1. **PROJECT_HANDBOOK.md §1, §4 与 v3 不一致**：HANDBOOK 描述的是 v2 旧栈（LangGraph/Mem0/CrewAI 的 Python 方案），v3 实际栈是 Express + Zod + OpenAI Agents SDK（与 Launch Desk 共用 monorepo）。以 `产链引擎/00c_RESTART_PLAN_v3.md` 为准。
+1. **PROJECT_HANDBOOK.md §1, §4 与 v3 不一致**：HANDBOOK 描述的是 v2 旧栈（LangGraph/Mem0/CrewAI 的 Python 方案），v3 实际栈是 Express + Zod + OpenAI Agents SDK（与 Launch Des[...]
 2. **40_MVP_DESIGN.md 已标 DEPRECATED**：当前活跃方案是 v3，仅在 4 周决策点 PIVOT/KILL 时作为备选参考。
 3. **04_CODE_SOP.md 已标 DEPRECATED**：原 Python + D:\ERP 栈示例已与 v3 TS + 当前 monorepo 栈不一致。
 4. **04b_M0_DESIGN.md 早已作废**：00c_RESTART_PLAN_v3.md §一 显式标"v2 整体作废"。
