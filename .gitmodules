@@ -1,0 +1,30 @@
+[submodule "skills/ECC"]
+	path = skills/ECC
+	url = https://github.com/affaan-m/ECC.git
+[submodule "skills/agent-reach"]
+	path = skills/agent-reach
+	url = https://github.com/Panniantong/Agent-Reach.git
+[submodule "skills/anthropic-skills"]
+	path = skills/anthropic-skills
+	url = https://github.com/anthropics/skills.git
+[submodule "skills/composio-skills"]
+	path = skills/composio-skills
+	url = https://github.com/ComposioHQ/awesome-claude-skills.git
+[submodule "skills/marketing-skills"]
+	path = skills/marketing-skills
+	url = https://github.com/coreyhaines31/marketingskills.git
+[submodule "skills/mattpocock-skills"]
+	path = skills/mattpocock-skills
+	url = https://github.com/mattpocock/skills.git
+[submodule "skills/national-stats-source"]
+	path = skills/national-stats-source
+	url = https://github.com/Ddhjx-code/national_data.git
+[submodule "skills/openclaw-skills"]
+	path = skills/openclaw-skills
+	url = https://github.com/VoltAgent/awesome-openclaw-skills.git
+[submodule "skills/superpowers"]
+	path = skills/superpowers
+	url = https://github.com/obra/superpowers.git
+[submodule "skills/trailofbits-skills"]
+	path = skills/trailofbits-skills
+	url = https://github.com/trailofbits/skills.git

@@ -2,31 +2,35 @@
 
 ## 当前结论
 
-`skills/ECC` 是父仓库以 gitlink 形式记录的嵌套 Git 仓库：
+十个第三方技能仓库现在都以正式 Git submodule 声明并固定到父仓库记录的 commit。
+其中 `skills/ECC`：
 
 - 父仓库记录的 gitlink commit：`81af40761939056ab3dc54732fd4f562a27309d0`
-- 当前分支：`main`
-- 当前 dirty 文件：`package-lock.json`、`yarn.lock`
-- dirty 类型：锁文件版本漂移，未发现 Agent OS 主项目源码变更
-- `.gitmodules`：不存在，因此它不是父仓库正式声明的 submodule
+- `.gitmodules`：已声明，URL 指向上游 `affaan-m/ECC`
+- 全新递归克隆：可恢复到上述精确 commit
+- 当前父仓库验收：submodule 无本地 dirty
 
 ## 处理决策
 
-本轮不回滚、不提交 `skills/ECC` 内部锁文件漂移。
+不在父仓库热修复中改写或提交任何第三方 submodule 的内容。
 
 原因：
 
 - `skills/ECC` 属于第三方技能仓库内容，不属于 Agent OS 主项目源码。
-- 锁文件漂移可能来自此前技能安装或包管理器解析，不应在未确认上游语义时由主项目自动改写。
-- 父仓库 P7 已完成提交，剩余 `git status` 中的 `m skills/ECC` 表示嵌套仓库工作区 dirty，不表示父仓库 `src/*` 或治理文档仍未收口。
+- 第三方内容必须由上游独立维护。
+- 父仓库只记录经确认存在的固定 commit，并通过技能审计隔离未通过项。
 
 ## 后续处理选项
 
-如需完全清空工作区，有三种显式路径：
+标准克隆与修复命令：
 
-1. 在 `skills/ECC` 内确认锁文件漂移来自预期依赖升级后，单独提交到该仓库，再由父仓库更新 gitlink。
-2. 在 `skills/ECC` 内确认锁文件漂移无价值后，由人工显式批准回滚该嵌套仓库锁文件。
-3. 将 `skills/ECC` 迁移为正式 submodule，并补充 `.gitmodules`，再定义 vendor update SOP。
+```bash
+git clone --recurse-submodules https://github.com/paninick/-agent-.git
+git submodule update --init --recursive
+```
+
+更新任一 vendor commit 必须单独审查上游差异、重新运行
+`npm run verify:skills`，再由父仓库提交新的 gitlink。
 
 ## 边界
 

@@ -53,6 +53,14 @@ describe("P7 Skill Scanner", () => {
     expect(parseFrontmatter("# No frontmatter")).toEqual({});
   });
 
+  it("parses CRLF frontmatter used by checked-out Windows skill repositories", () => {
+    const parsed = parseFrontmatter(
+      "---\r\nname: windows-skill\r\ndescription: CRLF fixture\r\nmetadata:\r\n  origin: ECC\r\n---\r\n# Body\r\n",
+    );
+    expect(parsed.name).toBe("windows-skill");
+    expect(parsed.metadata?.origin).toBe("ECC");
+  });
+
   // ===== Sync scanning =====
 
   it("recursively scans SKILL.md files into descriptors", () => {

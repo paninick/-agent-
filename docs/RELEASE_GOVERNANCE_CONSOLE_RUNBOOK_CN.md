@@ -51,17 +51,18 @@ npm run verify:release
 - intelligence artifact 标记 `containsSecrets=true`。
 - release snapshot 发现结构性 blocking reasons。
 
-## `skills/ECC` 规则
+## 第三方技能仓库规则
 
-当前 `skills/ECC` 是嵌套 Git 仓库，父仓库记录为 gitlink，但没有 `.gitmodules`。
+十个 vendor 技能仓库均为 `.gitmodules` 声明的 submodule。发布候选必须通过
+递归克隆或以下命令恢复固定版本：
 
-已知非阻塞 dirty：
+```bash
+git submodule update --init --recursive
+```
 
-- `skills/ECC`
-- `skills/ECC/package-lock.json`
-- `skills/ECC/yarn.lock`
-
-P8 不会回滚或提交 `skills/ECC` 内部变更。
+`npm run verify:skills` 会阻止缺失的 submodule 和超出已审查隔离基线的新
+拒绝项。已记录的第三方拒绝项仍保持隔离，不会成为可加载 runtime skill。
+P8 不会回滚或提交任何 submodule 内部变更。
 
 ## 边界
 
