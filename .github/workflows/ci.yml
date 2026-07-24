@@ -5,6 +5,7 @@ on:
     branches: [main, dev, master]
   pull_request:
     branches: [main, dev, master]
+  workflow_dispatch:
   schedule:
     # 每日凌晨 02:00 UTC（北京时间 10:00）跑全量
     - cron: "0 2 * * *"
