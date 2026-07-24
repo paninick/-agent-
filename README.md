@@ -2,18 +2,18 @@
 
 ![Launch Desk](public/og-banner.jpeg)
 
-Launch Desk is a polished frontend app backed by an OpenAI Agents SDK agent. It helps an engineering team turn a rough launch idea into a release plan with prioritized tasks, launch readiness risks, owner checklists, channel copy, and follow-up questions.
+**Launch Desk** is a release-planning application built with Vite, React, and the OpenAI Agents SDK. Engineering teams can turn a launch brief into a structured plan: prioritized tasks, readiness risks, owner checklists, channel copy, and follow-up questions.
 
-> **📌 此 monorepo 含两个项目**：
-> - **Launch Desk**（本文件）— release-planning agent
-> - **v3 产链引擎** — see [`V3-README.md`](./V3-README.md) + [`HANDOVER.md`](./HANDOVER.md)
-> - **v3 文档中心** — see [`docs/`](./docs/) 21 份文档
->
-> **AI 接手指引**：读 [`HANDOVER.md`](./HANDOVER.md)
-> **部署**：见 [`DEPLOY.md`](./DEPLOY.md)（生产需 AUTH + Neon）
+This monorepo also hosts the **v3 apparel supply-chain intelligence** platform (adapters, verification, and governance tooling).
 
-## Why This Shape
+| Document | Purpose |
+|----------|---------|
+| [DEPLOY.md](./DEPLOY.md) | Production deployment (Vercel; authentication and Neon PostgreSQL required) |
+| [V3-README.md](./V3-README.md) | v3 product and architecture overview |
+| [HANDOVER.md](./HANDOVER.md) | Maintainer handoff notes |
+| [docs/](./docs/) | Extended technical documentation |
 
+## Architecture
 - Frontend: Vite + React, with a streaming SSE client.
 - Server/API: Express route at `/api/launch-plan`.
 - Agent: `src/agent/launchAgent.ts` defines the OpenAI Agents SDK agent.
