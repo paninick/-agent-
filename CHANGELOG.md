@@ -1,5 +1,23 @@
 # Changelog
 
+## 2026-07-24
+
+### Release Integrity and Production Safety Hotfix
+
+- Declared all ten pinned third-party skill repositories in `.gitmodules`; a
+  recursive clone now reconstructs the recorded vendor tree.
+- Made CI initialize submodules, use reproducible installs, enforce the skill
+  integrity gate, and block high-severity production dependency advisories.
+- Made production startup fail closed unless authentication and PostgreSQL
+  persistence are explicitly enabled and configured.
+- Fixed CRLF skill frontmatter discovery and stabilized deterministic tests and
+  bounded test concurrency.
+- Updated the dependency lockfile to remove the previously reported high
+  severity production advisory. Remaining moderate advisories are documented
+  upstream transitive dependencies and are not silently force-downgraded.
+- No credentials, external deployment, MCP connection, or N7 seal action was
+  performed.
+
 ## 2026-07-06
 
 ### P17 Visual Brand Assets

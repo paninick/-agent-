@@ -182,11 +182,11 @@ interface ParsedFrontmatter {
 export function parseFrontmatter(content: string): ParsedFrontmatter {
   const result: ParsedFrontmatter = {};
 
-  const match = content.match(/^---\s*\n([\s\S]*?)\n---\s*\n?/);
+  const match = content.match(/^---[ \t]*\r?\n([\s\S]*?)\r?\n---[ \t]*(?:\r?\n|$)/);
   if (!match) return result;
 
   const block = match[1];
-  const lines = block.split("\n");
+  const lines = block.split(/\r?\n/);
   let currentSection: string | null = null;
 
   for (const line of lines) {

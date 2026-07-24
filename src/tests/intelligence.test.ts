@@ -771,6 +771,7 @@ function buildGenericFixture() {
 }
 
 function buildApparelFixture() {
+  const fixtureNow = new Date("2026-07-07T00:00:00.000Z");
   const registry = parseSourceRegistry(registrySeed);
   const source = getSource(registry, "world-bank");
   const evidence = createEvidenceEntry({
@@ -778,7 +779,7 @@ function buildApparelFixture() {
     kind: "macro_control",
     subject: "cotton_price", // apparel pack 的 knownRanges 中有此 key
     claim: "cotton price observation",
-    observedAt: new Date(Date.now() - 10 * 86_400_000).toISOString(), // 10 天前
+    observedAt: new Date(fixtureNow.getTime() - 10 * 86_400_000).toISOString(), // 10 天前
     period: "2024",
     geography: "China",
     value: 15000, // 在 [5000, 50000] 内

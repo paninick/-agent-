@@ -74,6 +74,15 @@ const FORBIDDEN_KEY_PATTERN = /[a-zA-Z0-9_-]{20,}/g;
 export function validateCrossChecks(env: Record<string, string | undefined>): string[] {
   const errors: string[] = [];
 
+  if (env.NODE_ENV === "production") {
+    if (env.AUTH_ENABLED !== "true") {
+      errors.push("NODE_ENV=production 时必须设置 AUTH_ENABLED=true");
+    }
+    if (env.NEON_PERSISTENCE !== "1" || !env.DATABASE_URL) {
+      errors.push("NODE_ENV=production 时必须设置 NEON_PERSISTENCE=1 和 DATABASE_URL");
+    }
+  }
+
   // #6 — NEON_PERSISTENCE=1 时 DATABASE_URL 必须存在
   if (env.NEON_PERSISTENCE === "1" && !env.DATABASE_URL) {
     errors.push("NEON_PERSISTENCE=1 但 DATABASE_URL 缺失 — 持久化将回退到纯内存模式");

@@ -195,7 +195,7 @@ describe("HTTP → Panel E2E", () => {
     expect(swarmCalls.length).toBe(1);
   });
 
-  it("renders cost breakdown from real server costRecord", { timeout: 15000 }, async () => {
+  it("renders cost breakdown from real server costRecord", { timeout: 20000 }, async () => {
     const app = createApp(new FakeModelGateway({ responses: {} }));
     const { baseUrl, close } = await startServer(app);
     cleanup = close;
@@ -208,7 +208,7 @@ describe("HTTP → Panel E2E", () => {
     await act(async () => { btn.click(); });
 
     // Wait for cost breakdown to render
-    const costBreakdown = await waitForSelector(".intel-cost-breakdown", 8000);
+    const costBreakdown = await waitForSelector(".intel-cost-breakdown", 12000);
     expect(costBreakdown).toBeTruthy();
 
     // Should show total cost in the summary

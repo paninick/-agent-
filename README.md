@@ -25,9 +25,16 @@ The implementation follows current OpenAI guidance: use the Agents SDK when the 
 ## Setup
 
 ```bash
-npm install
+git clone --recurse-submodules https://github.com/paninick/-agent-.git
+cd ./-agent-
+npm ci
 cp .env.example .env.local
 ```
+
+If the repository was cloned without its vendor skill repositories, repair it
+with `git submodule update --init --recursive`. Production startup fails closed
+unless authentication and PostgreSQL persistence are explicitly enabled and
+configured; in-memory persistence and unauthenticated mode are development-only.
 
 Edit `.env.local`:
 
@@ -72,11 +79,20 @@ npm run lint
 npm run typecheck
 npm run test
 npm run build
+npm run verify:skills
 npm run verify:intelligence
 npm run verify:release
 ```
 
-`npm run verify:all` runs environment-shape validation, secret scanning, and intelligence verification. By default, `verify:env` does not require a real `.env.local`; it checks that `.env.example` has no real keys and that local env files are ignored. Use `npm run verify:env -- --strict` before running real credential-backed source probes. `verify:secrets` scans Git-tracked files by default so ignored local repair files, vendor references, and generated media artifacts do not block project validation.
+`npm run verify:skills` requires all pinned submodules. It reports quarantined
+third-party rejects and fails on missing repositories or rejects beyond the
+reviewed baseline. `npm run verify:all` runs environment-shape validation,
+secret scanning, and intelligence verification. By default, `verify:env` does
+not require a real `.env.local`; it checks that `.env.example` has no real keys
+and that local env files are ignored. Use `npm run verify:env -- --strict`
+before running real credential-backed source probes. `verify:secrets` scans
+Git-tracked files by default so ignored local repair files, vendor references,
+and generated media artifacts do not block project validation.
 
 ## Release Governance Console
 

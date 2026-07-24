@@ -64,6 +64,28 @@ const TRUSTED_REPOS = new Set([
   "trailofbits-skills",
 ]);
 
+const REQUIRED_SKILL_REPOS = [
+  "ECC",
+  "agent-reach",
+  "anthropic-skills",
+  "composio-skills",
+  "marketing-skills",
+  "mattpocock-skills",
+  "national-stats-source",
+  "openclaw-skills",
+  "superpowers",
+  "trailofbits-skills",
+] as const;
+
+// These rejects are already quarantined by the registry policy and are not
+// loadable runtime skills. CI blocks only regressions beyond this reviewed
+// baseline; changing the baseline requires an explicit governance review.
+const REVIEWED_REJECT_BASELINE: Readonly<Record<string, number>> = {
+  "anthropic-skills": 3,
+  "composio-skills": 849,
+  "trailofbits-skills": 1,
+};
+
 const OFFICIAL_LICENSES = ["apache-2.0", "apache 2.0", "mit", "bsd-2-clause", "bsd-3-clause", "proprietary", "source-available"];
 
 const FORBIDDEN_PATTERNS = [
@@ -258,6 +280,18 @@ async function main() {
   const onlyIdx = args.indexOf("--only");
   const onlyRepo = onlyIdx > -1 ? args[onlyIdx + 1] : null;
   const skillsRoot = join(process.cwd(), "skills");
+  const missingRepos: string[] = [];
+  for (const repo of REQUIRED_SKILL_REPOS) {
+    try {
+      if (!(await stat(join(skillsRoot, repo))).isDirectory()) missingRepos.push(repo);
+    } catch {
+      missingRepos.push(repo);
+    }
+  }
+  if (missingRepos.length > 0) {
+    console.error(`缺少必需技能仓库: ${missingRepos.join(", ")}`);
+    console.error("请使用 git clone --recurse-submodules 或 git submodule update --init --recursive");
+  }
 
   const repos = onlyRepo ? [onlyRepo] : await readdir(skillsRoot);
   const allReports: AuditReport[] = [];
@@ -282,23 +316,32 @@ async function main() {
     }
   }
 
+  const byRepo = Object.fromEntries(
+    [...new Set(allReports.map((r) => r.parentRepo))].map((repo) => {
+      const rs = allReports.filter((r) => r.parentRepo === repo);
+      return [repo, { total: rs.length, accept: rs.filter((r) => r.decision === "ACCEPT").length, review: rs.filter((r) => r.decision === "MANUAL_REVIEW").length, reject: rs.filter((r) => r.decision === "REJECT").length }];
+    }),
+  );
+  const unexpectedRejected = Object.entries(byRepo).reduce(
+    (total, [repo, repoStats]) => total + Math.max(0, repoStats.reject - (REVIEWED_REJECT_BASELINE[repo] ?? 0)),
+    0,
+  );
   const summary = {
     checkedAt: new Date().toISOString(),
     totalChecked: allReports.length,
     accepted: allReports.filter((r) => r.decision === "ACCEPT").length,
     manualReview: allReports.filter((r) => r.decision === "MANUAL_REVIEW").length,
     rejected: allReports.filter((r) => r.decision === "REJECT").length,
-    byRepo: Object.fromEntries(
-      [...new Set(allReports.map((r) => r.parentRepo))].map((repo) => {
-        const rs = allReports.filter((r) => r.parentRepo === repo);
-        return [repo, { total: rs.length, accept: rs.filter((r) => r.decision === "ACCEPT").length, review: rs.filter((r) => r.decision === "MANUAL_REVIEW").length, reject: rs.filter((r) => r.decision === "REJECT").length }];
-      }),
-    ),
+    reviewedRejectBaseline: REVIEWED_REJECT_BASELINE,
+    unexpectedRejected,
+    missingRepos,
+    byRepo,
     reports: allReports,
   };
 
   console.log(`\n${"=".repeat(60)}`);
   console.log(`SUMMARY: ${summary.accepted} accept / ${summary.manualReview} manual_review / ${summary.rejected} reject`);
+  console.log(`REGRESSION GATE: ${summary.unexpectedRejected} unexpected reject / ${summary.missingRepos.length} missing repo`);
   console.log(`${"=".repeat(60)}`);
   for (const [repo, stat] of Object.entries(summary.byRepo)) {
     console.log(`  ${repo.padEnd(30)} total=${stat.total} accept=${stat.accept} review=${stat.review} reject=${stat.reject}`);
@@ -308,7 +351,7 @@ async function main() {
   await writeFile(join(process.cwd(), "outputs", "skill-audit-report.json"), JSON.stringify(summary, null, 2));
   console.log(`\n详细报告: outputs/skill-audit-report.json`);
 
-  process.exit(summary.rejected > 0 ? 1 : 0);
+  process.exit(summary.unexpectedRejected > 0 || summary.missingRepos.length > 0 ? 1 : 0);
 }
 
 main().catch((err) => {

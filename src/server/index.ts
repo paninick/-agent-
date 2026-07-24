@@ -49,6 +49,11 @@ const port = Number(process.env.PORT || 8787);
 function initPersistence() {
   const useNeon = process.env.NEON_PERSISTENCE === "1";
   const hasDbUrl = Boolean(process.env.DATABASE_URL);
+  if (process.env.NODE_ENV === "production" && (!useNeon || !hasDbUrl)) {
+    throw new Error(
+      "[persistence] 生产环境必须设置 NEON_PERSISTENCE=1 和 DATABASE_URL，拒绝回退到内存模式",
+    );
+  }
   if (useNeon && !hasDbUrl) {
     console.warn("[persistence] NEON_PERSISTENCE=1 但 DATABASE_URL 未设置 — 回退到纯内存模式");
   }
@@ -72,11 +77,13 @@ function initAuth() {
   if (config.enabled) {
     const errors = validateAuthConfig(config);
     if (errors.length > 0) {
-      console.warn(`[auth] 认证启用但配置缺失：${errors.join("、")} — 认证将回退到放行模式`);
-      return { ...config, enabled: false };
+      throw new Error(`[auth] 认证启用但配置缺失：${errors.join("、")}，拒绝启动`);
     }
     console.log(`[auth] 已启用 JWT 认证（用户: ${config.adminUsername}, 过期: ${config.expiresIn}）`);
   } else {
+    if (process.env.NODE_ENV === "production") {
+      throw new Error("[auth] 生产环境必须设置 AUTH_ENABLED=true，拒绝匿名启动");
+    }
     console.log("[auth] 未启用认证（AUTH_ENABLED≠true）");
   }
   return config;

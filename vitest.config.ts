@@ -13,6 +13,9 @@ import { defineConfig } from "vitest/config";
  */
 export default defineConfig({
   test: {
+    // HTTP/jsdom suites become timing-dependent under unconstrained parallelism.
+    // Two workers keep isolation while avoiding release-runner saturation.
+    maxWorkers: 2,
     coverage: {
       provider: "v8",
       reporter: ["text", "html", "clover"],
