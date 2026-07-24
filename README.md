@@ -10,6 +10,7 @@ Launch Desk is a polished frontend app backed by an OpenAI Agents SDK agent. It 
 > - **v3 文档中心** — see [`docs/`](./docs/) 21 份文档
 >
 > **AI 接手指引**：读 [`HANDOVER.md`](./HANDOVER.md)
+> **部署**：见 [`DEPLOY.md`](./DEPLOY.md)（生产需 AUTH + Neon）
 
 ## Why This Shape
 
