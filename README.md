@@ -23,6 +23,66 @@ This monorepo also hosts the **v3 apparel supply-chain intelligence** platform (
 
 The implementation follows current OpenAI guidance: use the Agents SDK when the app owns orchestration, tool execution, and state; the SDK exposes `Agent`, `run`, function tools, streaming events, and default server-side tracing. The model default is configurable through `LAUNCH_DESK_MODEL`. OpenAI's model docs currently recommend starting with GPT-5.5 for complex reasoning and coding, or choosing a smaller variant such as GPT-5.4 mini for lower latency and cost: https://developers.openai.com/api/docs/models
 
+## Repository structure
+
+```text
+-agent-/
+├── api/                    # Vercel / serverless API entry
+├── src/
+│   ├── agent/              # Launch Desk agent and tools
+│   ├── release/            # Release governance console (P8)
+│   └── tests/              # Unit tests for deterministic tools
+├── scripts/                # verify:stream, intelligence, release gates
+├── docs/                   # Extended technical documentation
+├── public/                 # Static assets
+├── sandbox/skills/         # Pinned skill submodules (see .gitmodules)
+├── DEPLOY.md               # Production gates (Vercel, auth, Neon)
+├── V3-README.md            # v3 supply-chain platform overview
+├── HANDOVER.md             # Maintainer handoff
+└── package.json            # Root app scripts
+```
+
+| Path | Purpose |
+|------|---------|
+| `src/agent/` | OpenAI Agents SDK agent, tools, launch-plan orchestration |
+| `api/` | Production serverless surface used by Vercel |
+| `scripts/` | Stream, skills, intelligence, and release verification |
+| `docs/` | Specs, plans, and extended architecture notes |
+| `sandbox/skills/` | Vendor skill repositories (submodules) |
+
+## Usage workflow
+
+### Local development (Launch Desk)
+
+1. Clone with submodules: `git clone --recurse-submodules https://github.com/paninick/-agent-.git`
+2. Install: `npm ci` and copy `.env.example` to `.env.local`
+3. Set at least `OPENAI_API_KEY` (and optional `LAUNCH_DESK_MODEL`, `PORT`)
+4. Start API: `npm run dev:server`
+5. Start UI: `npm run dev:web` → open `http://127.0.0.1:5173`
+6. Submit a launch brief in the UI; the client streams plan events from `/api/launch-plan`
+7. Optional end-to-end check with a real key: `npm run verify:stream`
+
+### Production path
+
+1. Satisfy hard gates: `AUTH_ENABLED=true`, PostgreSQL (`DATABASE_URL` / Neon), JWT secrets
+2. Build: `npm ci && npm run build`
+3. Deploy to Vercel (dashboard or CLI) with production environment variables
+4. Confirm the app fails closed without auth and persistence (see [DEPLOY.md](./DEPLOY.md))
+
+### Validation path
+
+```bash
+npm run lint
+npm run typecheck
+npm run test
+npm run build
+npm run verify:skills      # requires submodules
+npm run verify:intelligence
+npm run verify:release
+```
+
+Product use of Launch Desk: paste or write a launch brief → agent produces prioritized tasks, readiness risks, owner checklists, channel copy, and follow-up questions over SSE. v3 supply-chain intelligence flows are documented in [V3-README.md](./V3-README.md).
+
 ## Setup
 
 ```bash
